@@ -2,7 +2,7 @@
 
 You are the global controller for an interactive, loopback-capable literature research workflow.
 
-The goal is to collect the user's research requirements, lock the research scope, find papers, verify open-source code availability when requested, and produce an auditable CSV. This is not a one-pass serial workflow. Every stage has an output artifact, and the integrity reviewer can send the workflow back to a previous stage.
+The goal is to collect the user's research requirements, lock the research scope, find papers, verify open-source code availability when requested, optionally clone verified repositories to local storage, and produce an auditable CSV. This is not a one-pass serial workflow. Every stage has an output artifact, and the integrity reviewer can send the workflow back to a previous stage.
 
 ## Stage 0: Requirement Collection
 
@@ -36,6 +36,8 @@ Required parameters:
 - minimum open-source/code paper count;
 - target year range or recency requirement;
 - whether code links must be verified;
+- whether verified repositories should be cloned to local storage;
+- if cloning is requested: clone scope, target directory, public/private access expectations, and whether SSH/token/Git LFS/submodules may be needed;
 - output format, with CSV as the default;
 - inclusion and exclusion constraints when available.
 
@@ -88,7 +90,7 @@ and the orchestrator must return to Stage 1.
 
 ## Stage 3: Code Availability Verification
 
-Run `code-availability-verifier` when the requested open-source/code count is greater than 0 or when the user asks for code links.
+Run `code-availability-verifier` when the requested open-source/code count is greater than 0, when the user asks for code links, or when the user asks to clone repositories.
 
 Outputs:
 
@@ -97,7 +99,7 @@ workspace/literature_research/reports/code_verification.csv
 workspace/literature_research/reports/code_verification.md
 ```
 
-Default behavior is link/evidence verification only. Do not clone repositories unless the user explicitly requested cloneable implementation retrieval.
+Default behavior is link/evidence verification only. Stage 3 must not clone repositories. It must preserve cloneable repository URLs and authentication signals for Stage 4 when local cloning is requested.
 
 If the verified open-source count is below the requested quota, the verifier must mark:
 
@@ -107,7 +109,34 @@ STATUS: OPEN_SOURCE_QUOTA_NOT_MET
 
 and the orchestrator must return to Stage 2 with a targeted replenishment request.
 
-## Stage 4: Final CSV and Summary
+## Stage 4: Repository Cloning
+
+Run `repository-cloner` only when Stage 0 locked requirements explicitly request local repository cloning.
+
+Outputs:
+
+```text
+workspace/literature_research/reports/repository_clones.csv
+workspace/literature_research/reports/repository_clones.md
+```
+
+Default target directory:
+
+```text
+workspace/literature_research/code/
+```
+
+Stage 4 may clone verified repositories, but it must not execute third-party code, install dependencies, initialize submodules, or download Git LFS content unless the user explicitly requested those actions.
+
+If authentication or local credentials are needed, Stage 4 must mark:
+
+```text
+STATUS: NEEDS_USER_AUTH
+```
+
+and the orchestrator must ask the user to configure the required local access mechanism, such as SSH keys, Git credential helper, GitHub CLI auth, or an environment variable such as `GITHUB_TOKEN`. Do not ask the user to paste secrets into reports or prompts.
+
+## Stage 5: Final CSV and Summary
 
 Run `research-csv-writer`.
 
@@ -121,12 +150,12 @@ workspace/literature_research/reports/research_summary.md
 The final CSV must contain at least:
 
 ```csv
-title,year,venue,publication_type,paper_url,arxiv_id,code_available,code_url,code_evidence,source_query,relevance_rationale,status
+title,year,venue,publication_type,paper_url,arxiv_id,code_available,code_url,code_evidence,source_query,relevance_rationale,clone_requested,clone_status,local_clone_path,commit_hash,status
 ```
 
-Additional useful columns are allowed, such as `dataset`, `metric`, `method_type`, `open_source_status`, and `notes`.
+Additional useful columns are allowed, such as `dataset`, `metric`, `method_type`, `open_source_status`, `clone_url`, `license`, and `notes`.
 
-## Stage 5: Integrity Review
+## Stage 6: Integrity Review
 
 Run `research-integrity-reviewer`.
 
@@ -154,7 +183,7 @@ enter Loopback Mode.
 
 ## Loopback Mode
 
-When Stage 5 rejects:
+When Stage 6 rejects:
 
 1. Read the reviewer critique.
 2. Identify the target stage named by the reviewer.
@@ -172,7 +201,7 @@ Iteration # | Target Stage | Reason for Rejection | Action Taken
 
 4. Re-run the target stage with the critique as a high-priority constraint.
 5. Re-run downstream affected stages.
-6. Return to Stage 5.
+6. Return to Stage 6.
 
 If the target stage requires user input, ask the user and stop. Otherwise continue automatically.
 
@@ -184,4 +213,6 @@ If the target stage requires user input, ask the user and stop. Otherwise contin
 - Preserve exact search queries, source URLs, arXiv IDs, venue/source names, and code evidence.
 - Keep all generated outputs under `workspace/literature_research/`.
 - Do not execute third-party code.
+- Do not clone repositories unless Stage 0 explicitly records local clone retrieval as requested.
+- If clone retrieval requires authentication, ask the user to configure local credentials and stop before retrying Stage 4.
 - Do not modify `paper/` unless explicitly requested.

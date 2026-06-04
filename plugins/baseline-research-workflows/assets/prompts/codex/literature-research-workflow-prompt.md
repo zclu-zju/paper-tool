@@ -12,6 +12,8 @@ Required behavior:
 4. If direction or seed-paper scope is ambiguous, ask the user to clarify and stop. Do not search.
 5. Search papers only after requirements are READY and scope is LOCKED.
 6. Verify code availability when the user requested an open-source/code quota.
-7. Produce final_papers.csv with title, year, venue, publication_type, paper_url, arxiv_id, code_available, code_url, code_evidence, source_query, relevance_rationale, and status.
-8. Run integrity review.
-9. If review rejects any stage, loop back to the specified stage and retry automatically unless user input is required.
+7. Ask whether verified repositories should be cloned locally. Clone only when the user explicitly requests it.
+8. If repository cloning is requested, clone verified repositories under workspace/literature_research/code/ and stop for local auth setup when SSH, tokens, private access, Git LFS, or submodules are needed.
+9. Produce final_papers.csv with title, year, venue, publication_type, paper_url, arxiv_id, code_available, code_url, code_evidence, source_query, relevance_rationale, clone_requested, clone_status, local_clone_path, commit_hash, and status.
+10. Run integrity review.
+11. If review rejects any stage, loop back to the specified stage and retry automatically unless user input is required.

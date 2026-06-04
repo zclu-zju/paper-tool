@@ -7,7 +7,7 @@ This repository provides one unified workflow. The user may start from either:
 - a **research direction** such as "CSI feedback for FDD massive MIMO"; or
 - a **seed paper**, which Codex uses to infer the research direction, evaluation context, and comparison boundary.
 
-The workflow does not immediately search. It first collects the parameters needed by the agents, then locks the scope, then searches papers, verifies open-source code availability, writes a CSV, and runs an integrity review. If a later stage fails, the orchestrator loops back to the failed stage and retries.
+The workflow does not immediately search. It first collects the parameters needed by the agents, then locks the scope, then searches papers, verifies open-source code availability, optionally clones verified repositories to local storage, writes a CSV, and runs an integrity review. If a later stage fails, the orchestrator loops back to the failed stage and retries.
 
 ## Workflow
 
@@ -24,8 +24,9 @@ Stage 0  research-requirement-collector   collect required user parameters
 Stage 1  research-scope-locker            lock direction or seed-paper scope
 Stage 2  paper-discovery-scout            search and shortlist papers
 Stage 3  code-availability-verifier       verify code links when required
-Stage 4  research-csv-writer              write final_papers.csv
-Stage 5  research-integrity-reviewer      review and loop back on failures
+Stage 4  repository-cloner                clone verified repositories when requested
+Stage 5  research-csv-writer              write final_papers.csv
+Stage 6  research-integrity-reviewer      review and loop back on failures
 ```
 
 The core behavior is iterative:
@@ -34,7 +35,7 @@ The core behavior is iterative:
 stage output -> integrity review -> GO or REJECT -> loop back to target stage
 ```
 
-Stage 0 and Stage 1 may stop for user input. Stage 2, Stage 3, and Stage 4 can be rejected and redone automatically when no new user input is required.
+Stage 0 and Stage 1 may stop for user input. Stage 2, Stage 3, Stage 4, and Stage 5 can be rejected and redone automatically when no new user input is required.
 
 ## Install From GitHub
 
@@ -101,7 +102,7 @@ Then say:
 Use baseline-research.
 
 Research papers for this direction: <your direction>.
-Before searching, collect the required parameters from me, including minimum paper count, minimum open-source/code paper count, target years, code verification level, inclusion criteria, exclusion criteria, and final CSV requirements.
+Before searching, collect the required parameters from me, including minimum paper count, minimum open-source/code paper count, target years, code verification level, whether verified repositories should be cloned locally, inclusion criteria, exclusion criteria, and final CSV requirements.
 ```
 
 Or, if using a seed paper:
@@ -110,6 +111,18 @@ Or, if using a seed paper:
 Use baseline-research.
 
 Use the paper in paper/main.tex as the seed. First infer the research direction and experimental context, then ask me for any missing parameters before searching papers.
+```
+
+To request local repository cloning:
+
+```text
+Use baseline-research.
+
+Research papers about <your direction>.
+I need at least 30 papers from 2022-2026, including at least 10 with verified public code.
+Clone the verified repositories for the selected papers into workspace/literature_research/code/.
+If SSH, tokens, private repository access, Git LFS, or submodules are needed, stop and tell me what local access I need to configure before cloning.
+Output the final CSV with local clone paths and commit hashes.
 ```
 
 You can also invoke the custom agent directly:
@@ -134,6 +147,8 @@ Stage 0 must collect:
 - minimum open-source/code paper count;
 - target year range or recency window;
 - whether code links must be verified;
+- whether verified repositories should be cloned locally;
+- if cloning is requested: clone scope, target directory, public/private access expectations, auth setup, Git LFS policy, and submodule policy;
 - output format, CSV by default;
 - inclusion and exclusion constraints when available.
 
@@ -165,6 +180,7 @@ workspace/literature_research/reports/requirements.md
 workspace/literature_research/reports/scope_report.md
 workspace/literature_research/reports/paper_candidates.csv
 workspace/literature_research/reports/code_verification.csv
+workspace/literature_research/reports/repository_clones.csv
 workspace/literature_research/reports/final_papers.csv
 workspace/literature_research/reports/research_summary.md
 workspace/literature_research/reports/integrity_report.md
@@ -174,14 +190,22 @@ workspace/literature_research/reports/iteration_log.md
 The final CSV contains at least:
 
 ```csv
-title,year,venue,publication_type,paper_url,arxiv_id,code_available,code_url,code_evidence,source_query,relevance_rationale,status
+title,year,venue,publication_type,paper_url,arxiv_id,code_available,code_url,code_evidence,source_query,relevance_rationale,clone_requested,clone_status,local_clone_path,commit_hash,status
 ```
 
 ## Safe Code Policy
 
 The code verifier checks public code evidence. It does not execute third-party code.
 
-By default, it verifies links and repository evidence only. It does not clone repositories unless the user explicitly asks for cloneable implementation retrieval.
+By default, it verifies links and repository evidence only. It does not clone repositories unless the user explicitly asks for local repository retrieval.
+
+When cloning is requested, repositories are cloned under:
+
+```text
+workspace/literature_research/code/
+```
+
+If authentication or access setup is needed, the workflow stops before cloning and asks the user to configure local access, such as SSH keys, Git credential helper, GitHub CLI auth, or an environment variable such as `GITHUB_TOKEN`. Tokens, passwords, and private keys must not be pasted into workflow reports or prompts.
 
 Not allowed by default:
 
@@ -211,6 +235,7 @@ This repository intentionally excludes private manuscript material and runtime a
 paper/
 workspace/
 .env
+backups/
 ```
 
 ## Development Checks

@@ -13,6 +13,7 @@ It must:
 - use a seed paper as a way to infer the user's research focus when a paper is provided;
 - search papers under the locked scope;
 - verify code availability when the user requests an open-source quota;
+- optionally clone verified repositories to local storage when the user explicitly requests it;
 - write a final CSV;
 - review the whole run;
 - loop back to the failed stage when review fails.
@@ -41,6 +42,8 @@ Required fields:
 - minimum open-source/code paper count;
 - target years;
 - code verification level;
+- local repository retrieval preference;
+- clone scope, target directory, authentication/access expectations, Git LFS policy, and submodule policy when cloning is requested;
 - output format;
 - inclusion/exclusion constraints when available.
 
@@ -112,7 +115,43 @@ workspace/literature_research/reports/code_verification.md
 
 Code counts only when there is concrete public evidence, such as an official project link, Papers With Code entry, repository README evidence, paper title, arXiv ID, BibTeX, or author/project linkage.
 
-### Stage 4: CSV Writer
+Stage 3 does not clone repositories. It records cloneable repository URLs and authentication signals for Stage 4 when local retrieval is requested.
+
+### Stage 4: Repository Cloning
+
+Agent:
+
+```text
+repository-cloner
+```
+
+Outputs:
+
+```text
+workspace/literature_research/reports/repository_clones.csv
+workspace/literature_research/reports/repository_clones.md
+workspace/literature_research/code/
+```
+
+This stage runs only when Stage 0 explicitly records that local repository retrieval is requested. It clones verified repositories only, normally under `workspace/literature_research/code/`.
+
+If private access, SSH keys, API tokens, Git credential helper setup, GitHub CLI auth, Git LFS credentials, or submodule access are needed, the stage reports:
+
+```text
+STATUS: NEEDS_USER_AUTH
+```
+
+and the orchestrator asks the user to configure local access before retrying. The workflow must not ask the user to paste tokens, passwords, or private keys into reports.
+
+Safety rules:
+
+- do not execute third-party code;
+- do not install dependencies;
+- do not initialize submodules unless explicitly requested;
+- do not download Git LFS objects unless explicitly requested;
+- do not overwrite existing local directories.
+
+### Stage 5: CSV Writer
 
 Agent:
 
@@ -130,10 +169,10 @@ workspace/literature_research/reports/research_summary.md
 Required CSV columns:
 
 ```csv
-title,year,venue,publication_type,paper_url,arxiv_id,code_available,code_url,code_evidence,source_query,relevance_rationale,status
+title,year,venue,publication_type,paper_url,arxiv_id,code_available,code_url,code_evidence,source_query,relevance_rationale,clone_requested,clone_status,local_clone_path,commit_hash,status
 ```
 
-### Stage 5: Integrity Review
+### Stage 6: Integrity Review
 
 Agent:
 
@@ -147,7 +186,7 @@ Output:
 workspace/literature_research/reports/integrity_report.md
 ```
 
-The reviewer checks requirement completeness, scope lock, ambiguity handling, paper traceability, scope discipline, total count, code count, code evidence, CSV schema, and loopback readiness.
+The reviewer checks requirement completeness, scope lock, ambiguity handling, paper traceability, scope discipline, total count, code count, code evidence, repository clone output and safety when requested, CSV schema, and loopback readiness.
 
 If any required check fails:
 
@@ -159,7 +198,7 @@ The report specifies one target stage and whether user input is required.
 
 ## Loopback
 
-When Stage 5 rejects:
+When Stage 6 rejects:
 
 1. The orchestrator reads the target stage.
 2. It logs the retry in:
@@ -170,7 +209,7 @@ workspace/literature_research/reports/iteration_log.md
 
 3. It reruns the target stage with the review critique as a high-priority constraint.
 4. It reruns downstream affected stages.
-5. It returns to Stage 5.
+5. It returns to Stage 6.
 
 If user input is required, the orchestrator asks the user and stops.
 
@@ -183,6 +222,18 @@ Research papers about CSI feedback for FDD massive MIMO.
 I need at least 30 papers from 2022-2026, including at least 10 with verified public code.
 Output a CSV with title, year, venue, paper URL, arXiv ID, whether code is open source, code URL, and relevance rationale.
 Before searching, check whether the direction has ambiguous terms or adjacent fields.
+```
+
+## Clone Retrieval Example
+
+```text
+Use baseline-research.
+
+Research papers about CSI feedback for FDD massive MIMO.
+I need at least 30 papers from 2022-2026, including at least 10 with verified public code.
+Clone the selected verified-code repositories into workspace/literature_research/code/.
+If SSH, tokens, private repository access, Git LFS, or submodules are needed, stop and tell me what local setup is required before cloning.
+Output a CSV with paper metadata, code links, local clone paths, and commit hashes.
 ```
 
 ## Seed Paper Example

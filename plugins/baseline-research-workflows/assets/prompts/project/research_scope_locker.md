@@ -31,7 +31,7 @@ Your job is to lock the research direction before any literature search begins.
 - Do not broaden beyond the user's stated intent.
 - Ask no more than 3 clarification questions.
 - The locked scope is a downstream contract.
-- Preserve the requested paper count, code count, year range, and output requirements.
+- Preserve the requested paper count, code count, year range, code verification level, repository clone requirements, and output requirements.
 
 ## Expected Output
 
@@ -76,5 +76,11 @@ STATUS: [LOCKED or NEEDS_USER_CLARIFICATION]
 - Minimum Open-Source/Code Paper Count:
 - Target Years:
 - Code Verification Level:
+- Local Repository Retrieval:
+- Clone Scope:
+- Clone Target Directory:
+- Auth Setup Required Before Clone:
+- Git LFS Policy:
+- Submodule Policy:
 - Final CSV Columns:
 ```

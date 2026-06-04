@@ -8,8 +8,8 @@ paper/
 
 # Runtime outputs, reports, cloned third-party repositories, and backups
 workspace/
+backups/
 
 # Local editor/cache files
 .idea/
 .vscode/
-

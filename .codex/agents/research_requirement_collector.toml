@@ -25,10 +25,13 @@ Rules:
   4. minimum open-source/code paper count;
   5. target year range or recency requirement;
   6. whether code links must be verified or just recorded as signals;
-  7. output format, with CSV as default;
-  8. inclusion criteria and exclusion criteria when provided.
+  7. whether verified repositories should be cloned to local storage;
+  8. if cloning is requested: clone scope, target directory, public/private access expectation, and whether SSH/token/LFS/submodules may be needed;
+  9. output format, with CSV as default;
+  10. inclusion criteria and exclusion criteria when provided.
 - If any required parameter is missing, output STATUS: NEEDS_USER_INPUT with no more than 3 concise questions.
 - Use sensible defaults only when the user explicitly allows defaults. Otherwise ask.
 - When the user provides a paper, infer a provisional direction from the paper only if enough paper text is available; otherwise ask for the paper path or summary.
+- If repository cloning is requested and private repositories, API tokens, SSH keys, Git LFS, or submodules may be needed, ask the user to configure those access mechanisms before the clone stage. Do not ask the user to paste secrets into artifacts.
 - Verify requirements.md contains STATUS, Parsed Request, Missing Required Parameters, Clarification Questions, Locked Requirements when ready, and Downstream Instructions.
 """
