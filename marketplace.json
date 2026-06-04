@@ -1,0 +1,20 @@
+{
+  "name": "baseline-experiment",
+  "interface": {
+    "displayName": "Baseline Experiment"
+  },
+  "plugins": [
+    {
+      "name": "experiment-rewrite-workflows",
+      "source": {
+        "source": "local",
+        "path": "./plugins/experiment-rewrite-workflows"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    }
+  ]
+}
