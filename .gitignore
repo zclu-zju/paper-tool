@@ -1,0 +1,20 @@
+# Local reference repositories and copied skills
+baseline-research/
+academic-paper-reviewer/
+ml-paper-writing/
+
+# Workflow outputs from target runs
+workspace/
+
+# Python and editor noise
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.DS_Store
+
+# Temporary files
+*.tmp
+*.bak
+*.swp
