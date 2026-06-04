@@ -7,7 +7,7 @@ This repository provides one unified workflow. The user may start from either:
 - a **research direction** such as "CSI feedback for FDD massive MIMO"; or
 - a **seed paper**, which Codex uses to infer the research direction, evaluation context, and comparison boundary.
 
-The workflow does not immediately search. It first collects the parameters needed by the agents, then locks the scope, then searches papers with abstracts, verifies open-source code availability, optionally clones verified repositories, optionally downloads paper PDFs or TeX sources, compiles TeX when requested and possible, writes a CSV, and runs an integrity review. If a later stage fails, the orchestrator loops back to the failed stage and retries.
+The workflow does not immediately search. It first collects the parameters needed by the agents, then locks the scope, then searches papers with abstracts and citation counts, verifies open-source code availability while prioritizing high-citation in-scope papers for GitHub searches, optionally clones verified repositories, optionally downloads paper PDFs or TeX sources, compiles TeX when requested and possible, writes a CSV, and runs an integrity review. If a later stage fails, the orchestrator loops back to the failed stage and retries.
 
 ## Workflow
 
@@ -103,7 +103,7 @@ Then say:
 Use baseline-research.
 
 Research papers for this direction: <your direction>.
-Before searching, collect the required parameters from me, including minimum paper count, minimum open-source/code paper count, target years, code verification level, whether verified repositories should be cloned locally, whether paper PDFs or TeX sources should be downloaded locally, inclusion criteria, exclusion criteria, and final CSV requirements. The final CSV must include abstracts.
+Before searching, collect the required parameters from me, including minimum paper count, minimum open-source/code paper count, target years, code verification level, whether verified repositories should be cloned locally, whether paper PDFs or TeX sources should be downloaded locally, inclusion criteria, exclusion criteria, and final CSV requirements. The final CSV must include abstracts and citation counts.
 ```
 
 Or, if using a seed paper:
@@ -206,7 +206,7 @@ workspace/literature_research/reports/iteration_log.md
 The final CSV contains at least:
 
 ```csv
-title,year,venue,publication_type,paper_url,abstract,arxiv_id,code_available,code_url,code_evidence,source_query,relevance_rationale,clone_requested,clone_status,local_clone_path,commit_hash,artifact_requested,pdf_download_status,local_pdf_path,tex_download_status,local_tex_source_path,tex_compile_status,compiled_pdf_path,status
+title,year,venue,publication_type,paper_url,abstract,citation_count,citation_source,arxiv_id,code_available,code_url,code_evidence,source_query,relevance_rationale,clone_requested,clone_status,local_clone_path,commit_hash,artifact_requested,pdf_download_status,local_pdf_path,tex_download_status,local_tex_source_path,tex_compile_status,compiled_pdf_path,status
 ```
 
 ## Safe Code Policy
@@ -214,6 +214,8 @@ title,year,venue,publication_type,paper_url,abstract,arxiv_id,code_available,cod
 The code verifier checks public code evidence. It does not execute third-party code.
 
 By default, it verifies links and repository evidence only. It does not clone repositories unless the user explicitly asks for local repository retrieval.
+
+When searching GitHub or other repository hosts for code, the verifier prioritizes in-scope papers with higher `citation_count` first. Citation count never overrides the locked scope.
 
 When cloning is requested, repositories are cloned under:
 

@@ -11,8 +11,8 @@ It must:
 - ask for missing research parameters before searching;
 - detect ambiguous directions before searching;
 - use a seed paper as a way to infer the user's research focus when a paper is provided;
-- search papers under the locked scope and preserve abstracts;
-- verify code availability when the user requests an open-source quota;
+- search papers under the locked scope and preserve abstracts plus citation counts;
+- verify code availability when the user requests an open-source quota, prioritizing high-citation in-scope papers for GitHub/repository searches;
 - optionally clone verified repositories to local storage when the user explicitly requests it;
 - optionally download paper PDFs or TeX sources when the user explicitly requests it;
 - compile downloaded TeX sources to PDF only when requested and when the local TeX environment supports it;
@@ -100,7 +100,7 @@ workspace/literature_research/reports/paper_candidates.csv
 workspace/literature_research/reports/paper_candidates.md
 ```
 
-The scout searches with a buffer above the requested count so later code verification can reject weak candidates without immediately failing the run. Every candidate intended for selection must preserve an abstract and the abstract source.
+The scout searches with a buffer above the requested count so later code verification can reject weak candidates without immediately failing the run. Every candidate intended for selection must preserve an abstract, abstract source, citation count, and citation source.
 
 If paper artifact retrieval is requested, the scout preserves available `pdf_url` and `tex_source_url` signals. These signals are not treated as verified downloads.
 
@@ -121,7 +121,7 @@ workspace/literature_research/reports/code_verification.md
 
 Code counts only when there is concrete public evidence, such as an official project link, Papers With Code entry, repository README evidence, paper title, arXiv ID, BibTeX, or author/project linkage.
 
-Stage 3 does not clone repositories. It records cloneable repository URLs and authentication signals for Stage 4 when local retrieval is requested.
+Stage 3 does not clone repositories. It records cloneable repository URLs and authentication signals for Stage 4 when local retrieval is requested. When searching GitHub or other repository hosts, Stage 3 prioritizes in-scope candidates with higher `citation_count` first.
 
 ### Stage 4: Repository Cloning
 
@@ -211,7 +211,7 @@ workspace/literature_research/reports/research_summary.md
 Required CSV columns:
 
 ```csv
-title,year,venue,publication_type,paper_url,abstract,arxiv_id,code_available,code_url,code_evidence,source_query,relevance_rationale,clone_requested,clone_status,local_clone_path,commit_hash,artifact_requested,pdf_download_status,local_pdf_path,tex_download_status,local_tex_source_path,tex_compile_status,compiled_pdf_path,status
+title,year,venue,publication_type,paper_url,abstract,citation_count,citation_source,arxiv_id,code_available,code_url,code_evidence,source_query,relevance_rationale,clone_requested,clone_status,local_clone_path,commit_hash,artifact_requested,pdf_download_status,local_pdf_path,tex_download_status,local_tex_source_path,tex_compile_status,compiled_pdf_path,status
 ```
 
 ### Stage 7: Integrity Review
@@ -228,7 +228,7 @@ Output:
 workspace/literature_research/reports/integrity_report.md
 ```
 
-The reviewer checks requirement completeness, scope lock, ambiguity handling, paper traceability, abstract completeness, scope discipline, total count, code count, code evidence, repository clone output and safety when requested, paper artifact retrieval and TeX compilation when requested, CSV schema, and loopback readiness.
+The reviewer checks requirement completeness, scope lock, ambiguity handling, paper traceability, abstract completeness, citation count completeness, scope discipline, total count, code count, code evidence and citation-aware GitHub search priority, repository clone output and safety when requested, paper artifact retrieval and TeX compilation when requested, CSV schema, and loopback readiness.
 
 If any required check fails:
 
@@ -263,7 +263,7 @@ Use baseline-research.
 Research papers about CSI feedback for FDD massive MIMO.
 I need at least 30 papers from 2022-2026, including at least 10 with verified public code.
 Output a CSV with title, year, venue, paper URL, arXiv ID, whether code is open source, code URL, and relevance rationale.
-The CSV must include the abstract for every selected paper.
+The CSV must include the abstract and citation count for every selected paper. When searching GitHub code, prioritize high-citation in-scope papers.
 Before searching, check whether the direction has ambiguous terms or adjacent fields.
 ```
 

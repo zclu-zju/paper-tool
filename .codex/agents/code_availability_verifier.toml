@@ -19,9 +19,10 @@ Rules:
 - Do not execute third-party code.
 - Do not clone repositories. Repository cloning is handled only by Stage 4 repository-cloner after Stage 0 explicitly requests it.
 - Verify code availability using paper text, project pages, Papers With Code, repository README/metadata, citations, or exact paper/method evidence.
+- When searching GitHub or other repository hosts for code, prioritize in-scope candidates with higher citation_count first, while still respecting year, scope, and user quotas.
 - Mark code_available as YES only when public code evidence is concrete.
 - Mark code_available as NO, INSUFFICIENT_EVIDENCE, or NOT_REQUIRED otherwise.
-- Preserve code_url, clone_url, code_host, code_evidence, verification_query, verification_status, clone_candidate, and auth_requirement_signal.
+- Preserve citation_count, code_url, clone_url, code_host, code_evidence, verification_query, verification_status, clone_candidate, and auth_requirement_signal.
 - If the verified open-source count is below the requested quota, mark STATUS: OPEN_SOURCE_QUOTA_NOT_MET and instruct the orchestrator to return to Stage 2 with a targeted replenishment request.
 - Verify code_verification.csv has the required columns from prompts/code_availability_verifier.md.
 """

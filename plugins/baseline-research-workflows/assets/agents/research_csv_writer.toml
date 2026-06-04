@@ -22,7 +22,7 @@ Rules:
 - Include only papers inside the locked scope.
 - Satisfy the requested minimum total paper count and open-source/code count whenever available candidates allow.
 - Prefer target-year papers when the user requested a recency window.
-- The final CSV must include title, year, venue, publication_type, paper_url, abstract, arxiv_id, code_available, code_url, code_evidence, source_query, relevance_rationale, clone_requested, clone_status, local_clone_path, commit_hash, artifact_requested, pdf_download_status, local_pdf_path, tex_download_status, local_tex_source_path, tex_compile_status, compiled_pdf_path, and status.
+- The final CSV must include title, year, venue, publication_type, paper_url, abstract, citation_count, citation_source, arxiv_id, code_available, code_url, code_evidence, source_query, relevance_rationale, clone_requested, clone_status, local_clone_path, commit_hash, artifact_requested, pdf_download_status, local_pdf_path, tex_download_status, local_tex_source_path, tex_compile_status, compiled_pdf_path, and status.
 - If quotas are not met, do not silently pad with out-of-scope papers. Mark the unmet quota and instruct the orchestrator to return to Stage 2 or Stage 3.
 - If clone retrieval was requested but clone outputs are missing or failed, mark the clone issue and instruct the orchestrator to return to Stage 4 unless user authentication is required.
 - If paper artifact retrieval was requested but artifact outputs are missing or failed, mark the artifact issue and instruct the orchestrator to return to Stage 5 unless the failure is an allowed TeX-toolchain skip.

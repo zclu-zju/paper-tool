@@ -1,6 +1,6 @@
 ---
 name: baseline-research
-description: Use for interactive literature research in a Codex repo. Installs repo-local custom agents from this plugin, then runs a loopback workflow that collects required parameters, locks scope from a user direction or seed paper, discovers papers with abstracts, verifies code availability, optionally clones verified repositories, optionally downloads paper PDFs/TeX sources, writes a CSV, and sends failed stages back for revision.
+description: Use for interactive literature research in a Codex repo. Installs repo-local custom agents from this plugin, then runs a loopback workflow that collects required parameters, locks scope from a user direction or seed paper, discovers papers with abstracts and citation counts, verifies code availability while prioritizing high-citation in-scope papers for GitHub searches, optionally clones verified repositories, optionally downloads paper PDFs/TeX sources, writes a CSV, and sends failed stages back for revision.
 ---
 
 # Baseline Research
@@ -90,10 +90,12 @@ workspace/literature_research/reports/final_papers.csv
 Required CSV columns:
 
 ```csv
-title,year,venue,publication_type,paper_url,abstract,arxiv_id,code_available,code_url,code_evidence,source_query,relevance_rationale,clone_requested,clone_status,local_clone_path,commit_hash,artifact_requested,pdf_download_status,local_pdf_path,tex_download_status,local_tex_source_path,tex_compile_status,compiled_pdf_path,status
+title,year,venue,publication_type,paper_url,abstract,citation_count,citation_source,arxiv_id,code_available,code_url,code_evidence,source_query,relevance_rationale,clone_requested,clone_status,local_clone_path,commit_hash,artifact_requested,pdf_download_status,local_pdf_path,tex_download_status,local_tex_source_path,tex_compile_status,compiled_pdf_path,status
 ```
 
 Selected papers must include non-empty abstracts. If abstracts are missing, the integrity reviewer sends the workflow back to Stage 2 for abstract replenishment or paper replacement.
+
+Selected papers must include `citation_count` and `citation_source`. If citation counts are unavailable after lookup, Stage 2 records `UNKNOWN` with the failed lookup source. When Stage 3 searches GitHub or other repository hosts for code, it prioritizes higher-citation in-scope candidates first.
 
 ## Repository Cloning
 

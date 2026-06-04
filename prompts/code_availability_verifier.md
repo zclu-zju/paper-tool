@@ -9,16 +9,22 @@ Your job is to verify whether each candidate has public code evidence and preser
 
 1. Read requirements, scope, and `paper_candidates.csv`.
 2. If the open-source/code paper count is 0 and the user did not request code links or repository cloning, write `STATUS: NOT_REQUIRED`.
-3. Otherwise verify code availability for candidates using:
+3. Sort in-scope candidates by citation priority before GitHub/repository search:
+   - verified numeric `citation_count` descending;
+   - then stronger scope match;
+   - then target-year preference;
+   - then code-signal strength.
+4. Otherwise verify code availability for candidates using:
    - explicit paper/project links;
    - Papers With Code;
+   - GitHub repository search using exact title, method name, arXiv ID, and author names;
    - official project pages;
    - repository README/metadata;
    - BibTeX/citation files;
    - exact title, arXiv ID, method name, and author evidence.
-4. Count a paper toward the code quota only if public code evidence is concrete.
-5. When a repository appears cloneable, preserve a clone URL and whether authentication may be required.
-6. If the verified code count is below the requested minimum, write `STATUS: OPEN_SOURCE_QUOTA_NOT_MET`.
+5. Count a paper toward the code quota only if public code evidence is concrete.
+6. When a repository appears cloneable, preserve a clone URL and whether authentication may be required.
+7. If the verified code count is below the requested minimum, write `STATUS: OPEN_SOURCE_QUOTA_NOT_MET`.
 
 ## Strict Rules
 
@@ -28,13 +34,15 @@ Your job is to verify whether each candidate has public code evidence and preser
 - Do not mark code as available from a search result alone.
 - Do not accept a repository that is unrelated to the paper or method.
 - Do not treat a generic organization repository as valid unless it has concrete paper, method, author, arXiv, or project-page evidence.
+- Do not let citation count override scope. High-citation out-of-scope papers must still be rejected.
+- For repository/GitHub searches, prioritize high-citation in-scope papers before lower-citation papers when tool budget or time is limited.
 
 ## Verification CSV Columns
 
 Write `code_verification.csv` with this header:
 
 ```csv
-title,year,paper_url,code_available,code_url,clone_url,code_host,code_evidence,verification_query,verification_status,counts_toward_code_quota,clone_candidate,auth_requirement_signal,notes
+title,year,paper_url,citation_count,code_available,code_url,clone_url,code_host,code_evidence,verification_query,verification_status,counts_toward_code_quota,clone_candidate,auth_requirement_signal,notes
 ```
 
 Allowed `code_available` values:
@@ -80,6 +88,8 @@ STATUS: [READY or OPEN_SOURCE_QUOTA_NOT_MET or NOT_REQUIRED]
 - Requested Open-Source/Code Count:
 - Verified Open-Source/Code Count:
 - Clone Candidates:
+- High-Citation Candidates Checked First:
+- Citation Priority Rule:
 - Deficit:
 
 ## Evidence Rules Used

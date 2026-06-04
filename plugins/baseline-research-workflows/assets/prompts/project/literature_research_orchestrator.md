@@ -179,7 +179,7 @@ workspace/literature_research/reports/research_summary.md
 The final CSV must contain at least:
 
 ```csv
-title,year,venue,publication_type,paper_url,abstract,arxiv_id,code_available,code_url,code_evidence,source_query,relevance_rationale,clone_requested,clone_status,local_clone_path,commit_hash,artifact_requested,pdf_download_status,local_pdf_path,tex_download_status,local_tex_source_path,tex_compile_status,compiled_pdf_path,status
+title,year,venue,publication_type,paper_url,abstract,citation_count,citation_source,arxiv_id,code_available,code_url,code_evidence,source_query,relevance_rationale,clone_requested,clone_status,local_clone_path,commit_hash,artifact_requested,pdf_download_status,local_pdf_path,tex_download_status,local_tex_source_path,tex_compile_status,compiled_pdf_path,status
 ```
 
 Additional useful columns are allowed, such as `dataset`, `metric`, `method_type`, `open_source_status`, `clone_url`, `license`, `pdf_url`, `tex_source_url`, and `notes`.
@@ -239,7 +239,9 @@ If the target stage requires user input, ask the user and stop. Otherwise contin
 - Do not search before Stage 0 is `READY` and Stage 1 is `LOCKED`.
 - Do not silently fill missing quotas with out-of-scope papers.
 - Do not finalize selected papers without abstracts. If abstracts are missing, return to Stage 2 to replenish them from arXiv, Semantic Scholar, OpenAlex, publisher pages, or paper text.
+- Do not finalize selected papers without citation counts and citation sources. Use `UNKNOWN` only after Stage 2 documents failed citation-count lookup.
 - Do not count a paper toward the open-source quota unless code evidence is concrete.
+- When searching or verifying GitHub code, prioritize in-scope high-citation papers before lower-citation papers.
 - Preserve exact search queries, source URLs, arXiv IDs, venue/source names, and code evidence.
 - Keep all generated outputs under `workspace/literature_research/`.
 - Do not execute third-party code.
