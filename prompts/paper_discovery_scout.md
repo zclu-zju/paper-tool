@@ -18,16 +18,19 @@ Your job is to find enough in-scope papers to satisfy the requested paper count 
    - OpenAlex or Google Scholar style searches;
    - top venues and benchmark pages when applicable.
 4. Search within the locked scope only.
-5. Prefer target-year papers.
-6. If a code quota is required, over-sample papers with code signals.
-7. If paper artifact retrieval is requested, preserve available PDF URLs, arXiv abs/PDF URLs, source links, TeX/source archive links, and publisher artifact links when available.
-8. Preserve exact search queries and source traces.
-9. If search results reveal the scope is still ambiguous, write `STATUS: NEEDS_SCOPE_REVIEW` in the markdown report.
+5. Retrieve and preserve abstracts for every candidate intended for selection.
+6. Prefer target-year papers.
+7. If a code quota is required, over-sample papers with code signals.
+8. If paper artifact retrieval is requested, preserve available PDF URLs, arXiv abs/PDF URLs, source links, TeX/source archive links, and publisher artifact links when available.
+9. Preserve exact search queries and source traces.
+10. If search results reveal the scope is still ambiguous, write `STATUS: NEEDS_SCOPE_REVIEW` in the markdown report.
 
 ## Strict Rules
 
 - Do not include out-of-scope papers to satisfy count.
 - Do not hallucinate paper titles, venues, URLs, arXiv IDs, or code links.
+- Do not hallucinate abstracts. Use abstracts from arXiv, Semantic Scholar, OpenAlex, publisher pages, official paper pages, or the paper text itself.
+- Do not select a paper with a missing abstract unless the report explicitly marks it and asks Stage 2 to replenish or replace it.
 - Repository links in this stage are only code signals, not verified code.
 - PDF and TeX/source links in this stage are only artifact signals, not verified downloads.
 - If live search is unavailable, write executable queries and mark rows `AWAITING_TOOL_EXECUTION`.
@@ -37,7 +40,7 @@ Your job is to find enough in-scope papers to satisfy the requested paper count 
 Write `paper_candidates.csv` with this header:
 
 ```csv
-title,year,venue,publication_type,paper_url,pdf_url,tex_source_url,arxiv_id,source_query,source_database,method_type,dataset_or_benchmark,metric_or_evaluation,code_signal,code_signal_url,artifact_signal,relevance_rationale,scope_match,status
+title,year,venue,publication_type,paper_url,abstract,abstract_source,pdf_url,tex_source_url,arxiv_id,source_query,source_database,method_type,dataset_or_benchmark,metric_or_evaluation,code_signal,code_signal_url,artifact_signal,relevance_rationale,scope_match,status
 ```
 
 Allowed `status` values:
@@ -62,6 +65,8 @@ STATUS: [READY or NEEDS_SCOPE_REVIEW or SHORTAGE]
 - Requested Paper Count:
 - Requested Code Count:
 - Candidate Count:
+- Candidate With Abstract Count:
+- Missing Abstract Count:
 - Target-Year Candidate Count:
 - Code-Signal Candidate Count:
 - PDF-Signal Candidate Count:
@@ -72,4 +77,7 @@ STATUS: [READY or NEEDS_SCOPE_REVIEW or SHORTAGE]
 
 ## Shortage Explanation
 [Only if candidate count is below requirement plus buffer]
+
+## Missing Abstracts
+[List candidates with missing abstracts and exact replenishment queries, or None]
 ```

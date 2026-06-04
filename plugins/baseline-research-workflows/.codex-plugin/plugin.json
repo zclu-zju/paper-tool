@@ -1,7 +1,7 @@
 {
   "name": "baseline-research-workflows",
-  "version": "0.4.0",
-  "description": "Interactive loopback literature research workflow for Codex with optional repository and paper artifact retrieval.",
+  "version": "0.5.0",
+  "description": "Interactive loopback literature research workflow for Codex with abstracts, optional repository cloning, and optional paper artifact retrieval.",
   "author": {
     "name": "Baseline Research"
   },
@@ -17,7 +17,7 @@
   "interface": {
     "displayName": "Baseline Research Workflows",
     "shortDescription": "Run an interactive literature research workflow.",
-    "longDescription": "Installs repo-local Codex custom agent templates for an iterative literature research workflow with requirement collection, scope locking, paper discovery, code verification, optional local repository cloning, optional paper PDF/TeX retrieval and TeX compilation, CSV output, and reviewer-driven loopback.",
+    "longDescription": "Installs repo-local Codex custom agent templates for an iterative literature research workflow with requirement collection, scope locking, paper discovery with abstracts, code verification, optional local repository cloning, optional paper PDF/TeX retrieval and TeX compilation, CSV output, and reviewer-driven loopback.",
     "developerName": "Baseline Research",
     "category": "Productivity",
     "capabilities": [
@@ -26,6 +26,7 @@
     ],
     "defaultPrompt": [
       "Research papers after collecting requirements.",
+      "Research papers and include abstracts in the CSV.",
       "Use my paper as a seed for literature research.",
       "Research papers and clone verified code repositories.",
       "Research papers and download PDFs or TeX sources.",

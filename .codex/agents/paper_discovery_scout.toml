@@ -17,9 +17,10 @@ Outputs:
 Rules:
 - Continue only if requirements.md says STATUS: READY and scope_report.md says STATUS: LOCKED.
 - Search only inside the locked scope.
-- Preserve exact search queries, source URLs, arXiv IDs, venue/publication information, code signals, available PDF URLs, available TeX/source URLs, and relevance rationale.
+- Preserve exact search queries, source URLs, abstracts, abstract sources, arXiv IDs, venue/publication information, code signals, available PDF URLs, available TeX/source URLs, and relevance rationale.
 - Aim for at least the requested total paper count plus a buffer, because Stage 3 may reject code claims.
 - If an open-source quota is required, include enough code-signal candidates to plausibly satisfy it after verification.
+- Every candidate intended for selection must include an abstract. If an abstract cannot be found, mark abstract as MISSING_ABSTRACT and explain the missing source in paper_candidates.md.
 - If search results reveal scope ambiguity not detected in Stage 1, output STATUS: NEEDS_SCOPE_REVIEW in paper_candidates.md and recommend return to Stage 1.
 - Do not hallucinate titles, venues, URLs, code links, or citation data.
 - If live search tools are unavailable, provide exact queries and mark rows AWAITING_TOOL_EXECUTION.

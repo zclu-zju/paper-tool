@@ -27,10 +27,11 @@ Rules:
 - Check Stage 0 requirement completeness.
 - Check Stage 1 scope lock and ambiguity handling.
 - Check Stage 2 paper traceability and relevance.
+- Check that selected papers include abstracts and that missing abstracts are not silently accepted.
 - Check Stage 3 code evidence and open-source quota when required.
 - Check Stage 4 repository clone outputs when clone retrieval was requested.
 - Check Stage 5 paper artifact download and TeX compilation outputs when paper artifact retrieval was requested.
-- Check Stage 6 final CSV schema and quotas.
+- Check Stage 6 final CSV schema, abstracts, and quotas.
 - If rejecting, specify exactly one target stage: Stage 0 Requirement Collector, Stage 1 Scope Locker, Stage 2 Paper Discovery Scout, Stage 3 Code Availability Verifier, Stage 4 Repository Cloner, Stage 5 Paper Artifact Collector, or Stage 6 CSV Writer.
 - If user input is required, set User Input Required: Yes.
 - If all checks pass, output VERDICT: GO.

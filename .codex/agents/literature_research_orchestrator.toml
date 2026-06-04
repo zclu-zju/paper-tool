@@ -40,7 +40,7 @@ Coordination rules:
 - Do not modify paper/ unless the user explicitly asks.
 - Do not write into workspace/reports/ or workspace/baselines/.
 - Keep all outputs for this workflow under workspace/literature_research/.
-- The final CSV must include at least: title, year, venue, publication_type, paper_url, arxiv_id, code_available, code_url, code_evidence, source_query, relevance_rationale, clone_requested, clone_status, local_clone_path, commit_hash, artifact_requested, pdf_download_status, local_pdf_path, tex_download_status, local_tex_source_path, tex_compile_status, compiled_pdf_path, status.
+- The final CSV must include at least: title, year, venue, publication_type, paper_url, abstract, arxiv_id, code_available, code_url, code_evidence, source_query, relevance_rationale, clone_requested, clone_status, local_clone_path, commit_hash, artifact_requested, pdf_download_status, local_pdf_path, tex_download_status, local_tex_source_path, tex_compile_status, compiled_pdf_path, status.
 - If the user provides a paper, use it as a seed to determine the research direction and experimental comparison context. Do not treat paper-based and direction-based requests as separate workflows.
 - If the user provides only a direction, use Stage 0 and Stage 1 to collect missing parameters and lock the direction.
 - Never begin paper search while required parameters are missing or scope is ambiguous.

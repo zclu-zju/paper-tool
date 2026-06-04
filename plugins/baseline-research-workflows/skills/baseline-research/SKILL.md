@@ -1,6 +1,6 @@
 ---
 name: baseline-research
-description: Use for interactive literature research in a Codex repo. Installs repo-local custom agents from this plugin, then runs a loopback workflow that collects required parameters, locks scope from a user direction or seed paper, discovers papers, verifies code availability, optionally clones verified repositories, optionally downloads paper PDFs/TeX sources, writes a CSV, and sends failed stages back for revision.
+description: Use for interactive literature research in a Codex repo. Installs repo-local custom agents from this plugin, then runs a loopback workflow that collects required parameters, locks scope from a user direction or seed paper, discovers papers with abstracts, verifies code availability, optionally clones verified repositories, optionally downloads paper PDFs/TeX sources, writes a CSV, and sends failed stages back for revision.
 ---
 
 # Baseline Research
@@ -90,8 +90,10 @@ workspace/literature_research/reports/final_papers.csv
 Required CSV columns:
 
 ```csv
-title,year,venue,publication_type,paper_url,arxiv_id,code_available,code_url,code_evidence,source_query,relevance_rationale,clone_requested,clone_status,local_clone_path,commit_hash,artifact_requested,pdf_download_status,local_pdf_path,tex_download_status,local_tex_source_path,tex_compile_status,compiled_pdf_path,status
+title,year,venue,publication_type,paper_url,abstract,arxiv_id,code_available,code_url,code_evidence,source_query,relevance_rationale,clone_requested,clone_status,local_clone_path,commit_hash,artifact_requested,pdf_download_status,local_pdf_path,tex_download_status,local_tex_source_path,tex_compile_status,compiled_pdf_path,status
 ```
+
+Selected papers must include non-empty abstracts. If abstracts are missing, the integrity reviewer sends the workflow back to Stage 2 for abstract replenishment or paper replacement.
 
 ## Repository Cloning
 

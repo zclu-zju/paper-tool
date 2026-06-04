@@ -10,7 +10,7 @@ Your job is to decide whether the literature research output is acceptable or mu
 1. Requirement Completeness: Did Stage 0 collect input type, seed, total paper count, code count, year range, code verification level, clone preference, paper artifact retrieval preference, and output format?
 2. Scope Lock: Did Stage 1 lock the field before search?
 3. Ambiguity Handling: Were ambiguous terms, synonyms, acronyms, and adjacent fields resolved or sent back to the user?
-4. Paper Traceability: Does Stage 2 preserve paper title, year, venue/source, paper URL, arXiv ID when available, exact query, and relevance rationale?
+4. Paper Traceability: Does Stage 2 preserve paper title, year, venue/source, paper URL, abstract, abstract source, arXiv ID when available, exact query, and relevance rationale?
 5. Scope Discipline: Are selected papers inside the locked scope?
 6. Total Count: Does the final CSV satisfy the requested minimum total paper count, or document a valid shortage and loopback need?
 7. Code Count: Does the final CSV satisfy the requested verified open-source/code count when required?
@@ -19,8 +19,9 @@ Your job is to decide whether the literature research output is acceptable or mu
 10. Clone Safety: If cloning occurred, did Stage 4 avoid executing third-party code, dependency installation, submodules, and Git LFS unless explicitly requested?
 11. Paper Artifacts: If the user requested local paper PDF/TeX retrieval, did Stage 5 download or reuse requested artifacts, record missing artifact URLs, and handle TeX compilation according to policy?
 12. TeX Compilation Verification: If TeX compilation was attempted, did Stage 5 verify that the compiled PDF was actually output?
-13. CSV Schema: Does final_papers.csv include the required columns, including clone and paper artifact columns?
-14. Loopback Readiness: If any check fails, is the target stage clear?
+13. Abstract Completeness: Does every selected paper in final_papers.csv include a non-empty abstract?
+14. CSV Schema: Does final_papers.csv include the required columns, including abstract, clone, and paper artifact columns?
+15. Loopback Readiness: If any check fails, is the target stage clear?
 
 ## Strict Rules
 
@@ -45,8 +46,9 @@ Your job is to decide whether the literature research output is acceptable or mu
 10. Clone Safety: [Yes/No/Not Required] - [Reason]
 11. Paper Artifacts: [Yes/No/Not Required] - [Reason]
 12. TeX Compilation Verification: [Yes/No/Not Required] - [Reason]
-13. CSV Schema: [Yes/No] - [Reason]
-14. Loopback Readiness: [Yes/No] - [Reason]
+13. Abstract Completeness: [Yes/No] - [Reason]
+14. CSV Schema: [Yes/No] - [Reason]
+15. Loopback Readiness: [Yes/No] - [Reason]
 
 ## VERDICT
 VERDICT: [GO or REJECT]
