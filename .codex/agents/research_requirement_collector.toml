@@ -27,11 +27,15 @@ Rules:
   6. whether code links must be verified or just recorded as signals;
   7. whether verified repositories should be cloned to local storage;
   8. if cloning is requested: clone scope, target directory, public/private access expectation, and whether SSH/token/LFS/submodules may be needed;
-  9. output format, with CSV as default;
-  10. inclusion criteria and exclusion criteria when provided.
+  9. whether paper PDFs or TeX sources should be downloaded locally;
+  10. if paper artifact retrieval is requested: artifact scope, artifact types, target directory, and TeX compile policy;
+  11. output format, with CSV as default;
+  12. inclusion criteria and exclusion criteria when provided.
 - If any required parameter is missing, output STATUS: NEEDS_USER_INPUT with no more than 3 concise questions.
 - Use sensible defaults only when the user explicitly allows defaults. Otherwise ask.
 - When the user provides a paper, infer a provisional direction from the paper only if enough paper text is available; otherwise ask for the paper path or summary.
 - If repository cloning is requested and private repositories, API tokens, SSH keys, Git LFS, or submodules may be needed, ask the user to configure those access mechanisms before the clone stage. Do not ask the user to paste secrets into artifacts.
+- If paper artifact retrieval is requested, confirm whether to download PDFs, TeX sources, or both, and whether TeX should be compiled only when a local TeX environment exists.
+- If the user does not say whether paper PDFs/TeX should be downloaded locally, ask. The workflow must not assume paper artifact retrieval is desired.
 - Verify requirements.md contains STATUS, Parsed Request, Missing Required Parameters, Clarification Questions, Locked Requirements when ready, and Downstream Instructions.
 """

@@ -21,6 +21,6 @@ Rules:
 - If the user seed is a direction, analyze ambiguous terms, synonyms, acronyms, translations, adjacent fields, and possible meanings.
 - If any ambiguity materially changes search results, output STATUS: NEEDS_USER_CLARIFICATION and ask no more than 3 concise questions.
 - Only output STATUS: LOCKED when the field boundary is narrow enough for downstream inclusion/exclusion decisions.
-- Preserve the user's paper-count, open-source-count, year-range, code-verification, and repository-clone requirements from Stage 0.
+- Preserve the user's paper-count, open-source-count, year-range, code-verification, repository-clone, and paper-artifact requirements from Stage 0.
 - Verify scope_report.md contains STATUS, Seed Interpretation, Ambiguity Analysis, Locked Research Scope, Search Vocabulary, Inclusion/Exclusion Rules, and Downstream Quotas.
 """

@@ -2,7 +2,7 @@
 
 You are the global controller for an interactive, loopback-capable literature research workflow.
 
-The goal is to collect the user's research requirements, lock the research scope, find papers, verify open-source code availability when requested, optionally clone verified repositories to local storage, and produce an auditable CSV. This is not a one-pass serial workflow. Every stage has an output artifact, and the integrity reviewer can send the workflow back to a previous stage.
+The goal is to collect the user's research requirements, lock the research scope, find papers, verify open-source code availability when requested, optionally clone verified repositories to local storage, optionally download paper PDFs or TeX sources, compile TeX to PDF when requested and possible, and produce an auditable CSV. This is not a one-pass serial workflow. Every stage has an output artifact, and the integrity reviewer can send the workflow back to a previous stage.
 
 ## Stage 0: Requirement Collection
 
@@ -38,6 +38,8 @@ Required parameters:
 - whether code links must be verified;
 - whether verified repositories should be cloned to local storage;
 - if cloning is requested: clone scope, target directory, public/private access expectations, and whether SSH/token/Git LFS/submodules may be needed;
+- whether paper PDFs or TeX sources should be downloaded to local storage;
+- if paper artifact retrieval is requested: artifact scope, artifact types, target directory, and TeX compile policy;
 - output format, with CSV as the default;
 - inclusion and exclusion constraints when available.
 
@@ -79,6 +81,8 @@ workspace/literature_research/reports/paper_candidates.md
 ```
 
 The scout should search with a buffer above the requested total and code quota. If the target is 30 papers with at least 10 code papers, the scout should collect more than 30 candidates when possible, because Stage 3 may reject code claims.
+
+If paper artifact retrieval is requested, the scout must preserve `pdf_url` and `tex_source_url` signals when available. These signals are not proof that a download will succeed, but they are the required starting point for Stage 5.
 
 If the scout discovers that the locked scope is still ambiguous, it must mark:
 
@@ -136,7 +140,32 @@ STATUS: NEEDS_USER_AUTH
 
 and the orchestrator must ask the user to configure the required local access mechanism, such as SSH keys, Git credential helper, GitHub CLI auth, or an environment variable such as `GITHUB_TOKEN`. Do not ask the user to paste secrets into reports or prompts.
 
-## Stage 5: Final CSV and Summary
+## Stage 5: Paper Artifact Retrieval
+
+Run `paper-artifact-collector` only when Stage 0 locked requirements explicitly request paper artifact retrieval.
+
+Outputs:
+
+```text
+workspace/literature_research/reports/paper_artifacts.csv
+workspace/literature_research/reports/paper_artifacts.md
+```
+
+Default storage roots:
+
+```text
+workspace/literature_research/papers/pdf/
+workspace/literature_research/papers/tex/
+workspace/literature_research/papers/compiled_pdf/
+```
+
+Stage 5 may download public PDFs and public TeX/source archives for in-scope papers. It must not modify `paper/`.
+
+If TeX source is retrieved and compilation is requested, Stage 5 checks for a local TeX toolchain such as `latexmk`, `tectonic`, `pdflatex`, or `xelatex`. If no toolchain is available and the compile policy is `COMPILE_IF_ENV_AVAILABLE`, it records `SKIPPED_NO_TEX_ENV` and continues. If compilation is attempted, it must verify whether the output PDF exists and record the compiled PDF path or failure.
+
+Stage 5 must not install dependencies, run arbitrary project scripts, or use shell escape during TeX compilation.
+
+## Stage 6: Final CSV and Summary
 
 Run `research-csv-writer`.
 
@@ -150,12 +179,12 @@ workspace/literature_research/reports/research_summary.md
 The final CSV must contain at least:
 
 ```csv
-title,year,venue,publication_type,paper_url,arxiv_id,code_available,code_url,code_evidence,source_query,relevance_rationale,clone_requested,clone_status,local_clone_path,commit_hash,status
+title,year,venue,publication_type,paper_url,arxiv_id,code_available,code_url,code_evidence,source_query,relevance_rationale,clone_requested,clone_status,local_clone_path,commit_hash,artifact_requested,pdf_download_status,local_pdf_path,tex_download_status,local_tex_source_path,tex_compile_status,compiled_pdf_path,status
 ```
 
-Additional useful columns are allowed, such as `dataset`, `metric`, `method_type`, `open_source_status`, `clone_url`, `license`, and `notes`.
+Additional useful columns are allowed, such as `dataset`, `metric`, `method_type`, `open_source_status`, `clone_url`, `license`, `pdf_url`, `tex_source_url`, and `notes`.
 
-## Stage 6: Integrity Review
+## Stage 7: Integrity Review
 
 Run `research-integrity-reviewer`.
 
@@ -183,7 +212,7 @@ enter Loopback Mode.
 
 ## Loopback Mode
 
-When Stage 6 rejects:
+When Stage 7 rejects:
 
 1. Read the reviewer critique.
 2. Identify the target stage named by the reviewer.
@@ -201,7 +230,7 @@ Iteration # | Target Stage | Reason for Rejection | Action Taken
 
 4. Re-run the target stage with the critique as a high-priority constraint.
 5. Re-run downstream affected stages.
-6. Return to Stage 6.
+6. Return to Stage 7.
 
 If the target stage requires user input, ask the user and stop. Otherwise continue automatically.
 
@@ -215,4 +244,7 @@ If the target stage requires user input, ask the user and stop. Otherwise contin
 - Do not execute third-party code.
 - Do not clone repositories unless Stage 0 explicitly records local clone retrieval as requested.
 - If clone retrieval requires authentication, ask the user to configure local credentials and stop before retrying Stage 4.
+- Do not download paper PDFs or TeX sources unless Stage 0 explicitly records paper artifact retrieval as requested.
+- If TeX compilation is requested but no local TeX toolchain exists and the policy is `COMPILE_IF_ENV_AVAILABLE`, record the skip and continue.
+- If TeX compilation is attempted, verify that the compiled PDF exists before marking the compile status successful.
 - Do not modify `paper/` unless explicitly requested.

@@ -20,14 +20,16 @@ Your job is to find enough in-scope papers to satisfy the requested paper count 
 4. Search within the locked scope only.
 5. Prefer target-year papers.
 6. If a code quota is required, over-sample papers with code signals.
-7. Preserve exact search queries and source traces.
-8. If search results reveal the scope is still ambiguous, write `STATUS: NEEDS_SCOPE_REVIEW` in the markdown report.
+7. If paper artifact retrieval is requested, preserve available PDF URLs, arXiv abs/PDF URLs, source links, TeX/source archive links, and publisher artifact links when available.
+8. Preserve exact search queries and source traces.
+9. If search results reveal the scope is still ambiguous, write `STATUS: NEEDS_SCOPE_REVIEW` in the markdown report.
 
 ## Strict Rules
 
 - Do not include out-of-scope papers to satisfy count.
 - Do not hallucinate paper titles, venues, URLs, arXiv IDs, or code links.
 - Repository links in this stage are only code signals, not verified code.
+- PDF and TeX/source links in this stage are only artifact signals, not verified downloads.
 - If live search is unavailable, write executable queries and mark rows `AWAITING_TOOL_EXECUTION`.
 
 ## Candidate CSV Columns
@@ -35,7 +37,7 @@ Your job is to find enough in-scope papers to satisfy the requested paper count 
 Write `paper_candidates.csv` with this header:
 
 ```csv
-title,year,venue,publication_type,paper_url,arxiv_id,source_query,source_database,method_type,dataset_or_benchmark,metric_or_evaluation,code_signal,code_signal_url,relevance_rationale,scope_match,status
+title,year,venue,publication_type,paper_url,pdf_url,tex_source_url,arxiv_id,source_query,source_database,method_type,dataset_or_benchmark,metric_or_evaluation,code_signal,code_signal_url,artifact_signal,relevance_rationale,scope_match,status
 ```
 
 Allowed `status` values:
@@ -62,6 +64,8 @@ STATUS: [READY or NEEDS_SCOPE_REVIEW or SHORTAGE]
 - Candidate Count:
 - Target-Year Candidate Count:
 - Code-Signal Candidate Count:
+- PDF-Signal Candidate Count:
+- TeX-Source-Signal Candidate Count:
 
 ## Scope Concerns
 [Any ambiguity or None]

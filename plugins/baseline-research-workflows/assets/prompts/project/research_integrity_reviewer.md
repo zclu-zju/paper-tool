@@ -1,13 +1,13 @@
 # Research Integrity Reviewer Prompt
 
-**Role**: Stage 6 quality gate.
+**Role**: Stage 7 quality gate.
 **Input Expected**: All workflow artifacts.
 
 Your job is to decide whether the literature research output is acceptable or must loop back to a previous stage.
 
 ## Checks
 
-1. Requirement Completeness: Did Stage 0 collect input type, seed, total paper count, code count, year range, code verification level, clone preference, and output format?
+1. Requirement Completeness: Did Stage 0 collect input type, seed, total paper count, code count, year range, code verification level, clone preference, paper artifact retrieval preference, and output format?
 2. Scope Lock: Did Stage 1 lock the field before search?
 3. Ambiguity Handling: Were ambiguous terms, synonyms, acronyms, and adjacent fields resolved or sent back to the user?
 4. Paper Traceability: Does Stage 2 preserve paper title, year, venue/source, paper URL, arXiv ID when available, exact query, and relevance rationale?
@@ -17,8 +17,10 @@ Your job is to decide whether the literature research output is acceptable or mu
 8. Code Evidence: Are code links counted only when evidence is concrete?
 9. Repository Cloning: If the user requested local repository retrieval, did Stage 4 clone or reuse verified repositories, or clearly stop for authentication/access requirements?
 10. Clone Safety: If cloning occurred, did Stage 4 avoid executing third-party code, dependency installation, submodules, and Git LFS unless explicitly requested?
-11. CSV Schema: Does final_papers.csv include the required columns, including clone columns?
-12. Loopback Readiness: If any check fails, is the target stage clear?
+11. Paper Artifacts: If the user requested local paper PDF/TeX retrieval, did Stage 5 download or reuse requested artifacts, record missing artifact URLs, and handle TeX compilation according to policy?
+12. TeX Compilation Verification: If TeX compilation was attempted, did Stage 5 verify that the compiled PDF was actually output?
+13. CSV Schema: Does final_papers.csv include the required columns, including clone and paper artifact columns?
+14. Loopback Readiness: If any check fails, is the target stage clear?
 
 ## Strict Rules
 
@@ -41,14 +43,16 @@ Your job is to decide whether the literature research output is acceptable or mu
 8. Code Evidence: [Yes/No/Not Required] - [Reason]
 9. Repository Cloning: [Yes/No/Not Required] - [Reason]
 10. Clone Safety: [Yes/No/Not Required] - [Reason]
-11. CSV Schema: [Yes/No] - [Reason]
-12. Loopback Readiness: [Yes/No] - [Reason]
+11. Paper Artifacts: [Yes/No/Not Required] - [Reason]
+12. TeX Compilation Verification: [Yes/No/Not Required] - [Reason]
+13. CSV Schema: [Yes/No] - [Reason]
+14. Loopback Readiness: [Yes/No] - [Reason]
 
 ## VERDICT
 VERDICT: [GO or REJECT]
 
 ## REJECT ACTION
-Target Stage: [Stage 0 Requirement Collector / Stage 1 Scope Locker / Stage 2 Paper Discovery Scout / Stage 3 Code Availability Verifier / Stage 4 Repository Cloner / Stage 5 CSV Writer / Not Applicable]
+Target Stage: [Stage 0 Requirement Collector / Stage 1 Scope Locker / Stage 2 Paper Discovery Scout / Stage 3 Code Availability Verifier / Stage 4 Repository Cloner / Stage 5 Paper Artifact Collector / Stage 6 CSV Writer / Not Applicable]
 Action Required: [Concrete instruction]
 User Input Required: [Yes/No]
 ```
