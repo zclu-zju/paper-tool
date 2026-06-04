@@ -1,85 +1,101 @@
 ---
 name: baseline-research
-description: Use for paper-based baseline discovery or direction-based literature research in a Codex repo. Installs repo-local custom agents from this plugin when missing, routes paper requests to baseline-orchestrator, and routes direction/topic/prompt research requests to direction-research-orchestrator with mandatory scope clarification before search.
+description: Use for interactive literature research in a Codex repo. Installs repo-local custom agents from this plugin, then runs a loopback workflow that collects required parameters, locks scope from a user direction or seed paper, discovers papers, verifies code availability, writes a CSV, and sends failed stages back for revision.
 ---
 
 # Baseline Research
 
-This skill is the entry point for two repo-local Codex workflows:
+This skill installs and launches a single interactive literature research workflow.
 
-1. **Paper baseline discovery**: audit the current paper and find verified public-code baselines.
-2. **Direction literature research**: clarify a user-provided direction first, then research literature under the locked scope.
+The workflow accepts either:
+- a research direction, topic, keyword set, or prompt; or
+- a seed paper in the target repository, which is used to infer the research direction and experimental context.
 
-The plugin carries custom agent templates in `assets/agents/`, but those agents become usable only after they are installed into the target repo's `.codex/agents/`.
+It is intentionally iterative rather than one-pass. Stage 5 can reject earlier stages and send the orchestrator back to redo only the failed stage.
 
-## Quick Start
+## Install Agents
 
-Before launching a workflow, ensure project agents are installed:
+The plugin carries custom agent templates in `assets/agents/`, but those agents become active only after they are installed into the target repo's `.codex/agents/`.
+
+From a local clone:
 
 ```bash
 python3 plugins/baseline-research-workflows/scripts/install_project_agents.py --repo .
 ```
 
-If this skill is installed from a Codex plugin cache, resolve the installer relative to this skill directory:
+From an installed plugin cache, resolve the installer relative to this skill directory:
 
 ```bash
 python3 ../../scripts/install_project_agents.py --repo <target-repo>
 ```
 
-From a local clone of this repository, use:
+When upgrading from the older two-workflow release, clean obsolete files:
 
 ```bash
-python3 plugins/baseline-research-workflows/scripts/install_project_agents.py --repo <target-repo>
+python3 ../../scripts/install_project_agents.py --repo <target-repo> --clean-obsolete
 ```
 
-The installer is conservative: it copies missing files, leaves identical files unchanged, and reports conflicts without overwriting.
+The installer is conservative. It copies missing files, leaves identical files unchanged, reports conflicts without overwriting, and removes old known files only when `--clean-obsolete` is passed.
 
-## Routing
-
-Use the paper workflow when the user asks to:
-- find baselines for a paper;
-- audit an existing manuscript's comparisons;
-- run the existing baseline discovery workflow;
-- verify public-code baselines for the paper in `paper/`.
+## Launch
 
 After installing agents, invoke:
 
 ```text
-Use the baseline-orchestrator custom agent and execute the full baseline discovery workflow.
+Use the literature-research-orchestrator custom agent and execute the interactive literature research workflow.
 ```
 
-Use the direction workflow when the user asks to:
-- research a topic, direction, keyword, proposal, or prompt;
-- collect literature without starting from a specific paper;
-- clarify ambiguous terminology before searching;
-- compare sub-directions or map a field.
+Or use the launcher file:
 
-After installing agents, invoke:
+```bash
+codex exec --search --sandbox workspace-write --ask-for-approval never - < .codex/literature-research-workflow-prompt.md
+```
+
+## Interaction Contract
+
+Stage 0 must collect required parameters before any search:
+- input type or seed source;
+- direction or seed paper;
+- minimum total paper count;
+- minimum open-source/code paper count;
+- target year range;
+- code verification level;
+- final output format, CSV by default;
+- inclusion and exclusion constraints when available.
+
+If required parameters are missing, the orchestrator asks concise questions and stops.
+
+Stage 1 locks the scope. If the direction or seed-paper interpretation is ambiguous, the orchestrator asks clarification questions and stops.
+
+Only after requirements are `READY` and scope is `LOCKED` can the workflow search papers.
+
+## Outputs
+
+All generated outputs go under:
 
 ```text
-Use the direction-research-orchestrator custom agent and execute the direction-based literature research workflow.
+workspace/literature_research/
 ```
 
-For ambiguous user intent, invoke:
+The main final output is:
 
 ```text
-Use the research-workflow-router custom agent.
+workspace/literature_research/reports/final_papers.csv
 ```
 
-## Hard Rules
+Required CSV columns:
 
-- Do not run direction literature search before `direction-scope-locker` outputs `STATUS: LOCKED`.
-- If `scope_report.md` outputs `STATUS: NEEDS_USER_CONFIRMATION`, ask the user the listed questions and stop.
-- Keep paper workflow outputs under `workspace/reports/` and `workspace/baselines/`.
-- Keep direction workflow outputs under `workspace/direction_research/reports/` and `workspace/direction_research/baselines/`.
-- Never execute third-party code from retrieved repositories.
-- Do not overwrite existing `.codex/agents/` files unless the user explicitly asks for forced sync.
+```csv
+title,year,venue,publication_type,paper_url,arxiv_id,code_available,code_url,code_evidence,source_query,relevance_rationale,status
+```
 
-## Files
+## Loopback
 
-- Agent templates: `assets/agents/*.toml`
-- Codex prompt launchers: `assets/prompts/codex/*.md`
-- Project prompts: `assets/prompts/project/*.md`
-- Installer: `scripts/install_project_agents.py`
+The integrity reviewer can reject and return to:
+- Stage 0 Requirement Collector;
+- Stage 1 Scope Locker;
+- Stage 2 Paper Discovery Scout;
+- Stage 3 Code Availability Verifier;
+- Stage 4 CSV Writer.
 
-See `references/workflows.md` for the workflow map and command examples.
+If no new user input is required, the orchestrator retries automatically.

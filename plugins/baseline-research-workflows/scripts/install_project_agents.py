@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
-"""Install baseline-research workflow agent templates into a target repository.
+"""Install baseline-research workflow templates into a target repository.
 
 The installer is conservative by default:
 - missing files are copied;
 - identical files are reported as unchanged;
 - existing files with different content are skipped unless --force is used.
+- obsolete files from older releases are left untouched unless --clean-obsolete is used.
 """
 
 from __future__ import annotations
@@ -17,6 +18,41 @@ from pathlib import Path
 
 PLUGIN_ROOT = Path(__file__).resolve().parents[1]
 ASSETS = PLUGIN_ROOT / "assets"
+
+OBSOLETE_FILES = [
+    ".codex/agents/baseline_orchestrator.toml",
+    ".codex/agents/direction_integrity_reviewer.toml",
+    ".codex/agents/direction_literature_scout_arxiv.toml",
+    ".codex/agents/direction_literature_scout_pwc.toml",
+    ".codex/agents/direction_literature_scout_venues.toml",
+    ".codex/agents/direction_oss_verifier.toml",
+    ".codex/agents/direction_report_writer.toml",
+    ".codex/agents/direction_research_orchestrator.toml",
+    ".codex/agents/direction_scope_locker.toml",
+    ".codex/agents/experiment_designer.toml",
+    ".codex/agents/integrity_reviewer.toml",
+    ".codex/agents/literature_scout_arxiv.toml",
+    ".codex/agents/literature_scout_pwc.toml",
+    ".codex/agents/literature_scout_venues.toml",
+    ".codex/agents/oss_verifier.toml",
+    ".codex/agents/paper_auditor.toml",
+    ".codex/agents/research_workflow_router.toml",
+    ".codex/baseline-workflow-prompt.md",
+    ".codex/direction-research-workflow-prompt.md",
+    ".codex/research-router-prompt.md",
+    "prompts/direction_integrity_reviewer.md",
+    "prompts/direction_literature_scout.md",
+    "prompts/direction_orchestrator.md",
+    "prompts/direction_oss_verifier.md",
+    "prompts/direction_report_writer.md",
+    "prompts/direction_scope_locker.md",
+    "prompts/experiment_designer.md",
+    "prompts/integrity_reviewer.md",
+    "prompts/literature_scout.md",
+    "prompts/orchestrator.md",
+    "prompts/oss_verifier.md",
+    "prompts/paper_auditor.md",
+]
 
 
 def copy_tree_contents(src_dir: Path, dst_dir: Path, force: bool) -> tuple[int, int, int]:
@@ -43,6 +79,18 @@ def copy_tree_contents(src_dir: Path, dst_dir: Path, force: bool) -> tuple[int, 
     return copied, unchanged, conflicts
 
 
+def clean_obsolete_files(repo: Path) -> int:
+    removed = 0
+    for rel in OBSOLETE_FILES:
+        path = repo / rel
+        if not path.exists() or not path.is_file():
+            continue
+        path.unlink()
+        print(f"Removed obsolete: {path}")
+        removed += 1
+    return removed
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument(
@@ -54,6 +102,11 @@ def main() -> int:
         "--force",
         action="store_true",
         help="Overwrite existing files that differ from plugin assets.",
+    )
+    parser.add_argument(
+        "--clean-obsolete",
+        action="store_true",
+        help="Remove known files from older baseline-research workflow releases.",
     )
     args = parser.parse_args()
 
@@ -71,6 +124,8 @@ def main() -> int:
         (project_prompt_src, repo / "prompts"),
     ]
 
+    removed = clean_obsolete_files(repo) if args.clean_obsolete else 0
+
     total = {"copied": 0, "unchanged": 0, "conflicts": 0}
     for src, dst in targets:
         copied, unchanged, conflicts = copy_tree_contents(src, dst, args.force)
@@ -82,6 +137,7 @@ def main() -> int:
     print(f"Copied: {total['copied']}")
     print(f"Unchanged: {total['unchanged']}")
     print(f"Conflicts: {total['conflicts']}")
+    print(f"Obsolete removed: {removed}")
     if total["conflicts"]:
         print("Re-run with --force only if you intentionally want to overwrite target files.")
         return 2

@@ -1,7 +1,7 @@
 {
   "name": "baseline-research-workflows",
-  "version": "0.1.0",
-  "description": "Project workflow entry points for paper baseline discovery and direction-based literature research.",
+  "version": "0.2.0",
+  "description": "Interactive loopback literature research workflow for Codex.",
   "author": {
     "name": "Baseline Research"
   },
@@ -10,14 +10,14 @@
     "codex",
     "research",
     "literature-review",
-    "baseline-discovery",
+    "research-workflow",
     "subagents"
   ],
   "skills": "./skills/",
   "interface": {
     "displayName": "Baseline Research Workflows",
-    "shortDescription": "Run paper-baseline and direction-research Codex workflows.",
-    "longDescription": "Installs repo-local Codex custom agent templates and routes requests to either paper-based baseline discovery or direction-based literature research with mandatory scope locking before search.",
+    "shortDescription": "Run an interactive literature research workflow.",
+    "longDescription": "Installs repo-local Codex custom agent templates for an iterative literature research workflow with requirement collection, scope locking, paper discovery, code verification, CSV output, and reviewer-driven loopback.",
     "developerName": "Baseline Research",
     "category": "Productivity",
     "capabilities": [
@@ -25,9 +25,9 @@
       "Write"
     ],
     "defaultPrompt": [
-      "Find baselines for the paper in this repo.",
-      "Research this direction after clarifying scope.",
-      "Install the baseline research workflow agents."
+      "Research papers after collecting requirements.",
+      "Use my paper as a seed for literature research.",
+      "Install literature research workflow agents."
     ]
   }
 }

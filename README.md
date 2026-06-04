@@ -1,43 +1,51 @@
 # Baseline Research Workflows
 
-Codex workflow package for research baseline discovery and direction-based literature review.
+Codex plugin and repo-local custom agents for interactive, loopback-capable literature research.
 
-This repository provides a GitHub-installable Codex plugin plus repo-local custom agent templates. It supports two independent workflows:
+This repository provides one unified workflow. The user may start from either:
 
-1. **Paper baseline discovery**: start from a paper in the target repository, audit its evaluation context, discover in-domain baselines, verify public code, and write a fair comparison protocol.
-2. **Direction literature research**: start from a user-provided research direction or prompt, clarify ambiguous terminology first, lock the scope, then search and synthesize literature.
+- a **research direction** such as "CSI feedback for FDD massive MIMO"; or
+- a **seed paper**, which Codex uses to infer the research direction, evaluation context, and comparison boundary.
 
-The workflows share reusable worker agents, but their outputs are isolated.
+The workflow does not immediately search. It first collects the parameters needed by the agents, then locks the scope, then searches papers, verifies open-source code availability, writes a CSV, and runs an integrity review. If a later stage fails, the orchestrator loops back to the failed stage and retries.
 
-## What Is Included
+## Workflow
 
-```text
-.codex/agents/                         # Repo-local custom agent definitions
-.codex/*workflow-prompt.md             # Direct launcher prompts
-prompts/                               # Stage prompts used by the agents
-plugins/baseline-research-workflows/   # Codex plugin package
-marketplace.json                       # GitHub-installable plugin marketplace
-docs/baseline-research-workflows.md    # Detailed usage notes
-```
-
-This repository intentionally excludes private manuscript material and runtime artifacts:
+The main entry agent is:
 
 ```text
-paper/
-workspace/
-.env
+literature-research-orchestrator
 ```
+
+Stages:
+
+```text
+Stage 0  research-requirement-collector   collect required user parameters
+Stage 1  research-scope-locker            lock direction or seed-paper scope
+Stage 2  paper-discovery-scout            search and shortlist papers
+Stage 3  code-availability-verifier       verify code links when required
+Stage 4  research-csv-writer              write final_papers.csv
+Stage 5  research-integrity-reviewer      review and loop back on failures
+```
+
+The core behavior is iterative:
+
+```text
+stage output -> integrity review -> GO or REJECT -> loop back to target stage
+```
+
+Stage 0 and Stage 1 may stop for user input. Stage 2, Stage 3, and Stage 4 can be rejected and redone automatically when no new user input is required.
 
 ## Install From GitHub
 
-On another machine with Codex CLI installed and authenticated:
+With Codex CLI installed and authenticated:
 
 ```bash
 codex plugin marketplace add git@github.com:zcluu/baseline-research.git --ref main
 codex plugin add baseline-research-workflows@baseline-research
 ```
 
-If SSH access is not configured, use the HTTPS form:
+If SSH access is not configured:
 
 ```bash
 codex plugin marketplace add https://github.com/zcluu/baseline-research.git --ref main
@@ -50,16 +58,25 @@ Start a new Codex session after installation.
 
 The plugin carries `.toml` custom agent templates as assets. They become active only after being installed into the target repository's `.codex/agents/` directory.
 
-If you cloned this repository locally, run this from the target repo:
+If you cloned this repository locally:
 
 ```bash
-python3 /path/to/baseline-research/plugins/baseline-research-workflows/scripts/install_project_agents.py --repo .
+python3 /path/to/baseline-research/plugins/baseline-research-workflows/scripts/install_project_agents.py --repo /path/to/target-repo
 ```
 
-If you are using the installed plugin through Codex, ask Codex:
+If you installed the plugin through Codex, ask Codex in the target repo:
 
 ```text
-Use baseline-research. Install the baseline research workflow agents into this repository, then confirm the installed files.
+Use baseline-research.
+
+Install the literature research workflow agents into this repository.
+If this repository has files from an older baseline-research workflow release, clean obsolete files first.
+```
+
+For a local clone, the clean upgrade command is:
+
+```bash
+python3 plugins/baseline-research-workflows/scripts/install_project_agents.py --repo . --clean-obsolete
 ```
 
 The installer is conservative:
@@ -67,103 +84,106 @@ The installer is conservative:
 - missing files are copied;
 - identical files are left unchanged;
 - existing files with different content are reported as conflicts and are not overwritten;
-- use `--force` only when you intentionally want to overwrite target files.
+- obsolete files from older releases are removed only when `--clean-obsolete` is passed.
 
-## Use Workflow 1: Paper Baseline Discovery
+## Run The Workflow
 
-Use this when the target repository contains a paper under `paper/`.
-
-Direct CLI launcher:
+Interactive mode is recommended:
 
 ```bash
-codex exec --search --sandbox workspace-write --ask-for-approval never - < .codex/baseline-workflow-prompt.md
-```
-
-Interactive prompt:
-
-```text
-Use the baseline-orchestrator custom agent and execute the full baseline discovery workflow.
-```
-
-Default outputs:
-
-```text
-workspace/reports/
-workspace/baselines/
-```
-
-## Use Workflow 2: Direction Literature Research
-
-Use this when you have a topic, direction, keyword set, proposal, or open-ended research prompt rather than a specific paper.
-
-Interactive launcher:
-
-```bash
+cd /path/to/target-repo
 codex --search --sandbox workspace-write --ask-for-approval never
 ```
 
-Then prompt:
+Then say:
 
 ```text
-Use the direction-research-orchestrator custom agent.
+Use baseline-research.
 
-Research this direction: <your direction>.
-Before searching, clarify ambiguous terms, synonyms, included scope, excluded scope, target years, public-code requirements, and expected output format.
+Research papers for this direction: <your direction>.
+Before searching, collect the required parameters from me, including minimum paper count, minimum open-source/code paper count, target years, code verification level, inclusion criteria, exclusion criteria, and final CSV requirements.
 ```
 
-The direction workflow must not search immediately. It first writes:
+Or, if using a seed paper:
 
 ```text
-workspace/direction_research/reports/scope_report.md
+Use baseline-research.
+
+Use the paper in paper/main.tex as the seed. First infer the research direction and experimental context, then ask me for any missing parameters before searching papers.
 ```
 
-If the scope report contains:
+You can also invoke the custom agent directly:
 
 ```text
-STATUS: NEEDS_USER_CONFIRMATION
+Use the literature-research-orchestrator custom agent and execute the interactive literature research workflow.
 ```
 
-Codex must ask the clarification questions and stop. Literature search starts only after:
-
-```text
-STATUS: LOCKED
-```
-
-Default outputs:
-
-```text
-workspace/direction_research/reports/
-workspace/direction_research/baselines/
-```
-
-## Use The Router
-
-Use the router when you want one entry point and want Codex to choose the correct workflow:
+Or with the launcher file after installing agents:
 
 ```bash
-codex --search --sandbox workspace-write --ask-for-approval never \
-  "Use the research-workflow-router custom agent. Find baselines for the paper in this repository."
+codex exec --search --sandbox workspace-write --ask-for-approval never - < .codex/literature-research-workflow-prompt.md
 ```
 
-Or:
+## Required Interaction
 
-```bash
-codex --search --sandbox workspace-write --ask-for-approval never \
-  "Use the research-workflow-router custom agent. Research the direction: <your direction>. Clarify scope before searching."
+Stage 0 must collect:
+
+- input type or seed source;
+- research direction or seed paper;
+- minimum total paper count;
+- minimum open-source/code paper count;
+- target year range or recency window;
+- whether code links must be verified;
+- output format, CSV by default;
+- inclusion and exclusion constraints when available.
+
+If required parameters are missing, Codex asks concise questions and stops. It must not search.
+
+Stage 1 locks the scope. If the direction or seed-paper interpretation is ambiguous, Codex asks clarification questions and stops. It must not search.
+
+Only after:
+
+```text
+requirements.md: STATUS: READY
+scope_report.md: STATUS: LOCKED
 ```
 
-## Safe Retrieval Policy
+may Stage 2 search papers.
 
-Repository verification agents may shallow-clone public-code baselines, but they must not execute third-party code.
+## Outputs
 
-Allowed:
+All generated outputs go under:
 
-```bash
-git clone --depth 1 <repo> <target>
-git rev-parse HEAD
+```text
+workspace/literature_research/
 ```
 
-Not allowed:
+Main files:
+
+```text
+workspace/literature_research/reports/requirements.md
+workspace/literature_research/reports/scope_report.md
+workspace/literature_research/reports/paper_candidates.csv
+workspace/literature_research/reports/code_verification.csv
+workspace/literature_research/reports/final_papers.csv
+workspace/literature_research/reports/research_summary.md
+workspace/literature_research/reports/integrity_report.md
+workspace/literature_research/reports/iteration_log.md
+```
+
+The final CSV contains at least:
+
+```csv
+title,year,venue,publication_type,paper_url,arxiv_id,code_available,code_url,code_evidence,source_query,relevance_rationale,status
+```
+
+## Safe Code Policy
+
+The code verifier checks public code evidence. It does not execute third-party code.
+
+By default, it verifies links and repository evidence only. It does not clone repositories unless the user explicitly asks for cloneable implementation retrieval.
+
+Not allowed by default:
 
 ```text
 dependency installation
@@ -171,6 +191,25 @@ script execution
 submodule initialization
 Git LFS downloads
 training or inference runs
+```
+
+## Repository Contents
+
+```text
+.codex/agents/                         repo-local custom agent definitions
+.codex/literature-research-workflow-prompt.md
+prompts/                               stage prompts used by the agents
+plugins/baseline-research-workflows/   GitHub-installable Codex plugin package
+marketplace.json                       plugin marketplace file
+docs/literature-research-workflow.md    detailed workflow documentation
+```
+
+This repository intentionally excludes private manuscript material and runtime artifacts:
+
+```text
+paper/
+workspace/
+.env
 ```
 
 ## Development Checks
@@ -199,13 +238,5 @@ python3 plugins/baseline-research-workflows/scripts/install_project_agents.py --
 Expected synchronized result:
 
 ```text
-Copied: 0
 Conflicts: 0
 ```
-
-## Notes
-
-- The plugin is the installation and entry layer.
-- The active subagent behavior comes from `.codex/agents/*.toml` in the target repository.
-- Paper workflow outputs and direction workflow outputs are intentionally separated.
-- Private papers, generated reports, cloned baselines, backups, and `.env` files should not be committed.
