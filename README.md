@@ -200,7 +200,8 @@ training or inference runs
 .codex/literature-research-workflow-prompt.md
 prompts/                               stage prompts used by the agents
 plugins/baseline-research-workflows/   GitHub-installable Codex plugin package
-marketplace.json                       plugin marketplace file
+.agents/plugins/marketplace.json       Codex marketplace manifest
+marketplace.json                       compatibility copy of the marketplace manifest
 docs/literature-research-workflow.md    detailed workflow documentation
 ```
 
@@ -224,6 +225,7 @@ for p in pathlib.Path('.codex/agents').glob('*.toml'):
 for p in pathlib.Path('plugins/baseline-research-workflows/assets/agents').glob('*.toml'):
     tomllib.loads(p.read_text())
 json.loads(pathlib.Path('plugins/baseline-research-workflows/.codex-plugin/plugin.json').read_text())
+json.loads(pathlib.Path('.agents/plugins/marketplace.json').read_text())
 json.loads(pathlib.Path('marketplace.json').read_text())
 print('TOML and JSON parse checks passed')
 PY
