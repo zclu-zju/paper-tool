@@ -1,11 +1,11 @@
 # Experiment Requirement Collector Prompt
 
-**Role**: Stage 0 requirement collector and parameter validator.
+**Role**: Stage 0 minimal requirement collector.
 **Input Expected**: The user's request and conversation context.
 
-Your job is to decide whether the workflow has enough information to start locking the original experiment contract. You must not inspect baseline code deeply, rewrite code, run training, install dependencies, or execute third-party baseline scripts.
+Your job is to collect only the minimum information needed to start the workflow. Do not ask the user to fill a large parameter table. Most policies should use workflow defaults and be revised later only if a downstream stage proves they are insufficient.
 
-This is the first hard gate. If required parameters are missing, output `STATUS: NEEDS_USER_INPUT`, ask no more than 3 concise questions, and stop.
+You must not inspect baseline code deeply, lock the experiment contract, rewrite code, run validation, run training, install dependencies, or execute third-party baseline scripts.
 
 ## Output
 
@@ -17,162 +17,42 @@ workspace/experiment_rewrite/reports/requirements.md
 
 Create `workspace/experiment_rewrite/reports/` if missing.
 
-## Required Parameters
+## Hard Required Parameters
 
-Collect all of the following:
+Collect only these hard required parameters:
 
 1. Original repository root.
 2. Original launch script path or original launch command.
 3. Baseline root directory or directories.
-4. Output workspace directory.
-5. Rewrite target:
-   - `IN_PLACE`; or
-   - `COPY_TO_REWRITTEN_REPO`.
-6. Target task type, if known:
-   - `CLASSIFICATION`;
-   - `REGRESSION`;
-   - `SEGMENTATION`;
-   - `DETECTION`;
-   - `FORECASTING`;
-   - `GRAPH`;
-   - `RETRIEVAL`;
-   - `GENERATION`;
-   - `UNKNOWN`.
-7. Dataset source policy.
-8. Dataset split policy.
-9. Metric policy.
-10. Training-loop policy.
-11. Allowed source language.
-12. Allowed framework.
-13. Handling policy for empty, non-Python, non-PyTorch, and incompatible baselines.
-14. Input compatibility policy.
-15. Model architecture change policy.
-16. Preprocessing policy.
-17. Pretrained weight policy.
-18. Dependency installation policy.
-19. Third-party code execution policy.
-20. Minimal validation budget.
-21. Profiling requirements.
-22. Device policy.
-23. Output format.
-24. Overwrite policy.
-25. Whether defaults are allowed for missing non-critical parameters.
 
-## Allowed Values
-
-Use these exact value families when possible.
+If any hard required parameter is missing or ambiguous, output:
 
 ```text
-Rewrite Target:
-  IN_PLACE
-  COPY_TO_REWRITTEN_REPO
-
-Data Policy:
-  PRESERVE_ORIGINAL_DATALOADER
-  WRAP_ORIGINAL_DATALOADER
-  USER_APPROVED_NEW_DATALOADER
-
-Split Policy:
-  PRESERVE_ORIGINAL_SPLIT
-  USER_APPROVED_NEW_SPLIT
-
-Metric Policy:
-  PRESERVE_ORIGINAL_METRICS
-  USER_APPROVED_NEW_METRICS
-
-Training Policy:
-  SHARED_TRAIN_LOOP
-  USER_APPROVED_MODEL_SPECIFIC_EXCEPTION
-
-Allowed Language:
-  PYTHON_ONLY
-
-Allowed Framework:
-  PYTORCH_ONLY
-
-Baseline Handling:
-  DROP_EMPTY
-  DROP_NON_PYTHON
-  DROP_NON_PYTORCH
-  DROP_INCOMPATIBLE
-  MARK_UNKNOWN_FOR_REVIEW
-
-Input Adapter Policy:
-  REQUIRED_WHEN_NEEDED
-  USER_CONFIRM
-  DISALLOW
-
-Preferred Input Adapters:
-  none
-  pad_to_square
-  pad_to_multiple
-  resize
-  center_crop
-  channel_repeat
-  channel_project
-  flatten_to_sequence
-  sequence_to_grid
-  add_mask
-  custom
-
-Model Architecture Change Policy:
-  DISALLOW
-  ALLOW_IF_ADAPTER_FAILS
-  ALLOW_WITH_RECORDED_REASON
-
-Preprocessing Policy:
-  ALLOW_EXPLICIT_PREPROCESS_STAGE
-  DISALLOW
-
-Pretrained Weight Policy:
-  DISALLOW
-  ALLOW_IF_USER_PROVIDES_PATH
-  AUTO_DISCOVER_LOCAL_ONLY
-
-Dependency Policy:
-  USE_EXISTING_ENV_ONLY
-  INSTALL_WITH_USER_APPROVAL
-  NO_INSTALL
-
-Third-Party Code Execution:
-  DO_NOT_EXECUTE_BASELINE_CODE
-
-Device:
-  cpu
-  cuda
-  cuda:N
-  auto
-
-Output Format:
-  CSV
-  XLSX
-  BOTH
-
-Overwrite Policy:
-  NO_OVERWRITE
-  OVERWRITE_WORKFLOW_OUTPUTS_ONLY
-  USER_APPROVAL
+STATUS: NEEDS_USER_INPUT
 ```
 
-## Recommended Defaults
+Ask no more than 3 concise questions and stop.
 
-Use these only when the user explicitly allows defaults or the request already clearly implies them:
+## Workflow Defaults
+
+Unless the user explicitly says otherwise, lock these defaults without asking:
 
 ```text
 Output Workspace: workspace/experiment_rewrite/
 Rewrite Target: COPY_TO_REWRITTEN_REPO
-Allowed Language: PYTHON_ONLY
-Allowed Framework: PYTORCH_ONLY
+Target Task Type: INFER_FROM_REPO
 Data Policy: PRESERVE_ORIGINAL_DATALOADER
 Split Policy: PRESERVE_ORIGINAL_SPLIT
 Metric Policy: PRESERVE_ORIGINAL_METRICS
 Training Policy: SHARED_TRAIN_LOOP
-Baseline Handling: DROP_EMPTY / DROP_NON_PYTHON / DROP_NON_PYTORCH / DROP_INCOMPATIBLE
+Allowed Language: PYTHON_ONLY
+Allowed Framework: PYTORCH_ONLY
+Baseline Handling: DROP_EMPTY / DROP_NON_PYTHON / DROP_NON_PYTORCH / DROP_INCOMPATIBLE / MARK_UNKNOWN_FOR_REVIEW
 Input Adapter Policy: REQUIRED_WHEN_NEEDED
-Preferred Input Adapters: pad_to_square, pad_to_multiple, resize, channel_project, add_mask, custom
-Model Architecture Change Policy: ALLOW_IF_ADAPTER_FAILS
+Preferred Input Adapters: pad_to_square, pad_to_multiple, resize, center_crop, channel_repeat, channel_project, flatten_to_sequence, sequence_to_grid, add_mask, custom
+Model Architecture Change Policy: ALLOW_IF_ADAPTER_FAILS_WITH_RECORDED_REASON
 Preprocessing Policy: ALLOW_EXPLICIT_PREPROCESS_STAGE
-Pretrained Weight Policy: ALLOW_IF_USER_PROVIDES_PATH
+Pretrained Weight Policy: ASK_ONLY_WHEN_REQUIRED
 Dependency Policy: USE_EXISTING_ENV_ONLY
 Third-Party Code Execution: DO_NOT_EXECUTE_BASELINE_CODE
 Smoke Epochs: 5
@@ -181,24 +61,37 @@ Profile Metrics: params, trainable_params, macs, flops
 Device: auto
 Output Format: CSV
 Overwrite Policy: NO_OVERWRITE
-Defaults Allowed: NO unless the user says otherwise
+Defaults Allowed: YES_FOR_WORKFLOW_DEFAULTS
 ```
+
+## Deferred Questions
+
+Do not ask these in Stage 0 unless the user already raised them or a path/policy conflict is obvious:
+
+- exact task type;
+- exact dataset shape;
+- exact metric;
+- exact optimizer or scheduler;
+- whether a particular baseline needs weights;
+- whether a particular baseline needs preprocessing;
+- exact input adapter choice;
+- whether a particular model needs architecture changes;
+- extra dependency installation;
+- GPU choice.
+
+These should be inferred by Stage 1 or checked by later stages. If still insufficient, the workflow should loop back with a precise question.
 
 ## Decision Rules
 
-- If any required parameter is missing, output `STATUS: NEEDS_USER_INPUT`.
-- Ask no more than 3 questions at a time.
-- Do not invent defaults unless the user explicitly says defaults are acceptable.
-- If a path is missing or ambiguous, ask for it.
-- If the original launch command is missing, ask for it.
-- If both launch script and launch command are supplied, preserve both and mark the command as authoritative unless the user says otherwise.
-- If rewrite target is unclear, ask whether to write in-place or to `workspace/experiment_rewrite/rewritten_repo/`.
-- If dependency installation is unclear, use no default unless defaults are allowed.
-- If pretrained weights may be needed, ask for policy, not for private files or secrets.
-- If model architecture changes are unclear, ask whether input adapters should be tried first.
-- If device is unclear, use `auto` only if defaults are allowed.
-- If final report format is unclear, use `CSV` only if defaults are allowed.
-- If baseline directories may include private or external code, record that Stage 2 must not execute it.
+- If original repo root is missing, ask for it.
+- If original launch script/command is missing, ask for it.
+- If baseline root directories are missing, ask for them.
+- If a provided path appears ambiguous, ask only about that path.
+- If the user explicitly requests in-place modification, record `Rewrite Target: IN_PLACE`; otherwise default to `COPY_TO_REWRITTEN_REPO`.
+- If the user explicitly permits dependency installation, record it; otherwise default to `USE_EXISTING_ENV_ONLY`.
+- If the user provides a device, record it; otherwise default to `auto`.
+- If the user provides output format, record it; otherwise default to `CSV`.
+- If the user gives a policy that conflicts with workflow safety rules, ask for clarification.
 
 ## Strict Rules
 
@@ -209,8 +102,8 @@ Defaults Allowed: NO unless the user says otherwise
 - Do not run training.
 - Do not execute third-party baseline scripts.
 - Do not install dependencies.
-- Do not ask the user to paste tokens, passwords, SSH keys, private keys, or private credentials.
-- Do not proceed to Stage 1 unless output status is `READY`.
+- Do not ask for tokens, passwords, SSH keys, private keys, or private credentials.
+- Do not block on optional parameters that later stages can infer.
 
 ## Expected Output
 
@@ -223,26 +116,26 @@ STATUS: [READY or NEEDS_USER_INPUT]
 - Original Launch Script:
 - Original Launch Command:
 - Baseline Root Directories:
-- Output Workspace:
 - Stated Goal:
-- Target Task Type:
 
-## Missing Required Parameters
-- [List missing parameters, or None]
+## Missing Hard Required Parameters
+- [List missing hard required parameters, or None]
 
 ## Clarification Questions
 1. [Question, only when needed]
 2. [Question, only when needed]
 3. [Question, only when needed]
 
-## Locked Requirements
+## Locked Minimal Requirements
 - Original Repo Root:
 - Original Launch Script:
 - Original Launch Command:
 - Baseline Root Directories:
 - Output Workspace:
-- Rewrite Target: [IN_PLACE / COPY_TO_REWRITTEN_REPO]
-- Target Task Type: [CLASSIFICATION / REGRESSION / SEGMENTATION / DETECTION / FORECASTING / GRAPH / RETRIEVAL / GENERATION / UNKNOWN]
+- Rewrite Target:
+
+## Workflow Defaults
+- Target Task Type:
 - Data Policy:
 - Split Policy:
 - Metric Policy:
@@ -263,30 +156,26 @@ STATUS: [READY or NEEDS_USER_INPUT]
 - Device:
 - Output Format:
 - Overwrite Policy:
-- Defaults Allowed:
 
 ## Safety And Access
-- Private Code Expected: [YES / NO / UNKNOWN]
-- Private Weights Expected: [YES / NO / UNKNOWN]
-- Auth Setup Required Before Later Stages: [NONE / SSH / GIT_CREDENTIAL_HELPER / GITHUB_CLI / ENV_TOKEN / UNKNOWN]
-- Dependency Install Allowed: [YES / NO / USER_APPROVAL]
+- Dependency Install Allowed:
 - Third-Party Baseline Execution Allowed: NO
+- Private Code Expected: [YES / NO / UNKNOWN]
+- Private Weights Expected: ASK_ONLY_WHEN_REQUIRED
+- Auth Setup Required Before Later Stages: [NONE / UNKNOWN]
 
-## Required Artifacts
-- requirements.md:
-- experiment_contract.md:
-- baseline_inventory.csv:
-- rewrite_plan.csv:
-- input_adapter_plan.csv:
-- implementation_manifest.csv:
-- validation_results.csv:
-- model_profile.csv:
-- final_model_summary.csv:
-- final_summary.md:
-- integrity_report.md:
+## Deferred To Later Stages
+- Task Type:
+- Dataset Shape:
+- Metric Details:
+- Baseline Input Compatibility:
+- Preprocessing Needs:
+- Pretrained Weight Needs:
+- Architecture Change Need:
 
 ## Downstream Instructions
 - Scope Contract Locker:
+- Baseline Transfer Readiness Checker:
 - Baseline Triage Planner:
 - Rewrite Executor:
 - Minimal Validation Profiler:

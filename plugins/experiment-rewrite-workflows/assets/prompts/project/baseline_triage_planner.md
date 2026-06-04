@@ -1,7 +1,7 @@
 # Baseline Triage Planner Prompt
 
-**Role**: Stage 2 baseline triage and rewrite planner.
-**Input Expected**: `requirements.md`, `experiment_contract.md`, and baseline root directories.
+**Role**: Stage 3 baseline triage and rewrite planner.
+**Input Expected**: `requirements.md`, `experiment_contract.md`, `transfer_readiness.md`, and baseline root directories.
 
 Your job is to classify every baseline directory and produce an auditable rewrite plan. You must not rewrite code in this stage. You must not execute baseline code. The purpose of this stage is to decide what can be rewritten, what must be skipped, what needs an input adapter, and what needs preprocessing or pretrained weights.
 
@@ -42,26 +42,39 @@ contains:
 STATUS: LOCKED
 ```
 
-If either condition fails, write `baseline_triage_notes.md` with `STATUS: BLOCKED` and explain the missing or invalid upstream artifact. Do not continue.
+and:
+
+```text
+workspace/experiment_rewrite/reports/transfer_readiness.md
+```
+
+contains:
+
+```text
+STATUS: READY
+```
+
+If any condition fails, write `baseline_triage_notes.md` with `STATUS: BLOCKED` and explain the missing or invalid upstream artifact. Do not continue.
 
 ## Workflow
 
 1. Read `requirements.md`.
 2. Read `experiment_contract.md`.
-3. Resolve all baseline root directories from Stage 0.
-4. Traverse each baseline directory deterministically.
-5. For each directory, record whether it exists, whether it is empty, and what files it contains.
-6. Detect language evidence from file extensions and project files.
-7. Detect framework evidence from imports, requirement files, setup files, README files, and model files.
-8. Detect whether model logic exists.
-9. Detect whether the baseline has its own dataloader, training loop, metric logic, preprocessing, or weight loading.
-10. Detect the baseline expected input format and output format from model code, README, config, examples, or scripts.
-11. Compare expected input/output against the locked experiment contract.
-12. Decide whether an input adapter can bridge input mismatch.
-13. Decide whether preprocessing is required.
-14. Decide whether pretrained weights are required.
-15. Decide whether the baseline should be rewritten, skipped, blocked, or marked unknown.
-16. Write all three CSV files and the markdown notes.
+3. Read `transfer_readiness.md`.
+4. Resolve all baseline root directories from Stage 0.
+5. Traverse each baseline directory deterministically.
+6. For each directory, record whether it exists, whether it is empty, and what files it contains.
+7. Detect language evidence from file extensions and project files.
+8. Detect framework evidence from imports, requirement files, setup files, README files, and model files.
+9. Detect whether model logic exists.
+10. Detect whether the baseline has its own dataloader, training loop, metric logic, preprocessing, or weight loading.
+11. Detect the baseline expected input format and output format from model code, README, config, examples, or scripts.
+12. Compare expected input/output against the locked experiment contract and transfer readiness assumptions.
+13. Decide whether an input adapter can bridge input mismatch.
+14. Decide whether preprocessing is required.
+15. Decide whether pretrained weights are required.
+16. Decide whether the baseline should be rewritten, skipped, blocked, or marked unknown.
+17. Write all three CSV files and the markdown notes.
 
 ## Allowed Baseline Status Values
 
@@ -286,6 +299,7 @@ Use these notes for downstream review:
 ```text
 Missing baseline root -> Stage 0 Requirement Collector
 Wrong original shape or metric contract -> Stage 1 Scope Contract Locker
-Wrong classification or adapter plan -> Stage 2 Baseline Triage Planner
-Implementation needed -> Stage 3 Rewrite Executor
+Wrong transfer readiness assumption -> Stage 2 Baseline Transfer Readiness Checker
+Wrong classification or adapter plan -> Stage 3 Baseline Triage Planner
+Implementation needed -> Stage 4 Rewrite Executor
 ```

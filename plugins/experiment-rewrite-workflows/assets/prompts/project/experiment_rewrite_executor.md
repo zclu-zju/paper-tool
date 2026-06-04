@@ -1,9 +1,9 @@
 # Experiment Rewrite Executor Prompt
 
-**Role**: Stage 3 controlled rewrite executor.
-**Input Expected**: `requirements.md`, `experiment_contract.md`, `baseline_inventory.csv`, `rewrite_plan.csv`, and `input_adapter_plan.csv`.
+**Role**: Stage 4 controlled rewrite executor.
+**Input Expected**: `requirements.md`, `experiment_contract.md`, `transfer_readiness.md`, `baseline_inventory.csv`, `rewrite_plan.csv`, and `input_adapter_plan.csv`.
 
-Your job is to perform the controlled rewrite described by the approved Stage 2 plan. This is the only stage that should rewrite code. The rewrite must produce one unified PyTorch experiment framework, not a collection of independent baseline projects.
+Your job is to perform the controlled rewrite described by the approved Stage 3 plan. This is the only stage that should rewrite code. The rewrite must produce one unified PyTorch experiment framework, not a collection of independent baseline projects.
 
 ## Output
 
@@ -21,6 +21,7 @@ Continue only if all exist and are internally usable:
 ```text
 workspace/experiment_rewrite/reports/requirements.md
 workspace/experiment_rewrite/reports/experiment_contract.md
+workspace/experiment_rewrite/reports/transfer_readiness.md
 workspace/experiment_rewrite/reports/baseline_inventory.csv
 workspace/experiment_rewrite/reports/rewrite_plan.csv
 workspace/experiment_rewrite/reports/input_adapter_plan.csv
@@ -29,6 +30,8 @@ workspace/experiment_rewrite/reports/input_adapter_plan.csv
 `requirements.md` must contain `STATUS: READY`.
 
 `experiment_contract.md` must contain `STATUS: LOCKED`.
+
+`transfer_readiness.md` must contain `STATUS: READY`.
 
 If any required plan file is missing or malformed, write `implementation_notes.md` with `STATUS: BLOCKED` and do not rewrite code.
 
@@ -46,7 +49,7 @@ If any required plan file is missing or malformed, write `implementation_notes.m
 8. Create or update shared training loop.
 9. Create or update shared evaluation and metric logic.
 10. Create or update shared profiling hooks.
-11. Rewrite only eligible models from the Stage 2 plan.
+11. Rewrite only eligible models from the Stage 3 plan.
 12. Add explicit model config files when required.
 13. Add explicit preprocessing files when required.
 14. Add explicit pretrained weight-loading hooks only when allowed.
@@ -106,10 +109,10 @@ For every row in `input_adapter_plan.csv` with `adapter_status: REQUIRED`, imple
 Rules:
 
 - Record adapter file path in `implementation_manifest.csv`.
-- Preserve original input shape and adapted input shape for Stage 4.
+- Preserve original input shape and adapted input shape for Stage 5.
 - Do not change labels, splits, or metrics.
 - If padding is used and masks are needed, preserve a mask or record why not needed.
-- Do not change model architecture unless Stage 0 allows it and Stage 2 says `requires_model_change: YES`.
+- Do not change model architecture unless Stage 0 allows it and Stage 3 says `requires_model_change: YES`.
 
 ## Allowed Row Status Values
 
@@ -126,10 +129,10 @@ Status guidance:
 
 ```text
 IMPLEMENTED:
-  The model file and registry entry were created and are ready for Stage 4 validation.
+  The model file and registry entry were created and are ready for Stage 5 validation.
 
 SKIPPED:
-  Stage 2 classified the model as dropped or not eligible.
+  Stage 3 classified the model as dropped or not eligible.
 
 BLOCKED:
   The model cannot be implemented without user input, missing weights, missing original contract details, or policy approval.
@@ -200,7 +203,7 @@ STATUS: [READY or PARTIAL or BLOCKED or FAILED]
 - Do not keep baseline-specific training loops as the primary path.
 - Do not keep baseline-specific metric implementations as the primary path.
 - Do not overwrite user files unless Stage 0 overwrite policy allows it.
-- Do not modify model architecture for input mismatch unless Stage 0 allows it and Stage 2 requires it.
+- Do not modify model architecture for input mismatch unless Stage 0 allows it and Stage 3 requires it.
 - Do not mark skipped models as implemented.
 - Do not hide failed rewrites.
 - Do not modify dataset split or metric semantics.
@@ -214,7 +217,8 @@ Use these notes for downstream review:
 ```text
 Missing or invalid requirements -> Stage 0 Requirement Collector
 Wrong original data/shape/metric contract -> Stage 1 Scope Contract Locker
-Wrong baseline eligibility or adapter plan -> Stage 2 Baseline Triage Planner
-Rewrite implementation error -> Stage 3 Rewrite Executor
-Validation failure after implementation -> Stage 4 Minimal Validation Profiler
+Wrong transfer readiness assumption -> Stage 2 Baseline Transfer Readiness Checker
+Wrong baseline eligibility or adapter plan -> Stage 3 Baseline Triage Planner
+Rewrite implementation error -> Stage 4 Rewrite Executor
+Validation failure after implementation -> Stage 5 Minimal Validation Profiler
 ```

@@ -1,7 +1,7 @@
 # Minimal Validation Profiler Prompt
 
-**Role**: Stage 4 minimal validation and model profiler.
-**Input Expected**: `requirements.md`, `experiment_contract.md`, `implementation_manifest.csv`, and the rewritten repo.
+**Role**: Stage 5 minimal validation and model profiler.
+**Input Expected**: `requirements.md`, `experiment_contract.md`, `transfer_readiness.md`, `implementation_manifest.csv`, and the rewritten repo.
 
 Your job is to run minimal validation and profiling only. You must not run full paper-scale experiments, tune hyperparameters, or search for final paper results.
 
@@ -21,6 +21,7 @@ Continue only if:
 
 - `requirements.md` contains `STATUS: READY`;
 - `experiment_contract.md` contains `STATUS: LOCKED`;
+- `transfer_readiness.md` contains `STATUS: READY`;
 - `implementation_manifest.csv` exists and has implemented or skipped model rows.
 
 If the rewritten repo or entry point is missing, write `validation_notes.md` with `STATUS: BLOCKED`.
@@ -193,10 +194,11 @@ STATUS: [READY or PARTIAL or BLOCKED or FAILED]
 ```text
 Original data shape wrong -> Stage 1 Scope Contract Locker
 Metric/loss contract wrong -> Stage 1 Scope Contract Locker
-Adapter plan wrong -> Stage 2 Baseline Triage Planner
-Adapter implementation wrong -> Stage 3 Rewrite Executor
-Model forward/loss/backward failure -> Stage 3 Rewrite Executor
+Transfer readiness assumption wrong -> Stage 2 Baseline Transfer Readiness Checker
+Adapter plan wrong -> Stage 3 Baseline Triage Planner
+Adapter implementation wrong -> Stage 4 Rewrite Executor
+Model forward/loss/backward failure -> Stage 4 Rewrite Executor
 Missing pretrained weights -> Stage 0 Requirement Collector if user input is needed
-Profiler invocation wrong -> Stage 4 Minimal Validation Profiler
-Final report merge wrong -> Stage 5 Report Writer
+Profiler invocation wrong -> Stage 5 Minimal Validation Profiler
+Final report merge wrong -> Stage 6 Report Writer
 ```

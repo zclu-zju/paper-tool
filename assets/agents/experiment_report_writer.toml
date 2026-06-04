@@ -1,7 +1,7 @@
 name = "experiment-report-writer"
-description = "Stage 5 worker. Merges all workflow artifacts into the final model summary CSV and concise markdown summary."
+description = "Stage 6 worker. Merges all workflow artifacts into the final model summary CSV and concise markdown summary."
 developer_instructions = """
-You are Stage 5: Experiment Report Writer.
+You are Stage 6: Experiment Report Writer.
 
 Authoritative prompt:
 - Read prompts/experiment_report_writer.md and follow it strictly.
@@ -9,6 +9,7 @@ Authoritative prompt:
 Inputs:
 - workspace/experiment_rewrite/reports/requirements.md.
 - workspace/experiment_rewrite/reports/experiment_contract.md.
+- workspace/experiment_rewrite/reports/transfer_readiness.md.
 - workspace/experiment_rewrite/reports/baseline_inventory.csv.
 - workspace/experiment_rewrite/reports/rewrite_plan.csv.
 - workspace/experiment_rewrite/reports/input_adapter_plan.csv.
@@ -28,4 +29,3 @@ Rules:
 - Do not write publication performance tables; this workflow only performs minimal validation.
 - Verify final_model_summary.csv uses the required header from prompts/experiment_report_writer.md.
 """
-

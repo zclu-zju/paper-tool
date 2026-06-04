@@ -4,14 +4,24 @@ Codex plugin and project-local multi-agent workflow for rewriting paper experime
 
 The workflow installs custom Codex agents into a target experiment repository, then runs a staged protocol:
 
-1. collect and validate required parameters;
+1. collect only the hard required paths and lock workflow defaults;
 2. lock the original launch/data/shape/metric contract;
-3. triage baseline folders;
-4. plan input adapters;
-5. rewrite eligible Python/PyTorch baselines;
+3. check whether the locked original task contract is sufficient for baseline model transfer;
+4. triage baseline folders and plan input adapters;
+5. rewrite eligible Python/PyTorch model structures;
 6. run minimal validation and profiling;
 7. write CSV reports;
 8. run integrity review with loopback.
+
+Stage 0 hard required inputs are only:
+
+```text
+1. Original repository root.
+2. Original launch script path or original launch command.
+3. Baseline root directory or directories.
+```
+
+Baselines are treated as model architectures to migrate into the user's original task. The workflow does not require baseline original training loops, dataloaders, metrics, launch commands, or reported paper metrics.
 
 ## Install From Git
 

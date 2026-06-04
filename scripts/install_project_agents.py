@@ -21,7 +21,6 @@ ASSETS = PLUGIN_ROOT / "assets"
 
 OBSOLETE_FILES = [
     ".codex/agents/experiment_orchestrator.toml",
-    ".codex/agents/experiment_requirement_collector.toml",
     ".codex/agents/repo_contract_locker.toml",
     ".codex/agents/model_rewrite_agent.toml",
     ".codex/agents/validation_agent.toml",

@@ -1,7 +1,7 @@
 # Experiment Report Writer Prompt
 
-**Role**: Stage 5 final CSV and summary writer.
-**Input Expected**: Requirements, locked contract, baseline inventory, rewrite plan, adapter plan, implementation manifest, validation results, and model profile.
+**Role**: Stage 6 final CSV and summary writer.
+**Input Expected**: Requirements, locked contract, transfer readiness, baseline inventory, rewrite plan, adapter plan, implementation manifest, validation results, and model profile.
 
 Your job is to merge all stage outputs into a final model summary CSV and concise markdown summary. You must not invent missing validation, profiling, rewrite, adapter, preprocessing, or pretrained-weight results.
 
@@ -12,6 +12,7 @@ Read all of:
 ```text
 workspace/experiment_rewrite/reports/requirements.md
 workspace/experiment_rewrite/reports/experiment_contract.md
+workspace/experiment_rewrite/reports/transfer_readiness.md
 workspace/experiment_rewrite/reports/baseline_inventory.csv
 workspace/experiment_rewrite/reports/rewrite_plan.csv
 workspace/experiment_rewrite/reports/input_adapter_plan.csv
@@ -91,25 +92,25 @@ DONE_WITH_PRETRAIN_REQUIRED:
   Implementation exists but pretrained weights are required. Use only if validation is blocked by missing user-provided weights or the workflow policy defines this as acceptable.
 
 SKIPPED_EMPTY:
-  Stage 2 status DROP_EMPTY.
+  Stage 3 status DROP_EMPTY.
 
 SKIPPED_NON_PYTHON:
-  Stage 2 status DROP_NON_PYTHON.
+  Stage 3 status DROP_NON_PYTHON.
 
 SKIPPED_NON_PYTORCH:
-  Stage 2 status DROP_NON_PYTORCH.
+  Stage 3 status DROP_NON_PYTORCH.
 
 SKIPPED_INCOMPATIBLE:
-  Stage 2 status DROP_INCOMPATIBLE.
+  Stage 3 status DROP_INCOMPATIBLE.
 
 BLOCKED_NEEDS_USER_INPUT:
   A required path, weight, policy decision, auth/access setup, or clarification is missing.
 
 FAILED_VALIDATION:
-  Implementation exists but Stage 4 validation failed.
+  Implementation exists but Stage 5 validation failed.
 
 FAILED_REWRITE:
-  Stage 3 attempted implementation and failed.
+  Stage 4 attempted implementation and failed.
 
 UNKNOWN:
   Evidence remains insufficient and should be reviewed by integrity reviewer.
@@ -212,10 +213,11 @@ STATUS: [READY or PARTIAL or BLOCKED or FAILED]
 
 ```text
 Missing required upstream artifact -> target the stage that should produce it
-Bad final CSV merge or schema -> Stage 5 Report Writer
-Bad validation/profile source data -> Stage 4 Minimal Validation Profiler
-Bad implementation manifest -> Stage 3 Rewrite Executor
-Bad triage/adapter plan -> Stage 2 Baseline Triage Planner
+Bad final CSV merge or schema -> Stage 6 Report Writer
+Bad validation/profile source data -> Stage 5 Minimal Validation Profiler
+Bad implementation manifest -> Stage 4 Rewrite Executor
+Bad triage/adapter plan -> Stage 3 Baseline Triage Planner
+Bad transfer readiness assumption -> Stage 2 Baseline Transfer Readiness Checker
 Bad original contract -> Stage 1 Scope Contract Locker
 Missing user policy/path -> Stage 0 Requirement Collector
 ```

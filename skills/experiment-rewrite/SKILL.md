@@ -1,6 +1,6 @@
 ---
 name: experiment-rewrite
-description: Use for staged Codex workflows that rewrite paper experiment baselines into a unified PyTorch framework. Installs repo-local custom agents, collects and validates required parameters, locks the original repo's launch/data/shape/metric contract, triages baseline directories, plans input adapters, rewrites eligible models, runs minimal validation/profiling, writes CSV reports, and loops back on reviewer failures.
+description: Use for staged Codex workflows that rewrite paper experiment baselines into a unified PyTorch framework. Installs repo-local custom agents, collects minimal hard parameters, locks the original repo's launch/data/shape/metric contract, checks baseline-transfer readiness, triages baseline directories, plans input adapters, rewrites eligible models, runs minimal validation/profiling, writes CSV reports, and loops back on reviewer failures.
 ---
 
 # Experiment Rewrite
@@ -14,7 +14,7 @@ The workflow is intended for repositories where:
 - baseline implementations have been collected in one or more directories;
 - the desired outcome is a unified PyTorch entry point with minimal validation and profiling, not full paper-scale experiments.
 
-It is intentionally iterative rather than one-pass. Stage 6 can reject earlier stages and send the orchestrator back to redo only the failed stage.
+It is intentionally iterative rather than one-pass. Stage 7 can reject earlier stages and send the orchestrator back to redo only the failed stage.
 
 ## Install Agents
 
@@ -56,37 +56,19 @@ codex exec --sandbox workspace-write --ask-for-approval never - < .codex/experim
 
 ## Interaction Contract
 
-Stage 0 must collect required parameters before any repo contract lock, baseline triage, or code rewrite:
+Stage 0 must collect only the hard required parameters before any repo contract lock, baseline triage, or code rewrite:
 
 - original repository root;
 - original launch script path or launch command;
-- baseline root directory or directories;
-- output workspace directory;
-- whether rewriting may modify the original repo or must write to a separate rewritten copy;
-- target task type, if known;
-- dataset source policy;
-- dataset split policy;
-- metric policy;
-- allowed language and framework, normally Python and PyTorch only;
-- handling policy for empty, non-Python, non-PyTorch, or incompatible baselines;
-- model architecture change policy;
-- input compatibility policy;
-- preprocessing policy;
-- pretrained weight policy;
-- dependency installation policy;
-- third-party code execution policy;
-- minimal validation budget;
-- profiling requirements;
-- device policy;
-- final report format;
-- overwrite policy;
-- whether defaults are allowed for missing non-critical parameters.
+- baseline root directory or directories.
 
-If required parameters are missing, the orchestrator asks concise questions and stops.
+All other policies use workflow defaults unless the user explicitly says otherwise. If a hard required parameter is missing, the orchestrator asks concise questions and stops.
 
 Stage 1 locks the experiment contract by reading the original repo and launch script. If the launch, dataset, shape, metric, or runtime contract is ambiguous, the orchestrator asks clarification questions and stops.
 
-Only after requirements are `READY` and the experiment contract is `LOCKED` can the workflow triage baselines or rewrite code.
+Stage 2 checks whether the locked original task contract is sufficient for baseline model transfer. It treats baselines as model architectures to migrate into the user's task and must not require baseline original dataloaders, training loops, metrics, launch commands, evaluation protocols, or reported paper metrics.
+
+Only after requirements are `READY`, the experiment contract is `LOCKED`, and transfer readiness is `READY` can the workflow triage baselines or rewrite code.
 
 ## Outputs
 
@@ -114,10 +96,11 @@ The integrity reviewer can reject and return to:
 
 - Stage 0 Requirement Collector;
 - Stage 1 Scope Contract Locker;
-- Stage 2 Baseline Triage Planner;
-- Stage 3 Rewrite Executor;
-- Stage 4 Minimal Validation Profiler;
-- Stage 5 Report Writer.
+- Stage 2 Baseline Transfer Readiness Checker;
+- Stage 3 Baseline Triage Planner;
+- Stage 4 Rewrite Executor;
+- Stage 5 Minimal Validation Profiler;
+- Stage 6 Report Writer.
 
 If no new user input is required, the orchestrator retries automatically and reruns downstream affected stages.
 
@@ -125,6 +108,7 @@ If no new user input is required, the orchestrator retries automatically and rer
 
 This workflow does not:
 
+- reproduce baseline original experiment protocols;
 - run full paper-scale experiments;
 - tune hyperparameters;
 - search for best publication results;

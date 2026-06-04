@@ -130,7 +130,7 @@ Output `STATUS: NEEDS_USER_CLARIFICATION` if any of these materially affects dow
 - Do not change dataset split.
 - Do not change metrics.
 - Do not infer unavailable shapes without evidence.
-- Do not assume an input adapter can work before Stage 2 compares a baseline's expected shape with this contract.
+- Do not assume an input adapter can work before Stage 3 compares a baseline's expected shape with this contract.
 - Ask no more than 3 clarification questions.
 
 ## Expected Output
@@ -216,6 +216,7 @@ STATUS: [LOCKED or NEEDS_USER_CLARIFICATION]
 - [List any residual risk, or None]
 
 ## Downstream Instructions
+- Baseline Transfer Readiness Checker:
 - Baseline Triage Planner:
 - Rewrite Executor:
 - Minimal Validation Profiler:
