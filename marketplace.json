@@ -1,0 +1,21 @@
+{
+  "name": "baseline-research",
+  "interface": {
+    "displayName": "Baseline Research"
+  },
+  "plugins": [
+    {
+      "name": "baseline-research-workflows",
+      "source": {
+        "source": "local",
+        "path": "./plugins/baseline-research-workflows"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    }
+  ]
+}
+

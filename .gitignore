@@ -1,0 +1,15 @@
+.env
+.DS_Store
+__pycache__/
+*.pyc
+
+# User papers and private manuscript material
+paper/
+
+# Runtime outputs, reports, cloned third-party repositories, and backups
+workspace/
+
+# Local editor/cache files
+.idea/
+.vscode/
+

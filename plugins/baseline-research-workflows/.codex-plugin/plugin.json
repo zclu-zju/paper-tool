@@ -1,0 +1,33 @@
+{
+  "name": "baseline-research-workflows",
+  "version": "0.1.0",
+  "description": "Project workflow entry points for paper baseline discovery and direction-based literature research.",
+  "author": {
+    "name": "Baseline Research"
+  },
+  "repository": "https://github.com/zcluu/baseline-research",
+  "keywords": [
+    "codex",
+    "research",
+    "literature-review",
+    "baseline-discovery",
+    "subagents"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Baseline Research Workflows",
+    "shortDescription": "Run paper-baseline and direction-research Codex workflows.",
+    "longDescription": "Installs repo-local Codex custom agent templates and routes requests to either paper-based baseline discovery or direction-based literature research with mandatory scope locking before search.",
+    "developerName": "Baseline Research",
+    "category": "Productivity",
+    "capabilities": [
+      "Interactive",
+      "Write"
+    ],
+    "defaultPrompt": [
+      "Find baselines for the paper in this repo.",
+      "Research this direction after clarifying scope.",
+      "Install the baseline research workflow agents."
+    ]
+  }
+}
