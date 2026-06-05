@@ -1,6 +1,6 @@
 {
   "name": "draft-paper-reviewer",
-  "version": "0.2.0+codex.20260605091457",
+  "version": "0.2.1",
   "description": "TeX-only draft paper review and revision workflow for Codex with local related-paper downloads, downloaded-paper convention mining, figure/table retention gates, formula-symbol first-use checks, material reports, term usage auditing, paired reviewer/reviser loops, XLSX revision ledgers, fixed numbered reports, and a 99 ultimate summary.",
   "author": {
     "name": "Draft Paper Reviewer"
