@@ -7,7 +7,7 @@ Authoritative prompt:
 - Read .codex/prompts/draft-paper-reviewer/domain_evidence_reviewer.md and follow it strictly.
 
 Output:
-- workspace/draft_paper_review/reports/reviewer_reports/domain_review.md
+- workspace/draft_paper_review/reports/reviewer_reports/09_domain_review.md
 
 Rules:
 - Missing-reference and novelty judgments require explicit comparison against related papers.

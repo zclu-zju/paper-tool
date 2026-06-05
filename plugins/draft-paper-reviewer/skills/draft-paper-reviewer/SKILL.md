@@ -1,6 +1,6 @@
 ---
 name: draft-paper-reviewer
-description: Use for TeX-only academic draft review and revision in a Codex repo. Installs repo-local custom agents from this plugin, rejects non-TeX submitted manuscripts, confirms all workflow parameters with defaults, infers and asks the user to confirm the paper topic, discovers and optionally downloads related papers, builds a local evidence map, runs multi-perspective reviewer and specialist audit agents, synthesizes scores and decisions, revises copied TeX files through one-to-one reviewer/reviser loops, records every round in an XLSX ledger, verifies revisions, and loops back until quality gates pass or objective limitations are deferred.
+description: Use for TeX-only academic draft review and revision in a Codex repo. Installs repo-local custom agents from this plugin, rejects non-TeX submitted manuscripts, confirms all workflow parameters with defaults, infers and asks the user to confirm the paper topic, discovers and optionally downloads related papers, builds a local evidence map, runs multi-perspective reviewer and specialist audit agents, synthesizes scores and decisions, revises copied TeX files through one-to-one reviewer/reviser loops, records every round in an XLSX ledger, verifies revisions, writes a numbered 99 ultimate summary, and loops back until quality gates pass or objective limitations are deferred.
 ---
 
 # Draft Paper Reviewer
@@ -15,6 +15,10 @@ The workflow accepts:
 The workflow rejects submitted manuscripts that are only PDF, Word, Markdown, plain text, image files, or otherwise lack TeX source. A compiled PDF may be used only as an optional inspection artifact after TeX source is accepted.
 
 Stage 0 must first confirm all workflow parameters with explicit defaults. Stage 2 then infers the manuscript topic and comparison boundary, and Stage 3 asks the user whether the inferred topic is accurate. The workflow must not search or review until requirements are ready and the topic scope is confirmed.
+
+The workflow is for improving the user's own draft. Missing experiments, incomplete tables, unfinished figures, and absent numeric results constrain only the affected result claims. They must not automatically weaken the motivation, method framing, contribution language, literature positioning, terminology, or field-style confidence. Agents must surface validated strengths and state them confidently within evidence boundaries.
+
+Related literature is used both as review evidence and as writing evidence. Discovery and evidence mapping preserve section-level examples of abstract structure, introduction moves, contribution framing, method exposition, experiment/table narration, limitation framing, and term usage so the paired revisers can adapt field-standard writing moves.
 
 ## Install Agents
 
@@ -83,17 +87,25 @@ Stage 2 infers the topic. Stage 3 must ask the user to confirm the inferred topi
 Only after:
 
 ```text
-requirements.md: STATUS: READY
-topic_scope.md: STATUS: USER_CONFIRMED
+00_requirements.md: STATUS: READY
+02_topic_scope.md: STATUS: USER_CONFIRMED
 ```
 
 may the workflow search related papers.
+
+After the integrity gate passes, Stage 15 must run the final summary agent and write:
+
+```text
+workspace/draft_paper_review/reports/99_ultimate_summary.md
+```
+
+That report is the first report the user should read.
 
 ## Evidence Rule
 
 All review and audit conclusions must be traceable to:
 - a manuscript location, such as page/section/paragraph, line, figure, table, claim ID, or TeX file path;
-- one or more entries in `workspace/draft_paper_review/reports/evidence_map.csv`;
+- one or more entries in `workspace/draft_paper_review/reports/05_evidence_map.csv`;
 - downloaded or verified related literature when the issue concerns novelty, terminology, field norms, literature positioning, SOTA comparison, methods, or writing style.
 
 Generic comments such as "the novelty is weak" are invalid unless they name the overlapping prior work and explain the specific overlap.
@@ -109,25 +121,28 @@ workspace/draft_paper_review/
 Main report paths:
 
 ```text
-workspace/draft_paper_review/reports/requirements.md
-workspace/draft_paper_review/reports/manuscript_inventory.md
-workspace/draft_paper_review/reports/topic_scope.md
-workspace/draft_paper_review/reports/literature_candidates.csv
-workspace/draft_paper_review/reports/paper_artifacts.csv
-workspace/draft_paper_review/reports/evidence_map.csv
-workspace/draft_paper_review/reports/reviewer_configuration.md
+workspace/draft_paper_review/reports/00_requirements.md
+workspace/draft_paper_review/reports/01_manuscript_inventory.md
+workspace/draft_paper_review/reports/02_topic_scope.md
+workspace/draft_paper_review/reports/03_literature_candidates.csv
+workspace/draft_paper_review/reports/04_paper_artifacts.csv
+workspace/draft_paper_review/reports/05_evidence_map.csv
+workspace/draft_paper_review/reports/06_reviewer_configuration.md
 workspace/draft_paper_review/reports/reviewer_reports/
 workspace/draft_paper_review/reports/specialist_audits/
-workspace/draft_paper_review/reports/editorial_decision.md
-workspace/draft_paper_review/reports/revision_plan.md
-workspace/draft_paper_review/reports/paired_revision_summary.md
-workspace/draft_paper_review/reports/revision_changes.md
-workspace/draft_paper_review/reports/revision_ledger.jsonl
-workspace/draft_paper_review/reports/revision_ledger.xlsx
-workspace/draft_paper_review/reports/revision_ledger_csv/
-workspace/draft_paper_review/reports/revision_verification.md
-workspace/draft_paper_review/reports/integrity_report.md
-workspace/draft_paper_review/reports/iteration_log.md
+workspace/draft_paper_review/reports/specialist_audits/15_term_usage_consistency_audit.md
+workspace/draft_paper_review/reports/23_editorial_decision.md
+workspace/draft_paper_review/reports/24_revision_plan.md
+workspace/draft_paper_review/reports/25_paired_revision_summary.md
+workspace/draft_paper_review/reports/26_revision_changes.md
+workspace/draft_paper_review/reports/27_revision_ledger.jsonl
+workspace/draft_paper_review/reports/27_revision_ledger.xlsx
+workspace/draft_paper_review/reports/27_revision_ledger_csv/
+workspace/draft_paper_review/reports/28_revision_verification.md
+workspace/draft_paper_review/reports/29_integrity_report.md
+workspace/draft_paper_review/reports/30_iteration_log.md
+workspace/draft_paper_review/reports/31_deferred_issues.md
+workspace/draft_paper_review/reports/99_ultimate_summary.md
 workspace/draft_paper_review/revision/
 workspace/draft_paper_review/literature/papers/
 ```
@@ -182,4 +197,4 @@ The integrity reviewer can reject and return to:
 - Stage 12 Paired Revision Coordinator;
 - Stage 13 Revision Verifier.
 
-If no new user input is required, the orchestrator retries automatically subject to the configured iteration policy. By default, the workflow has no global iteration cap, but the same stage/problem pair is retried at most 3 times unless the user sets another value. When the cap is reached, the issue is recorded in `iteration_log.md` and `deferred_issues.md`, excluded from further loopback, and carried into the final risk summary.
+If no new user input is required, the orchestrator retries automatically subject to the configured iteration policy. By default, the workflow has no global iteration cap, but the same stage/problem pair is retried at most 3 times unless the user sets another value. When the cap is reached, the issue is recorded in `30_iteration_log.md` and `31_deferred_issues.md`, excluded from further loopback, and carried into the final risk summary.

@@ -8,9 +8,9 @@ You are not a sixth reviewer. You must not invent new issues. Every decision poi
 
 ## Inputs
 
-- `workspace/draft_paper_review/reports/requirements.md`
-- `workspace/draft_paper_review/reports/topic_scope.md`
-- `workspace/draft_paper_review/reports/evidence_map.csv`
+- `workspace/draft_paper_review/reports/00_requirements.md`
+- `workspace/draft_paper_review/reports/02_topic_scope.md`
+- `workspace/draft_paper_review/reports/05_evidence_map.csv`
 - all files under `workspace/draft_paper_review/reports/reviewer_reports/`
 - all files under `workspace/draft_paper_review/reports/specialist_audits/`
 
@@ -26,6 +26,9 @@ You are not a sixth reviewer. You must not invent new issues. Every decision poi
 8. Produce an editorial decision and revision priorities.
 9. Apply missing-score policy for objectively unassessable dimensions.
 10. Carry deferred objective limitations into the final decision instead of treating them as resolved.
+11. Synthesize validated strengths and the strongest confident-but-bounded claims supported by reviewer/audit evidence.
+12. Separate unsupported result or evidence boundaries from actual contribution weakness.
+13. Include term/proper-noun consistency and literature-calibrated writing lessons when Stage 9 reports them.
 
 ## Scoring Contract
 
@@ -95,10 +98,13 @@ Before finalizing, check for:
 - revision plan impossible because root evidence is missing.
 - objective limitations being repeatedly retried after the configured cap;
 - numeric scores assigned to unassessable dimensions.
+- validated strengths being omitted from the decision package;
+- missing draft data being used to depress unrelated writing, motivation, method, or contribution dimensions;
+- synthesis that only recommends caution and never states how the paper can present defensible strengths.
 
 ## Output
 
-Write `workspace/draft_paper_review/reports/editorial_decision.md`:
+Write `workspace/draft_paper_review/reports/23_editorial_decision.md`:
 
 ```markdown
 # Evidence-Based Editorial Decision
@@ -130,6 +136,14 @@ STATUS: [READY or NEEDS_REVIEW_RERUN or NEEDS_EVIDENCE_REPAIR]
 | Reviewer | Recommendation | Confidence | Key Strength | Key Risk |
 |---|---|---:|---|---|
 
+## What Can Be Claimed Confidently
+| Claim Or Contribution | Source Reports/Audits | Evidence IDs | Strong Safe Framing | Boundary To Preserve |
+|---|---|---|---|---|
+
+## Claim Boundary Versus Contribution Weakness
+| Issue | Boundary Type | Affected Claim Only | Does It Weaken Core Contribution? | Handling |
+|---|---|---|---|---|
+
 ## Consensus Analysis
 ### Points Of Agreement
 - [CONSENSUS-4/3] [Issue, source reports, manuscript location, evidence IDs]
@@ -153,6 +167,10 @@ STATUS: [READY or NEEDS_REVIEW_RERUN or NEEDS_EVIDENCE_REPAIR]
 ## Suggested Revisions
 | Revision ID | Issue | Source | Priority | Expected Improvement |
 |---|---|---|---|---|
+
+## Literature-Calibrated Writing And Term Lessons
+| Lesson Type | Source Reports/Audits | Evidence IDs | Revision Implication |
+|---|---|---|---|
 
 ## Evidence Compliance Check
 | Synthesized Issue | Evidence IDs Present | Manuscript Location Present | Status |
@@ -179,3 +197,5 @@ STATUS: [READY or NEEDS_REVIEW_RERUN or NEEDS_EVIDENCE_REPAIR]
 - Do not inflate scores to reach the threshold.
 - Do not score missing experiments, missing raw data, unavailable proprietary datasets, or missing approvals as if the manuscript had supplied them. Mark them as objective missing evidence when appropriate.
 - Do not hide deferred limitations from the decision.
+- Do not let `N/A_OBJECTIVE_MISSING` or deferred missing result material suppress validated strengths in unrelated dimensions.
+- Do not make the decision package only a list of weaknesses. It must state the paper's strongest defensible story and the exact boundaries that keep that story evidence-safe.

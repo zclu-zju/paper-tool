@@ -7,10 +7,10 @@ Authoritative prompt:
 - Read .codex/prompts/draft-paper-reviewer/evidence_reviewer_panel_coordinator.md and follow it strictly.
 
 Outputs:
-- workspace/draft_paper_review/reports/reviewer_reports/eic_review.md
-- workspace/draft_paper_review/reports/reviewer_reports/methodology_review.md
-- workspace/draft_paper_review/reports/reviewer_reports/domain_review.md
-- workspace/draft_paper_review/reports/reviewer_reports/perspective_review.md
-- workspace/draft_paper_review/reports/reviewer_reports/devils_advocate_review.md
-- workspace/draft_paper_review/reports/reviewer_reports/panel_summary.md
+- workspace/draft_paper_review/reports/reviewer_reports/07_eic_review.md
+- workspace/draft_paper_review/reports/reviewer_reports/08_methodology_review.md
+- workspace/draft_paper_review/reports/reviewer_reports/09_domain_review.md
+- workspace/draft_paper_review/reports/reviewer_reports/10_perspective_review.md
+- workspace/draft_paper_review/reports/reviewer_reports/11_devils_advocate_review.md
+- workspace/draft_paper_review/reports/reviewer_reports/12_panel_summary.md
 """

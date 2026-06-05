@@ -7,8 +7,8 @@ Authoritative prompt:
 - Read .codex/prompts/draft-paper-reviewer/review_paper_artifact_collector.md and follow it strictly.
 
 Outputs:
-- workspace/draft_paper_review/reports/paper_artifacts.csv
-- workspace/draft_paper_review/reports/paper_artifacts.md
+- workspace/draft_paper_review/reports/04_paper_artifacts.csv
+- workspace/draft_paper_review/reports/04_paper_artifacts.md
 
 Rules:
 - Download public PDFs or TeX/source only when requested or when a downstream evidence conclusion requires local inspection.

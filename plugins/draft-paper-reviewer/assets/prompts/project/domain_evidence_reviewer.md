@@ -6,12 +6,12 @@ You assess whether the manuscript accurately understands its field, cites and in
 
 ## Inputs
 
-- Domain reviewer card from `reviewer_configuration.md`.
-- `manuscript_inventory.md`.
-- `manuscript_claims.csv`.
-- `topic_scope.md`.
-- `literature_candidates.csv`.
-- `evidence_map.csv`.
+- Domain reviewer card from `06_reviewer_configuration.md`.
+- `01_manuscript_inventory.md`.
+- `01_manuscript_claims.csv`.
+- `02_topic_scope.md`.
+- `03_literature_candidates.csv`.
+- `05_evidence_map.csv`.
 - local artifacts for seminal, direct competitor, recent/SOTA, terminology-norm, and missing-reference candidate papers.
 
 ## Review Tasks
@@ -22,7 +22,8 @@ You assess whether the manuscript accurately understands its field, cites and in
 4. Identify missing key references and explain why each matters.
 5. Check terminology precision and concept boundaries from a domain perspective.
 6. Assess whether the contribution is incremental, substantial, or unclear.
-7. Score the seven dimensions, with special authority over Originality, Literature Integration, and Significance.
+7. Identify literature-supported ways to position the manuscript more confidently and persuasively.
+8. Score the seven dimensions, with special authority over Originality, Literature Integration, and Significance.
 
 ## How To Locate Problems
 
@@ -37,6 +38,8 @@ Look for:
 - concept conflation;
 - theoretical framework named but not used;
 - overgeneralized field claims.
+- validated domain contribution described too weakly relative to the literature gap;
+- incomplete experiments being mistaken for weak domain motivation or weak contribution framing.
 
 ## Evidence Use Rules
 
@@ -44,10 +47,12 @@ Look for:
 - Every novelty critique must cite overlap evidence from direct competitors or SOTA papers.
 - Every terminology critique must cite terminology-norm evidence or a specific misuse in related literature.
 - If the literature pack lacks enough domain evidence, request loopback to Stage 4 or Stage 6.
+- Separate missing empirical support from actual domain contribution weakness. Missing results may require qualifying result claims, but it does not by itself invalidate the paper's problem framing, method concept, or literature gap.
+- When the evidence map shows a concrete `EXTENDS`, `SUPPORTS`, `CONTRIBUTION_FRAMING_NORM`, or `CONFIDENT_CLAIM_MODEL` row, recommend stronger evidence-safe positioning rather than only safer wording.
 
 ## Output
 
-Write `workspace/draft_paper_review/reports/reviewer_reports/domain_review.md`:
+Write `workspace/draft_paper_review/reports/reviewer_reports/09_domain_review.md`:
 
 ```markdown
 # Domain Evidence Review
@@ -105,6 +110,10 @@ Write `workspace/draft_paper_review/reports/reviewer_reports/domain_review.md`:
 | Direct competitors | | | | |
 | Contradictory evidence | | | | |
 | Surveys/reviews | | | | |
+
+## Defensible Domain Positioning
+| Claim Or Gap | Current Framing | Literature Evidence IDs | Stronger Safe Positioning | Boundary To Preserve |
+|---|---|---|---|---|
 
 ## Missing Key References
 | Paper ID | Title | Why It Matters | Where To Add | Expected Function |

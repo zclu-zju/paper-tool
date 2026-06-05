@@ -6,11 +6,11 @@ Your job is to convert the editorial decision, reviewer reports, and specialist 
 
 ## Inputs
 
-- `workspace/draft_paper_review/reports/requirements.md`
-- `workspace/draft_paper_review/reports/editorial_decision.md`
+- `workspace/draft_paper_review/reports/00_requirements.md`
+- `workspace/draft_paper_review/reports/23_editorial_decision.md`
 - Stage 8 reviewer reports
 - Stage 9 specialist audits
-- `workspace/draft_paper_review/reports/evidence_map.csv`
+- `workspace/draft_paper_review/reports/05_evidence_map.csv`
 - manuscript inventory and claim map.
 
 ## Planning Tasks
@@ -29,6 +29,9 @@ Your job is to convert the editorial decision, reviewer reports, and specialist 
 6. Identify tasks that need user decision because they change research positioning.
 7. Identify tasks that cannot be completed from the current manuscript/workspace and classify them as objective limitations instead of sending the workflow into repeated impossible edits.
 8. Preserve the paper's central narrative: the one-sentence contribution, the evidence that supports it, and why the target community should care.
+9. Add explicit tasks to strengthen validated claims when reviewers or auditors found the draft too timid or under-positioned.
+10. Add explicit tasks to adopt related-paper writing moves when the evidence map includes section-level exemplars.
+11. Add explicit tasks to fix term/proper-noun usage when the term-usage consistency audit reports inconsistent or nonstandard usage.
 
 ## Revision Task Types
 
@@ -38,9 +41,12 @@ Allowed task types:
 - `ADD_OR_REWRITE_LITERATURE`
 - `ADD_METHOD_DETAIL`
 - `QUALIFY_CLAIM`
+- `STRENGTHEN_DEFENSIBLE_CLAIM`
+- `ADOPT_LITERATURE_STYLE_MOVE`
 - `ADD_LIMITATION`
 - `RESTRUCTURE_ARGUMENT`
 - `FIX_TERMINOLOGY`
+- `FIX_TERM_USAGE`
 - `ADJUST_FIELD_STYLE`
 - `ADD_OR_FIX_CITATION`
 - `POLISH_LANGUAGE`
@@ -64,6 +70,8 @@ Look for:
 - missing local TeX source for direct revision.
 - missing experiments, raw data, model checkpoints, annotations, IRB/ethics approval, or proprietary artifacts that cannot be created by text revision;
 - requests to fabricate results, citations, or claims.
+- tasks that respond to missing experiments by weakening unrelated motivation, method, contribution, or terminology language;
+- missing tasks for validated strengths that the editorial decision, writing audit, field-style audit, or literature-positioning audit said should be stated more confidently.
 
 ## Writing Strategy Rules
 
@@ -74,11 +82,14 @@ Use the ML paper writing principles when the paper is ML/AI or computational:
 - Abstract revisions should follow a compact structure: what was achieved, why it matters, how it works, what evidence supports it, and the most important result when available.
 - Introduction revisions should front-load problem, gap, approach, contribution bullets, and results preview.
 - If experiments/results are missing, plan a limitation or placeholder note; do not invent numbers.
+- Missing experiments/results should create local result boundaries, placeholders, or objective-limitation records. They should not automatically weaken the abstract's problem motivation, method description, contribution naming, or literature gap.
+- Use related-paper exemplars as concrete models for section structure, rhetorical moves, contribution phrasing, experiment setup prose, table narration, and limitation framing. Cite the relevant evidence IDs in the task.
+- Plan confident but bounded revisions: strengthen what the draft and literature evidence support, and qualify only the exact unsupported portion.
 - Reproducibility, limitations, ethics/broader-impact, compute, datasets, and code availability should be added when the target venue expects them.
 
 ## Output
 
-Write `workspace/draft_paper_review/reports/revision_plan.md`:
+Write `workspace/draft_paper_review/reports/24_revision_plan.md`:
 
 ```markdown
 # Evidence-Based Revision Plan
@@ -108,6 +119,18 @@ STATUS: [READY or NOT_REQUESTED or NEEDS_USER_DECISION or NEEDS_MORE_EVIDENCE]
 | Section | Tasks | Strategy | Risks |
 |---|---|---|---|
 
+## Confident Claim Strengthening Plan
+| Claim Or Section | Source Reports/Audits | Evidence IDs | Stronger Safe Framing | Boundary To Preserve | Paired Scope |
+|---|---|---|---|---|---|
+
+## Literature Style Adoption Plan
+| Section Or Scope | Exemplar Evidence IDs | Writing Move To Adopt | Revision Task IDs | Acceptance Criteria |
+|---|---|---|---|---|
+
+## Term Usage Revision Plan
+| Term Area | Source Audit | Required Canonical Usage | Target Locations | Revision Task IDs |
+|---|---|---|---|---|
+
 ## User Decisions Needed
 | Decision ID | Question | Options | Why User Input Is Needed |
 |---|---|---|---|
@@ -128,16 +151,20 @@ STATUS: [READY or NOT_REQUESTED or NEEDS_USER_DECISION or NEEDS_MORE_EVIDENCE]
 - Abstract Strategy:
 - Introduction Strategy:
 - Contribution Bullet Strategy:
+- Literature Style Lessons:
+- Term Usage Strategy:
 - Limitation Strategy:
 
 ## Downstream Instructions For Paired Revision Coordinator
 - Preserve original manuscript:
 - Create revised copies under:
 - Do not change scientific meaning unless task explicitly requires:
-- Cite every substantive change in revision_changes.md:
+- Cite every substantive change in 26_revision_changes.md:
 - Map each task to a fixed or issue-based reviewer/reviser pair:
-- Record every review/write round in revision_ledger.jsonl:
-- Export revision_ledger.xlsx with the openpyxl ledger tool:
+- Record every review/write round in 27_revision_ledger.jsonl:
+- Export 27_revision_ledger.xlsx with the openpyxl ledger tool:
+- Use related-paper writing exemplar evidence for style, claim-framing, table-narrative, and limitation-framing edits:
+- Strengthen validated contributions where requested; qualify only the specific unsupported claim boundary:
 - Never invent experiments, results, citations, or unsupported claims:
 ```
 
@@ -148,3 +175,4 @@ STATUS: [READY or NOT_REQUESTED or NEEDS_USER_DECISION or NEEDS_MORE_EVIDENCE]
 - Do not ask the reviser to invent evidence.
 - Do not create endless revision tasks for missing objective material. Defer them with explicit risk wording when policy allows.
 - Do not allow a reviser to approve its own edits; every substantive change must return to the paired reviewer.
+- Do not create a revision plan that only weakens claims. If validated strengths exist, include tasks that help the paper state them clearly and professionally.

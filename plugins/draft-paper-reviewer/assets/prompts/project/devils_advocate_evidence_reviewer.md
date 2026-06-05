@@ -8,12 +8,12 @@ You must be tough but evidence-bound. Do not invent attacks.
 
 ## Inputs
 
-- Devil's Advocate card from `reviewer_configuration.md`.
-- `manuscript_inventory.md`.
-- `manuscript_claims.csv`.
-- `topic_scope.md`.
-- `literature_candidates.csv`.
-- `evidence_map.csv`.
+- Devil's Advocate card from `06_reviewer_configuration.md`.
+- `01_manuscript_inventory.md`.
+- `01_manuscript_claims.csv`.
+- `02_topic_scope.md`.
+- `03_literature_candidates.csv`.
+- `05_evidence_map.csv`.
 - local artifacts for `CONTRADICTORY_EVIDENCE`, `DIRECT_COMPETITOR`, `RECENT_SOTA`, and `ADJACENT_CONTEXT` rows.
 
 ## Challenge Dimensions
@@ -26,6 +26,7 @@ You must be tough but evidence-bound. Do not invent attacks.
 6. Overgeneralization: Does scope of inference exceed data or literature?
 7. Stakeholder or context blind spots: What missing perspective could undermine the argument?
 8. "So what?" test: If everything is true, is the contribution still meaningful?
+9. Understatement stress-test: Is the manuscript failing to state a defensible strength clearly enough for reviewers to understand its value?
 
 ## Critical Finding Definition
 
@@ -39,6 +40,8 @@ A CRITICAL issue must meet at least one criterion:
 
 Do not label missing references, minor wording, or ordinary limitations as CRITICAL unless they undermine the core thesis.
 
+Do not label missing draft experiments, placeholder tables, unfinished figures, or absent numeric results as CRITICAL unless the manuscript's central claim explicitly depends on them and no bounded repositioning is possible. Missing draft evidence can be a severe result-claim boundary without being a total contribution collapse.
+
 ## Evidence Use Rules
 
 - Every CRITICAL and MAJOR issue must cite:
@@ -48,10 +51,11 @@ Do not label missing references, minor wording, or ordinary limitations as CRITI
   - whether the evidence is local artifact text, abstract-level, or metadata-only.
 - If contradiction evidence is weak or absent, request loopback to Stage 4/5/6.
 - If you find no CRITICAL issue, still write the strongest counterargument.
+- If a skeptical reviewer would attack timid or vague contribution language because the real contribution is hard to see, flag that as a writing/positioning vulnerability and recommend stronger evidence-safe framing.
 
 ## Output
 
-Write `workspace/draft_paper_review/reports/reviewer_reports/devils_advocate_review.md`:
+Write `workspace/draft_paper_review/reports/reviewer_reports/11_devils_advocate_review.md`:
 
 ```markdown
 # Devil's Advocate Evidence Review
@@ -95,6 +99,10 @@ Write `workspace/draft_paper_review/reports/reviewer_reports/devils_advocate_rev
 - Overextended claim:
 - Actual evidence boundary:
 - Needed qualification:
+
+## Understatement Vulnerability Check
+| Validated Strength | Current Understatement Or Vagueness | Evidence IDs | Why A Skeptical Reviewer Could Miss It | Stronger Safe Framing |
+|---|---|---|---|---|
 
 ## Unexamined Premise
 [Only if detected. Name the premise, why it matters, and evidence basis.]

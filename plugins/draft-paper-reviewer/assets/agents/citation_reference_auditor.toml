@@ -7,5 +7,5 @@ Authoritative prompt:
 - Read .codex/prompts/draft-paper-reviewer/citation_reference_auditor.md and follow it strictly.
 
 Output:
-- workspace/draft_paper_review/reports/specialist_audits/citation_reference_audit.md
+- workspace/draft_paper_review/reports/specialist_audits/20_citation_reference_audit.md
 """

@@ -8,10 +8,10 @@ You are not judging whether the whole paper is good. You are auditing the defens
 
 ## Inputs
 
-- `manuscript_claims.csv`, especially `NOVELTY`, `PROBLEM_GAP`, and `SIGNIFICANCE` claims.
-- `topic_scope.md`.
-- `literature_candidates.csv`.
-- `evidence_map.csv`.
+- `01_manuscript_claims.csv`, especially `NOVELTY`, `PROBLEM_GAP`, and `SIGNIFICANCE` claims.
+- `02_topic_scope.md`.
+- `03_literature_candidates.csv`.
+- `05_evidence_map.csv`.
 - local artifacts for direct competitors, recent/SOTA papers, surveys, and contradictory evidence when available.
 
 ## Audit Tasks
@@ -20,8 +20,9 @@ You are not judging whether the whole paper is good. You are auditing the defens
 2. Map each novelty phrase to manuscript claim IDs and locations.
 3. Compare each novelty claim against direct competitors and recent/SOTA papers.
 4. Classify each novelty claim as defensible, overstated, unsupported, already covered, or needs repositioning.
-5. Propose narrower, evidence-safe novelty wording.
-6. Identify whether more literature search is needed before a fair novelty judgment can be made.
+5. Propose stronger or narrower evidence-safe novelty wording as appropriate.
+6. Identify defensible contribution deltas that the manuscript currently underemphasizes.
+7. Identify whether more literature search is needed before a fair novelty judgment can be made.
 
 ## How To Locate Problems
 
@@ -34,6 +35,7 @@ Look for:
 - reliance on old references while ignoring recent/SOTA work;
 - gap statements contradicted by survey or benchmark papers;
 - contribution list items that are implementation details rather than research contributions.
+- contribution claims that are true but written so weakly that the actual novelty is hard to see.
 
 ## Evidence Use Rules
 
@@ -41,10 +43,12 @@ Look for:
 - If only abstract-level evidence supports the downgrade, mark confidence as `MEDIUM` or lower.
 - If a novelty claim appears defensible, cite `EXTENDS` or clear non-overlap evidence.
 - Do not say "not novel" without naming what prior paper overlaps and how.
+- Do not convert missing experiment/table data into a blanket novelty downgrade. Missing results may limit performance or empirical-superiority claims, but novelty can still exist in problem framing, method design, dataset setting, theoretical framing, or integration.
+- When evidence supports a defensible delta, recommend direct professional wording and list the boundary that prevents overclaiming.
 
 ## Output
 
-Write `workspace/draft_paper_review/reports/specialist_audits/novelty_claim_audit.md`:
+Write `workspace/draft_paper_review/reports/specialist_audits/13_novelty_claim_audit.md`:
 
 ```markdown
 # Novelty Claim Audit
@@ -72,6 +76,10 @@ STATUS: [READY or NEEDS_MORE_LITERATURE or NEEDS_LOCAL_ARTIFACTS]
 - Related-paper evidence:
 - Why the claim is risky:
 - Safer revised positioning:
+
+## Strengthening Opportunities
+| Claim ID | Understated Contribution | Evidence IDs | Stronger Safe Novelty Language | Boundary To Preserve |
+|---|---|---|---|---|
 
 ## Defensible Contributions
 | Claim ID | Contribution Delta | Evidence IDs | How To Emphasize |

@@ -6,10 +6,10 @@ Your job is to configure an evidence-aware peer review panel based on the confir
 
 ## Inputs
 
-- `workspace/draft_paper_review/reports/topic_scope.md`
-- `workspace/draft_paper_review/reports/manuscript_inventory.md`
-- `workspace/draft_paper_review/reports/evidence_map.csv`
-- `workspace/draft_paper_review/reports/evidence_map.md`
+- `workspace/draft_paper_review/reports/02_topic_scope.md`
+- `workspace/draft_paper_review/reports/01_manuscript_inventory.md`
+- `workspace/draft_paper_review/reports/05_evidence_map.csv`
+- `workspace/draft_paper_review/reports/05_evidence_map.md`
 
 ## Panel Roles
 
@@ -29,6 +29,7 @@ For each reviewer:
 - define what they are expert in;
 - define 3-5 focus questions;
 - define evidence-map categories they must inspect;
+- define writing-posture evidence they must inspect, such as `CONFIDENT_CLAIM_MODEL`, `CONTRIBUTION_FRAMING_NORM`, `STYLE_NORM`, `TERM_USAGE_NORM`, and section-level exemplar rows when relevant;
 - define manuscript sections they must inspect;
 - define possible blind spots;
 - define what they must not review to prevent duplicate generic comments.
@@ -39,10 +40,11 @@ For each reviewer:
 - Reviewer focus areas must not collapse into the same generic review.
 - The Devil's Advocate must be included and must have authority to flag CRITICAL issues.
 - The configuration must explicitly instruct reviewers to use downloaded literature and evidence_map rows.
+- The configuration must explicitly instruct reviewers not to convert missing draft experiments, placeholder tables, or incomplete figures into broad pessimism about motivation, method design, or contribution framing. Those gaps limit result claims; validated strengths should still be reported and strengthened.
 
 ## Output
 
-Write `workspace/draft_paper_review/reports/reviewer_configuration.md`:
+Write `workspace/draft_paper_review/reports/06_reviewer_configuration.md`:
 
 ```markdown
 ## STATUS
@@ -63,6 +65,7 @@ STATUS: [READY or NEEDS_EVIDENCE_MAP_REPAIR]
 - Review Focus:
 - Required Manuscript Material:
 - Required Evidence Map Categories:
+- Required Writing/Posture Evidence:
 - Required Literature Artifacts:
 - Must Not Cover:
 - Possible Blind Spots:

@@ -8,7 +8,7 @@ You are not a reviewer. You do not judge quality. You create reliable source mat
 
 ## Inputs
 
-- `workspace/draft_paper_review/reports/requirements.md`
+- `workspace/draft_paper_review/reports/00_requirements.md`
 - The TeX source path and TeX root recorded in requirements.
 
 ## What To Extract
@@ -45,7 +45,7 @@ Do not call these academic weaknesses. They are ingestion findings.
 
 ## Rules
 
-- Continue only if requirements.md says `STATUS: READY`.
+- Continue only if 00_requirements.md says `STATUS: READY`.
 - Continue only if Stage 0 accepted `TEX_SOURCE_FOLDER` or `TEX_ROOT_FILE`.
 - If requirements indicate `STATUS: UNSUPPORTED_INPUT`, stop and do not ingest.
 - Treat all original manuscript files as read-only.
@@ -57,7 +57,7 @@ Do not call these academic weaknesses. They are ingestion findings.
 
 ## Outputs
 
-Write `workspace/draft_paper_review/reports/manuscript_inventory.md`:
+Write `workspace/draft_paper_review/reports/01_manuscript_inventory.md`:
 
 ```markdown
 ## STATUS
@@ -97,7 +97,7 @@ STATUS: [READY or NEEDS_USER_INPUT or EXTRACTION_PARTIAL or FAILED]
 - [Problem, location, consequence, suggested next step]
 ```
 
-Write `workspace/draft_paper_review/reports/manuscript_claims.csv` with this header:
+Write `workspace/draft_paper_review/reports/01_manuscript_claims.csv` with this header:
 
 ```csv
 claim_id,section_id,location,claim_text,claim_type,linked_citations,requires_literature_check,requires_method_check,requires_evidence_check,notes

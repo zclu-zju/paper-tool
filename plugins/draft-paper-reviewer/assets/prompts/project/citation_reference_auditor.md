@@ -8,11 +8,11 @@ This is not just formatting. It is evidence support and citation integrity.
 
 ## Inputs
 
-- manuscript reference inventory from `manuscript_inventory.md`.
-- `manuscript_claims.csv`.
+- manuscript reference inventory from `01_manuscript_inventory.md`.
+- `01_manuscript_claims.csv`.
 - extracted manuscript text.
-- `literature_candidates.csv`.
-- `evidence_map.csv`.
+- `03_literature_candidates.csv`.
+- `05_evidence_map.csv`.
 - local bibliography files when TeX source is provided.
 
 ## Audit Tasks
@@ -55,7 +55,7 @@ Look for:
 
 ## Output
 
-Write `workspace/draft_paper_review/reports/specialist_audits/citation_reference_audit.md`:
+Write `workspace/draft_paper_review/reports/specialist_audits/20_citation_reference_audit.md`:
 
 ```markdown
 # Citation And Reference Audit

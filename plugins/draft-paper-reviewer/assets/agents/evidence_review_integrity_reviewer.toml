@@ -7,7 +7,7 @@ Authoritative prompt:
 - Read .codex/prompts/draft-paper-reviewer/evidence_review_integrity_reviewer.md and follow it strictly.
 
 Output:
-- workspace/draft_paper_review/reports/integrity_report.md
+- workspace/draft_paper_review/reports/29_integrity_report.md
 
 Rules:
 - Be strict. If evidence is missing, reject with a target stage.

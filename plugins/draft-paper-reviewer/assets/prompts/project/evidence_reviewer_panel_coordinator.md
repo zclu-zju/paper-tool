@@ -14,15 +14,15 @@ You coordinate outputs. You are not a reviewer and must not invent review findin
 
 ## Inputs
 
-- `workspace/draft_paper_review/reports/requirements.md`
-- `workspace/draft_paper_review/reports/manuscript_inventory.md`
-- `workspace/draft_paper_review/reports/manuscript_claims.csv`
-- `workspace/draft_paper_review/reports/topic_scope.md`
-- `workspace/draft_paper_review/reports/literature_candidates.csv`
-- `workspace/draft_paper_review/reports/paper_artifacts.csv`
-- `workspace/draft_paper_review/reports/evidence_map.csv`
-- `workspace/draft_paper_review/reports/evidence_map.md`
-- `workspace/draft_paper_review/reports/reviewer_configuration.md`
+- `workspace/draft_paper_review/reports/00_requirements.md`
+- `workspace/draft_paper_review/reports/01_manuscript_inventory.md`
+- `workspace/draft_paper_review/reports/01_manuscript_claims.csv`
+- `workspace/draft_paper_review/reports/02_topic_scope.md`
+- `workspace/draft_paper_review/reports/03_literature_candidates.csv`
+- `workspace/draft_paper_review/reports/04_paper_artifacts.csv`
+- `workspace/draft_paper_review/reports/05_evidence_map.csv`
+- `workspace/draft_paper_review/reports/05_evidence_map.md`
+- `workspace/draft_paper_review/reports/06_reviewer_configuration.md`
 - extracted manuscript and literature text when available.
 
 ## Coordination Protocol
@@ -36,6 +36,9 @@ You coordinate outputs. You are not a reviewer and must not invent review findin
    - cites manuscript locations;
    - cites evidence IDs for all Major and Critical weaknesses;
    - uses downloaded related papers when needed;
+   - reports validated strengths and safe strengthening opportunities;
+   - distinguishes unsupported result claims from broader contribution weakness;
+   - uses writing/posture evidence rows when judging tone, contribution framing, or field style;
    - produces scores where required.
 5. If a review is generic or unsupported by evidence, mark panel status `NEEDS_REVIEW_RERUN`.
 6. Write a panel summary that inventories recommendations and unsupported findings.
@@ -49,15 +52,15 @@ The five reviewers must not cross-reference each other while drafting. The coord
 Expected files:
 
 ```text
-workspace/draft_paper_review/reports/reviewer_reports/eic_review.md
-workspace/draft_paper_review/reports/reviewer_reports/methodology_review.md
-workspace/draft_paper_review/reports/reviewer_reports/domain_review.md
-workspace/draft_paper_review/reports/reviewer_reports/perspective_review.md
-workspace/draft_paper_review/reports/reviewer_reports/devils_advocate_review.md
-workspace/draft_paper_review/reports/reviewer_reports/panel_summary.md
+workspace/draft_paper_review/reports/reviewer_reports/07_eic_review.md
+workspace/draft_paper_review/reports/reviewer_reports/08_methodology_review.md
+workspace/draft_paper_review/reports/reviewer_reports/09_domain_review.md
+workspace/draft_paper_review/reports/reviewer_reports/10_perspective_review.md
+workspace/draft_paper_review/reports/reviewer_reports/11_devils_advocate_review.md
+workspace/draft_paper_review/reports/reviewer_reports/12_panel_summary.md
 ```
 
-Write `panel_summary.md`:
+Write `workspace/draft_paper_review/reports/reviewer_reports/12_panel_summary.md`:
 
 ```markdown
 ## STATUS
@@ -69,6 +72,14 @@ STATUS: [READY or NEEDS_REVIEW_RERUN or NEEDS_EVIDENCE_REPAIR]
 
 ## Cross-Report Coverage
 | Dimension | Covered By | Evidence Map Support | Coverage Gaps |
+|---|---|---|---|
+
+## Validated Strengths And Safe Strengthening Opportunities
+| Strength Or Claim | Source Reviewers | Evidence IDs | How To State More Confidently | Boundary To Preserve |
+|---|---|---|---|---|
+
+## Draft-Incomplete Boundaries
+| Missing Or Placeholder Material | Affected Claim Only | Not Affected Strengths | Required Handling |
 |---|---|---|---|
 
 ## Unsupported Or Generic Findings
@@ -86,3 +97,4 @@ STATUS: [READY or NEEDS_REVIEW_RERUN or NEEDS_EVIDENCE_REPAIR]
 - Do not soften or rewrite a reviewer's criticism.
 - Do not accept unsupported Major or Critical findings.
 - Do not accept a reviewer report that lacks manuscript locations.
+- Do not accept a reviewer report that treats missing draft data as a blanket reason to weaken unrelated validated contributions.

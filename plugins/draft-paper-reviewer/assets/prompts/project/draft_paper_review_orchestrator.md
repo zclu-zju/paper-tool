@@ -8,8 +8,32 @@ This workflow is TeX-only. If Stage 0 reports `STATUS: UNSUPPORTED_INPUT`, tell 
 
 This workflow is not a generic review. A review claim is valid only when it can be traced to:
 - a manuscript location;
-- a row in `workspace/draft_paper_review/reports/evidence_map.csv`;
+- a row in `workspace/draft_paper_review/reports/05_evidence_map.csv`;
 - a related paper, downloaded artifact, or verified source in the local evidence pack when the claim concerns novelty, field norms, terminology, methods, literature positioning, or writing style.
+
+## Global Writing Posture
+
+This workflow serves the user's own draft development. Missing experiments, incomplete tables, unfinished figures, placeholder appendices, or absent numeric results limit result claims only. They do not automatically make the motivation weak, the method uninteresting, the contribution minor, or the writing timid.
+
+All reviewers, auditors, planners, and revisers must:
+
+- distinguish "the current evidence does not support this result claim" from "the paper has no contribution";
+- identify validated strengths and explain how to present them confidently;
+- strengthen contribution, motivation, method, terminology, and positioning language when the evidence supports stronger wording;
+- use related papers as writing teachers, not only as novelty checks. Literature discovery and evidence mapping must preserve section-level rhetorical moves, contribution framing, terminology habits, experiment/table narration, and limitation-framing patterns that revisers can learn from;
+- avoid generic humility. A defensible contribution should be stated directly and professionally, with explicit boundaries where data or experiments remain incomplete.
+
+## Numbered Report Contract
+
+All user-facing workflow reports must use numbered filenames so the reading order is obvious. Reports start at `00_` and the final summary starts with `99_`.
+
+The final user-facing report is:
+
+```text
+workspace/draft_paper_review/reports/99_ultimate_summary.md
+```
+
+Do not finish the workflow without generating this report after Stage 14 returns `VERDICT: GO`.
 
 ## Stage 0: Requirement Collection
 
@@ -18,7 +42,7 @@ Run `review-requirement-collector`.
 Output:
 
 ```text
-workspace/draft_paper_review/reports/requirements.md
+workspace/draft_paper_review/reports/00_requirements.md
 ```
 
 Continue only if the file contains:
@@ -49,8 +73,8 @@ Run `manuscript-ingestor`.
 Outputs:
 
 ```text
-workspace/draft_paper_review/reports/manuscript_inventory.md
-workspace/draft_paper_review/reports/manuscript_claims.csv
+workspace/draft_paper_review/reports/01_manuscript_inventory.md
+workspace/draft_paper_review/reports/01_manuscript_claims.csv
 workspace/draft_paper_review/manuscript/
 ```
 
@@ -65,12 +89,12 @@ Run `topic-scope-analyst`.
 Output:
 
 ```text
-workspace/draft_paper_review/reports/topic_scope.md
+workspace/draft_paper_review/reports/02_topic_scope.md
 ```
 
-The analyst infers field, subfield, task, method family, contribution type, target community, target venue tier, key search terms, and excluded adjacent topics. It does not search.
+The analyst infers field, subfield, task, method family, contribution type, target community, target venue tier, key search terms, excluded adjacent topics, and the strongest defensible contribution posture. It does not search.
 
-Continue only when topic_scope.md contains:
+Continue only when `workspace/draft_paper_review/reports/02_topic_scope.md` contains:
 
 ```text
 STATUS: NEEDS_USER_CONFIRMATION
@@ -90,13 +114,13 @@ The gate asks the user whether the inferred topic scope is accurate. It must sho
 - excluded adjacent topics;
 - proposed search vocabulary.
 
-Do not search literature until topic_scope.md contains:
+Do not search literature until `workspace/draft_paper_review/reports/02_topic_scope.md` contains:
 
 ```text
 STATUS: USER_CONFIRMED
 ```
 
-If the user corrects the scope, update topic_scope.md and treat the corrected scope as the downstream contract.
+If the user corrects the scope, update `workspace/draft_paper_review/reports/02_topic_scope.md` and treat the corrected scope as the downstream contract.
 
 ## Stage 4: Literature Discovery
 
@@ -105,11 +129,11 @@ Run `literature-discovery-scout`.
 Outputs:
 
 ```text
-workspace/draft_paper_review/reports/literature_candidates.csv
-workspace/draft_paper_review/reports/literature_discovery.md
+workspace/draft_paper_review/reports/03_literature_candidates.csv
+workspace/draft_paper_review/reports/03_literature_discovery.md
 ```
 
-The scout searches inside the confirmed scope and also collects explicitly labeled contrasting or adjacent papers when they are useful for review. It must preserve abstracts, citation counts, exact queries, source URLs, artifact URLs, and evidence use categories.
+The scout searches inside the confirmed scope and also collects explicitly labeled contrasting or adjacent papers when they are useful for review. It must preserve abstracts, citation counts, exact queries, source URLs, artifact URLs, evidence use categories, and section-level writing exemplar roles. The literature pack must include papers that teach how the target community writes abstracts, introductions, contribution statements, method exposition, experiment setup, result tables, limitations, and terminology.
 
 If the scout reports `STATUS: SHORTAGE`, `STATUS: NEEDS_SCOPE_REVIEW`, or `STATUS: WEAK_EVIDENCE`, loop back to Stage 3 or Stage 4 as indicated.
 
@@ -120,8 +144,8 @@ Run `review-paper-artifact-collector`.
 Outputs:
 
 ```text
-workspace/draft_paper_review/reports/paper_artifacts.csv
-workspace/draft_paper_review/reports/paper_artifacts.md
+workspace/draft_paper_review/reports/04_paper_artifacts.csv
+workspace/draft_paper_review/reports/04_paper_artifacts.md
 workspace/draft_paper_review/literature/papers/
 ```
 
@@ -136,11 +160,11 @@ Run `evidence-map-builder`.
 Outputs:
 
 ```text
-workspace/draft_paper_review/reports/evidence_map.csv
-workspace/draft_paper_review/reports/evidence_map.md
+workspace/draft_paper_review/reports/05_evidence_map.csv
+workspace/draft_paper_review/reports/05_evidence_map.md
 ```
 
-The evidence map is the mandatory bridge between literature research and review. It links manuscript claims, sections, methods, terms, citations, and writing-style features to related papers and evidence categories.
+The evidence map is the mandatory bridge between literature research and review. It links manuscript claims, sections, methods, terms, citations, writing-style features, rhetorical moves, contribution framing, table/result narration, limitation framing, and field-preferred term usage to related papers and evidence categories.
 
 If evidence for any critical review dimension is weak, Stage 6 must mark `STATUS: NEEDS_LITERATURE_REPLENISHMENT` and send the workflow back to Stage 4 or Stage 5.
 
@@ -151,10 +175,10 @@ Run `reviewer-panel-configurator`.
 Output:
 
 ```text
-workspace/draft_paper_review/reports/reviewer_configuration.md
+workspace/draft_paper_review/reports/06_reviewer_configuration.md
 ```
 
-The configurator defines the EIC, methodology reviewer, domain reviewer, perspective reviewer, and Devil's Advocate identities. Each identity must specify what manuscript material and what evidence-map categories the reviewer must inspect.
+The configurator defines the EIC, methodology reviewer, domain reviewer, perspective reviewer, and Devil's Advocate identities. Each identity must specify what manuscript material and what evidence-map categories the reviewer must inspect, including which evidence rows help the reviewer separate unsupported result claims from validated strengths that should be stated more confidently.
 
 ## Stage 8: Evidence-Based Reviewer Panel
 
@@ -163,15 +187,15 @@ Run `evidence-reviewer-panel-coordinator`.
 Expected reviewer outputs:
 
 ```text
-workspace/draft_paper_review/reports/reviewer_reports/eic_review.md
-workspace/draft_paper_review/reports/reviewer_reports/methodology_review.md
-workspace/draft_paper_review/reports/reviewer_reports/domain_review.md
-workspace/draft_paper_review/reports/reviewer_reports/perspective_review.md
-workspace/draft_paper_review/reports/reviewer_reports/devils_advocate_review.md
-workspace/draft_paper_review/reports/reviewer_reports/panel_summary.md
+workspace/draft_paper_review/reports/reviewer_reports/07_eic_review.md
+workspace/draft_paper_review/reports/reviewer_reports/08_methodology_review.md
+workspace/draft_paper_review/reports/reviewer_reports/09_domain_review.md
+workspace/draft_paper_review/reports/reviewer_reports/10_perspective_review.md
+workspace/draft_paper_review/reports/reviewer_reports/11_devils_advocate_review.md
+workspace/draft_paper_review/reports/reviewer_reports/12_panel_summary.md
 ```
 
-The panel must review independently. Overlap is allowed only when reviewers approach an issue from different angles. Every weakness with severity Major or Critical must cite a manuscript location and evidence-map support.
+The panel must review independently. Overlap is allowed only when reviewers approach an issue from different angles. Every weakness with severity Major or Critical must cite a manuscript location and evidence-map support. Each reviewer must also report validated strengths and safe strengthening opportunities. Missing draft data must be treated as an objective boundary for result claims, not as a blanket reason to deflate the entire paper.
 
 ## Stage 9: Specialist Diagnostic Panel
 
@@ -180,18 +204,19 @@ Run `specialist-diagnostic-panel-coordinator`.
 Expected audit outputs:
 
 ```text
-workspace/draft_paper_review/reports/specialist_audits/novelty_claim_audit.md
-workspace/draft_paper_review/reports/specialist_audits/terminology_consistency_audit.md
-workspace/draft_paper_review/reports/specialist_audits/field_style_audit.md
-workspace/draft_paper_review/reports/specialist_audits/professionalism_domain_precision_audit.md
-workspace/draft_paper_review/reports/specialist_audits/literature_positioning_audit.md
-workspace/draft_paper_review/reports/specialist_audits/argument_coherence_audit.md
-workspace/draft_paper_review/reports/specialist_audits/citation_reference_audit.md
-workspace/draft_paper_review/reports/specialist_audits/writing_quality_audit.md
-workspace/draft_paper_review/reports/specialist_audits/specialist_summary.md
+workspace/draft_paper_review/reports/specialist_audits/13_novelty_claim_audit.md
+workspace/draft_paper_review/reports/specialist_audits/14_terminology_consistency_audit.md
+workspace/draft_paper_review/reports/specialist_audits/15_term_usage_consistency_audit.md
+workspace/draft_paper_review/reports/specialist_audits/16_field_style_audit.md
+workspace/draft_paper_review/reports/specialist_audits/17_professionalism_domain_precision_audit.md
+workspace/draft_paper_review/reports/specialist_audits/18_literature_positioning_audit.md
+workspace/draft_paper_review/reports/specialist_audits/19_argument_coherence_audit.md
+workspace/draft_paper_review/reports/specialist_audits/20_citation_reference_audit.md
+workspace/draft_paper_review/reports/specialist_audits/21_writing_quality_audit.md
+workspace/draft_paper_review/reports/specialist_audits/22_specialist_summary.md
 ```
 
-These audits are not optional when a full review is requested. They provide concrete, evidence-backed diagnostics for innovation, terminology, professional precision, field style, citation support, and writing quality.
+These audits are not optional when a full review is requested. They provide concrete, evidence-backed diagnostics for innovation, terminology, term/proper-noun usage, professional precision, field style, citation support, and writing quality. The style, positioning, writing, and term-usage audits must learn from related-paper exemplars rather than applying generic writing advice.
 
 ## Stage 10: Editorial Synthesis And Scoring
 
@@ -200,10 +225,10 @@ Run `editorial-synthesizer-scorer`.
 Output:
 
 ```text
-workspace/draft_paper_review/reports/editorial_decision.md
+workspace/draft_paper_review/reports/23_editorial_decision.md
 ```
 
-The synthesizer is not a new reviewer. It can only synthesize issues already present in Stage 8 or Stage 9 reports. It computes dimension scores and applies hard gates.
+The synthesizer is not a new reviewer. It can only synthesize issues already present in Stage 8 or Stage 9 reports. It computes dimension scores and applies hard gates. It must separate "claim boundary unsupported by current draft evidence" from "paper contribution is weak", and it must summarize what can be claimed confidently.
 
 ## Stage 11: Revision Planning
 
@@ -212,7 +237,7 @@ Run `revision-planner` when revision is requested or when the decision requires 
 Output:
 
 ```text
-workspace/draft_paper_review/reports/revision_plan.md
+workspace/draft_paper_review/reports/24_revision_plan.md
 ```
 
 If the workflow is review-only, Stage 11 writes `STATUS: NOT_REQUESTED` and preserves the revision roadmap.
@@ -225,11 +250,11 @@ Outputs:
 
 ```text
 workspace/draft_paper_review/revision/
-workspace/draft_paper_review/reports/revision_changes.md
-workspace/draft_paper_review/reports/paired_revision_summary.md
-workspace/draft_paper_review/reports/revision_ledger.jsonl
-workspace/draft_paper_review/reports/revision_ledger.xlsx
-workspace/draft_paper_review/reports/revision_ledger_csv/
+workspace/draft_paper_review/reports/26_revision_changes.md
+workspace/draft_paper_review/reports/25_paired_revision_summary.md
+workspace/draft_paper_review/reports/27_revision_ledger.jsonl
+workspace/draft_paper_review/reports/27_revision_ledger.xlsx
+workspace/draft_paper_review/reports/27_revision_ledger_csv/
 ```
 
 The coordinator runs one reviewer/writer pair per active revision scope. Each pair must alternate:
@@ -252,7 +277,7 @@ Default fixed scopes are:
 - terminology and professional style;
 - limitations, reproducibility, ethics, and checklist text.
 
-Issue-based scopes from the revision plan may be added when the target location is more precise than a section. Revised files must be TeX copies, not overwrites. Substantive edits must trace to the revision plan, evidence map, and paired scope ledger.
+Issue-based scopes from the revision plan may be added when the target location is more precise than a section. Revised files must be TeX copies, not overwrites. Substantive edits must trace to the revision plan, evidence map, paired scope ledger, and related-paper writing exemplars when the edit changes style, contribution framing, term usage, experiment narration, table narration, or limitation framing.
 
 ## Stage 13: Revision Verification
 
@@ -261,10 +286,10 @@ Run `revision-verifier`.
 Output:
 
 ```text
-workspace/draft_paper_review/reports/revision_verification.md
+workspace/draft_paper_review/reports/28_revision_verification.md
 ```
 
-The verifier checks each required revision item, evidence support, citation consistency, paired scope acceptance status, revision ledger completeness, and whether new unsupported claims were introduced.
+The verifier checks each required revision item, evidence support, citation consistency, paired scope acceptance status, revision ledger completeness, whether new unsupported claims were introduced, and whether validated contributions were unnecessarily weakened.
 
 ## Stage 14: Integrity Review
 
@@ -273,7 +298,7 @@ Run `evidence-review-integrity-reviewer`.
 Output:
 
 ```text
-workspace/draft_paper_review/reports/integrity_report.md
+workspace/draft_paper_review/reports/29_integrity_report.md
 ```
 
 If the report says:
@@ -282,7 +307,7 @@ If the report says:
 VERDICT: GO
 ```
 
-finalize with a concise summary and generated paths.
+continue to Stage 15.
 
 If it says:
 
@@ -291,6 +316,18 @@ VERDICT: REJECT
 ```
 
 enter Loopback Mode.
+
+## Stage 15: Ultimate Summary
+
+Run `ultimate-report-synthesizer` after Stage 14 returns `VERDICT: GO`.
+
+Output:
+
+```text
+workspace/draft_paper_review/reports/99_ultimate_summary.md
+```
+
+The ultimate summary is the first report the user should read. It summarizes what happened, every agent's conclusion, validated strengths, safe claim boundaries, term/proper-noun consistency findings, literature-calibrated writing lessons, revision results, deferred objective limitations, and a numbered reading path for the detailed reports.
 
 ## Loopback Mode
 
@@ -303,12 +340,12 @@ When any reviewer, verifier, synthesizer, or integrity reviewer rejects:
    - manuscript location or claim ID;
    - evidence gap;
    - requested action.
-3. Read `workspace/draft_paper_review/reports/iteration_log.md` and count previous retries with the same `issue_signature`.
+3. Read `workspace/draft_paper_review/reports/30_iteration_log.md` and count previous retries with the same `issue_signature`.
 4. If the global iteration cap is reached, stop and produce a final report marked `STOPPED_MAX_TOTAL_ITERATIONS`.
 5. If the same stage/problem cap is not reached, append a retry record to:
 
 ```text
-workspace/draft_paper_review/reports/iteration_log.md
+workspace/draft_paper_review/reports/30_iteration_log.md
 ```
 
 using:
@@ -334,12 +371,12 @@ When the same stage/problem pair reaches the configured repeated-issue cap:
    - `REVIEW_DISAGREEMENT`: reviewers disagree but no new evidence is likely to resolve it.
    - `PROCESS_DEFECT`: the workflow itself failed to produce required outputs; this cannot be ignored unless the global iteration cap is reached.
 3. Apply requirements policy:
-   - `DEFER_AND_CONTINUE`: write the issue to `workspace/draft_paper_review/reports/deferred_issues.md`, exclude it from further loopback, and continue with downstream stages.
+   - `DEFER_AND_CONTINUE`: write the issue to `workspace/draft_paper_review/reports/31_deferred_issues.md`, exclude it from further loopback, and continue with downstream stages.
    - `ASK_USER`: ask the user whether to defer, provide missing material, or stop.
    - `BLOCK`: stop and report the blocker.
 4. If an issue is deferred, later stages must not treat it as resolved. They must mark it as deferred risk and, when scoring, use the configured missing score policy.
 
-Write or update `workspace/draft_paper_review/reports/deferred_issues.md`:
+Write or update `workspace/draft_paper_review/reports/31_deferred_issues.md`:
 
 ```markdown
 ## Deferred Issues

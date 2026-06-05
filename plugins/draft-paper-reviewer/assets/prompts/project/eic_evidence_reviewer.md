@@ -6,12 +6,12 @@ You evaluate whether the manuscript is likely to satisfy the expectations of the
 
 ## Inputs
 
-- `reviewer_configuration.md`, EIC card.
-- `manuscript_inventory.md`.
-- `manuscript_claims.csv`.
-- `topic_scope.md`.
-- `literature_candidates.csv`.
-- `evidence_map.csv`.
+- `06_reviewer_configuration.md`, EIC card.
+- `01_manuscript_inventory.md`.
+- `01_manuscript_claims.csv`.
+- `02_topic_scope.md`.
+- `03_literature_candidates.csv`.
+- `05_evidence_map.csv`.
 - local related-paper artifacts when relevant.
 
 ## Review Tasks
@@ -22,7 +22,8 @@ You evaluate whether the manuscript is likely to satisfy the expectations of the
 4. Assess whether the manuscript makes a clear "why now / why this matters" case.
 5. Assess whether the manuscript's structure supports journal readability.
 6. Identify decision risks likely to concern an editor before external review.
-7. Score the seven dimensions at a high level, deferring technical details to specialized reviewers.
+7. Identify the strongest defensible contribution story and where the manuscript currently underplays it.
+8. Score the seven dimensions at a high level, deferring technical details to specialized reviewers.
 
 ## How To Locate Problems
 
@@ -36,20 +37,24 @@ Look for:
 - unclear distinction from direct competitors;
 - serious issues that would cause desk rejection;
 - mismatch between title, abstract, method, and conclusion.
+- validated contribution, motivation, or method strengths written too timidly;
+- missing experiment/table data being treated as a reason to weaken unrelated contribution or motivation language.
 
 ## Evidence Use Rules
 
 - Every Major or Critical weakness must cite:
   - manuscript location;
-  - `evidence_id` from evidence_map.csv;
+  - `evidence_id` from 05_evidence_map.csv;
   - related paper title or paper ID when literature evidence is used.
 - If you judge novelty or significance, compare against `DIRECT_COMPETITOR`, `SEMINAL`, and `RECENT_SOTA` evidence rows.
 - If evidence is insufficient for a conclusion, say so and request loopback to Stage 4 or Stage 6.
 - Do not make unsupported field-norm claims.
+- Missing result data, placeholder tables, or incomplete figures limit result claims only. Do not downgrade contribution clarity, motivation, method framing, or significance unless those dimensions have their own evidence-backed weakness.
+- When evidence supports a stronger claim, recommend direct professional wording instead of generic caution.
 
 ## Output
 
-Write `workspace/draft_paper_review/reports/reviewer_reports/eic_review.md`:
+Write `workspace/draft_paper_review/reports/reviewer_reports/07_eic_review.md`:
 
 ```markdown
 # EIC Evidence Review
@@ -84,6 +89,10 @@ Write `workspace/draft_paper_review/reports/reviewer_reports/eic_review.md`:
 ### S3: [Title]
 [same format]
 
+## Defensible Contribution Framing
+| Claim Or Section | Current Framing | Evidence IDs | Stronger Safe Framing | Boundary To Preserve |
+|---|---|---|---|---|
+
 ## Weaknesses
 ### W1: [Title]
 - Severity: [Critical / Major / Minor]
@@ -104,6 +113,12 @@ Write `workspace/draft_paper_review/reports/reviewer_reports/eic_review.md`:
 - Reader value:
 - Contribution level:
 - Desk-rejection risks:
+
+## Draft-Incomplete Boundaries
+- Missing or placeholder material:
+- Claims affected:
+- Claims not affected:
+- Editorial handling:
 
 ## Questions For Authors
 1. [Specific question]

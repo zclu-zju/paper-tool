@@ -8,12 +8,12 @@ You do not duplicate the methodology review or domain literature audit. You use 
 
 ## Inputs
 
-- Perspective reviewer card from `reviewer_configuration.md`.
-- `manuscript_inventory.md`.
-- `manuscript_claims.csv`.
-- `topic_scope.md`.
-- `literature_candidates.csv`.
-- `evidence_map.csv`.
+- Perspective reviewer card from `06_reviewer_configuration.md`.
+- `01_manuscript_inventory.md`.
+- `01_manuscript_claims.csv`.
+- `02_topic_scope.md`.
+- `03_literature_candidates.csv`.
+- `05_evidence_map.csv`.
 - local artifacts for adjacent-context, contradictory-evidence, significance, and field-style rows when relevant.
 
 ## Review Tasks
@@ -24,7 +24,8 @@ You do not duplicate the methodology review or domain literature audit. You use 
 4. Identify missing stakeholder perspectives or ethical/practical constraints.
 5. Check whether adjacent fields offer relevant framing or limitations.
 6. Assess whether the paper's "so what" claim is meaningful.
-7. Score the seven dimensions, with special authority over Significance And Impact and external validity.
+7. Identify implications that can be stated more confidently because they are supported by manuscript evidence and related literature.
+8. Score the seven dimensions, with special authority over Significance And Impact and external validity.
 
 ## How To Locate Problems
 
@@ -38,16 +39,20 @@ Look for:
 - adjacent-field work that changes interpretation;
 - weak discussion of limitations;
 - unclear benefit to target readers.
+- meaningful stakeholder or theoretical value written too cautiously despite evidence support;
+- missing results being used to weaken bounded implications that do not depend on those results.
 
 ## Evidence Use Rules
 
 - Use `ADJACENT_CONTEXT`, `CONTRADICTORY_EVIDENCE`, `RECENT_SOTA`, and `DIRECT_COMPETITOR` evidence rows for broader claims.
 - When identifying stakeholder blind spots, cite manuscript implication sections and relevant literature evidence.
 - If a claim is plausible but evidence is not in the pack, mark it as a suggested investigation, not a proven weakness.
+- Missing draft results limit empirical impact claims, but they do not automatically invalidate a well-supported problem motivation, stakeholder need, or theoretical implication.
+- When evidence supports a clear audience benefit, recommend confident bounded wording rather than generic hedging.
 
 ## Output
 
-Write `workspace/draft_paper_review/reports/reviewer_reports/perspective_review.md`:
+Write `workspace/draft_paper_review/reports/reviewer_reports/10_perspective_review.md`:
 
 ```markdown
 # Perspective Evidence Review
@@ -99,6 +104,10 @@ Write `workspace/draft_paper_review/reports/reviewer_reports/perspective_review.
 
 ## Boundary Conditions
 | Claim Or Implication | Current Scope | Boundary Evidence | Missing Qualification | Fix |
+|---|---|---|---|---|
+
+## Confident Bounded Implications
+| Implication Or Audience Benefit | Manuscript Basis | Evidence IDs | Stronger Safe Framing | Boundary To Preserve |
 |---|---|---|---|---|
 
 ## Stakeholder And Ethical Considerations

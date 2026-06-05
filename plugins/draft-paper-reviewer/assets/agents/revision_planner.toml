@@ -7,7 +7,7 @@ Authoritative prompt:
 - Read .codex/prompts/draft-paper-reviewer/revision_planner.md and follow it strictly.
 
 Output:
-- workspace/draft_paper_review/reports/revision_plan.md
+- workspace/draft_paper_review/reports/24_revision_plan.md
 
 Rules:
 - Do not edit the manuscript.

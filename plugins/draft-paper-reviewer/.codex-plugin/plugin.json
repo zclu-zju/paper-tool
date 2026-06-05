@@ -1,7 +1,7 @@
 {
   "name": "draft-paper-reviewer",
-  "version": "0.2.0+codex.20260605034458",
-  "description": "TeX-only draft paper review and revision workflow for Codex with literature discovery, evidence packs, paired reviewer/reviser loops, XLSX revision ledgers, objective-limitation deferral, and loopback verification.",
+  "version": "0.2.0+codex.20260605064955",
+  "description": "TeX-only draft paper review and revision workflow for Codex with literature-calibrated writing guidance, term usage auditing, paired reviewer/reviser loops, XLSX revision ledgers, numbered reports, and a 99 ultimate summary.",
   "author": {
     "name": "Draft Paper Reviewer"
   },
@@ -18,7 +18,7 @@
   "interface": {
     "displayName": "Draft Paper Reviewer",
     "shortDescription": "Run a literature-evidence-driven manuscript review and revision workflow.",
-    "longDescription": "Installs repo-local Codex custom agents for an iterative draft-paper review workflow. The submitted manuscript input is TeX-only: Stage 0 accepts a TeX source directory or explicit .tex root file, rejects PDF/Word/Markdown/plain-text/image manuscripts, and confirms all parameters with defaults before any ingestion, literature search, review, or revision. The workflow serves the user's own manuscript-development process, handles incomplete experiments/tables as draft constraints, discovers related literature, builds an evidence map, runs reviewer and specialist audits, synthesizes scores, plans revisions, then revises copied TeX files through one-to-one reviewer/reviser pairs. Each paired review/write round is logged to JSONL and exported to an XLSX workbook with one sheet per pair, with CSV fallback exports. Objective limitations such as missing experiments or unavailable raw data can be deferred after repeated attempts, and writing guidance is used for narrative, citation, reproducibility, limitations, style, dataset-setting, and venue-checklist revisions.",
+    "longDescription": "Installs repo-local Codex custom agents for an iterative draft-paper review workflow. The submitted manuscript input is TeX-only: Stage 0 accepts a TeX source directory or explicit .tex root file, rejects PDF/Word/Markdown/plain-text/image manuscripts, and confirms all parameters with defaults before any ingestion, literature search, review, or revision. The workflow serves the user's own manuscript-development process, handles incomplete experiments/tables as local result-claim constraints rather than blanket contribution weakness, discovers related literature, builds an evidence map, runs reviewer and specialist audits, synthesizes scores, plans revisions, then revises copied TeX files through one-to-one reviewer/reviser pairs. Literature is used both for evidence and for section-level writing calibration, including contribution framing, method exposition, experiment/table narration, limitations, and field-standard term usage. A dedicated term-usage auditor checks nouns, acronyms, method names, dataset names, metrics, and proper nouns for internal and literature-aligned consistency. Each paired review/write round is logged to JSONL and exported to an XLSX workbook with one sheet per pair, with CSV fallback exports. User-facing reports are numbered from 00 onward, and Stage 15 writes 99_ultimate_summary.md as the final first-read report. Objective limitations such as missing experiments or unavailable raw data can be deferred after repeated attempts, and writing guidance is used for narrative, citation, reproducibility, limitations, style, dataset-setting, and venue-checklist revisions.",
     "developerName": "Draft Paper Reviewer",
     "category": "Productivity",
     "capabilities": [
@@ -31,6 +31,7 @@
       "Infer the paper topic, ask me to confirm all workflow parameters and topic scope, then research related papers and review.",
       "Run evidence-based peer review and produce a revision plan.",
       "Review and revise my TeX draft using paired reviewer/reviser loops and downloaded related papers.",
+      "Review my TeX draft, audit term usage, and produce numbered reports ending with 99_ultimate_summary.md.",
       "Install draft-paper-reviewer workflow agents."
     ]
   }

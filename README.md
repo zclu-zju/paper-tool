@@ -26,11 +26,14 @@ Stage 11 revision-planner
 Stage 12 paired-revision-coordinator
 Stage 13 revision-verifier
 Stage 14 evidence-review-integrity-reviewer
+Stage 15 ultimate-report-synthesizer
 ```
 
 Stage 0 accepts only a TeX source folder or explicit `.tex` root file. If the submitted manuscript is PDF, Word, Markdown, plain text, image-only, or has no `.tex` source, the workflow writes `STATUS: UNSUPPORTED_INPUT` and stops.
 
 The workflow must confirm all parameters with defaults in Stage 0, then confirm the inferred topic scope with the user before searching related literature. Review findings must cite manuscript locations and evidence-map rows.
+
+Reports are numbered in reading order from `00_` onward. The final report is `workspace/draft_paper_review/reports/99_ultimate_summary.md`, which is intended to be read first after a run completes.
 
 ## Iteration Policy
 
@@ -46,12 +49,14 @@ Missing Score Policy: MARK_NA_AND_REWEIGHT / MARK_NA_NO_REWEIGHT / BLOCK
 When the same stage/problem pair reaches the configured cap, the orchestrator records the issue in:
 
 ```text
-workspace/draft_paper_review/reports/deferred_issues.md
+workspace/draft_paper_review/reports/31_deferred_issues.md
 ```
 
 Objective limitations such as missing experiments, unavailable raw data, absent approvals, missing model checkpoints, proprietary datasets, placeholder tables, or unfinished figures can be deferred instead of causing endless loopback. Deferred issues remain visible in the final risk summary.
 
 If a score dimension cannot be assessed because required evidence is objectively absent, the synthesizer can mark it `N/A_OBJECTIVE_MISSING` according to the missing-score policy rather than assigning an artificial low score.
+
+Missing experiments, placeholder tables, unfinished figures, and absent numeric results constrain only the affected result claims. They must not automatically weaken the manuscript's motivation, method framing, contribution language, literature positioning, or terminology. The workflow asks agents to surface validated strengths and help the draft state them confidently while preserving evidence boundaries.
 
 ## Writing And Revision Policy
 
@@ -60,9 +65,9 @@ The revision workflow uses one-to-one reviewer/reviser pairs for fixed or issue-
 Every paired round is recorded in:
 
 ```text
-workspace/draft_paper_review/reports/revision_ledger.jsonl
-workspace/draft_paper_review/reports/revision_ledger.xlsx
-workspace/draft_paper_review/reports/revision_ledger_csv/
+workspace/draft_paper_review/reports/27_revision_ledger.jsonl
+workspace/draft_paper_review/reports/27_revision_ledger.xlsx
+workspace/draft_paper_review/reports/27_revision_ledger_csv/
 ```
 
 The primary ledger format is `.xlsx`, generated with Python `openpyxl`. CSV exports are fallback artifacts.
@@ -72,10 +77,14 @@ The revision prompts incorporate ML paper writing guidance:
 - preserve a clear one-sentence contribution;
 - keep the "what / why evidence / so what" narrative visible;
 - make contribution bullets specific and falsifiable;
+- learn section-level writing moves from related papers, including abstract structure, introduction moves, contribution framing, method exposition, experiment/table narration, limitations, and field term usage;
+- strengthen defensible claims instead of only qualifying risky ones;
 - avoid inventing experiment results, citations, or BibTeX;
 - verify citations through metadata sources or mark explicit placeholders;
 - preserve honest limitations;
 - add or check reproducibility, compute, data/code access, ethics/broader-impact, and venue checklist text when relevant.
+
+Stage 9 includes a dedicated term-usage consistency auditor. It extracts technical terms, acronyms, dataset names, method names, metric names, proper nouns, and related variants, checks contextual consistency across the manuscript, compares usage against related literature, and writes `workspace/draft_paper_review/reports/specialist_audits/15_term_usage_consistency_audit.md`.
 
 ## Install Agents Into A Target Repo
 
@@ -127,14 +136,25 @@ workspace/draft_paper_review/
 Key reports:
 
 ```text
-workspace/draft_paper_review/reports/evidence_map.csv
+workspace/draft_paper_review/reports/00_requirements.md
+workspace/draft_paper_review/reports/01_manuscript_inventory.md
+workspace/draft_paper_review/reports/02_topic_scope.md
+workspace/draft_paper_review/reports/03_literature_candidates.csv
+workspace/draft_paper_review/reports/03_literature_discovery.md
+workspace/draft_paper_review/reports/04_paper_artifacts.csv
+workspace/draft_paper_review/reports/04_paper_artifacts.md
+workspace/draft_paper_review/reports/05_evidence_map.csv
+workspace/draft_paper_review/reports/05_evidence_map.md
+workspace/draft_paper_review/reports/06_reviewer_configuration.md
 workspace/draft_paper_review/reports/reviewer_reports/
 workspace/draft_paper_review/reports/specialist_audits/
-workspace/draft_paper_review/reports/editorial_decision.md
-workspace/draft_paper_review/reports/revision_plan.md
-workspace/draft_paper_review/reports/paired_revision_summary.md
-workspace/draft_paper_review/reports/revision_ledger.xlsx
-workspace/draft_paper_review/reports/revision_verification.md
-workspace/draft_paper_review/reports/integrity_report.md
-workspace/draft_paper_review/reports/deferred_issues.md
+workspace/draft_paper_review/reports/23_editorial_decision.md
+workspace/draft_paper_review/reports/24_revision_plan.md
+workspace/draft_paper_review/reports/25_paired_revision_summary.md
+workspace/draft_paper_review/reports/27_revision_ledger.xlsx
+workspace/draft_paper_review/reports/28_revision_verification.md
+workspace/draft_paper_review/reports/29_integrity_report.md
+workspace/draft_paper_review/reports/30_iteration_log.md
+workspace/draft_paper_review/reports/31_deferred_issues.md
+workspace/draft_paper_review/reports/99_ultimate_summary.md
 ```

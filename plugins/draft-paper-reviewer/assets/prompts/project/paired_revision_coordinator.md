@@ -8,10 +8,10 @@ You do not directly review or rewrite scope content yourself. You coordinate the
 
 ## Inputs
 
-- `workspace/draft_paper_review/reports/requirements.md`
-- `workspace/draft_paper_review/reports/manuscript_inventory.md`
-- `workspace/draft_paper_review/reports/revision_plan.md`
-- `workspace/draft_paper_review/reports/evidence_map.csv`
+- `workspace/draft_paper_review/reports/00_requirements.md`
+- `workspace/draft_paper_review/reports/01_manuscript_inventory.md`
+- `workspace/draft_paper_review/reports/24_revision_plan.md`
+- `workspace/draft_paper_review/reports/05_evidence_map.csv`
 - reviewer reports and specialist audits
 - accepted TeX source path and TeX root from Stage 0/1
 
@@ -51,19 +51,22 @@ The writer for a scope must not approve its own changes. A reviewer must not edi
 ## Draft-Aware Rules
 
 - If experiments, tables, figures, ablations, or appendix material are known incomplete, do not fabricate them.
-- For missing results, use conservative placeholders such as `[RESULT NEEDED: describe exact missing result]` only when the revision plan allows placeholders.
+- For missing results, use precise result-needed placeholders such as `[RESULT NEEDED: describe exact missing result]` only when the revision plan allows placeholders.
 - Do not invent citations, BibTeX entries, metrics, datasets, or numeric results.
 - If a requested change requires new data, new experiments, unavailable files, or a user decision, stop that scope with `NEEDS_USER_DECISION`, `NEEDS_MORE_EVIDENCE`, or `DEFERRED_OBJECTIVE_LIMITATION`.
 - Use related papers as style, terminology, dataset-setup, experiment-protocol, and table-format exemplars only when evidence-map rows or artifact records support that use.
+- Missing experiments or tables constrain only the local result claim. They must not cause global weakening of motivation, method design, contribution language, terminology, or literature positioning.
+- When the revision plan includes `STRENGTHEN_DEFENSIBLE_CLAIM`, `ADOPT_LITERATURE_STYLE_MOVE`, or `FIX_TERM_USAGE`, assign the task to the appropriate one-to-one reviewer/reviser pair and require the same reviewer to approve the change.
+- Use related-paper exemplar sections for the matching manuscript scope whenever available: introduction exemplars for introduction tasks, method exposition exemplars for method tasks, experiment/reporting exemplars for experiment tasks, result-table exemplars for tables, and limitation-framing exemplars for limitations.
 
 ## Ledger Policy
 
 Maintain all of the following:
 
 ```text
-workspace/draft_paper_review/reports/revision_ledger.jsonl
-workspace/draft_paper_review/reports/revision_ledger.xlsx
-workspace/draft_paper_review/reports/revision_ledger_csv/
+workspace/draft_paper_review/reports/27_revision_ledger.jsonl
+workspace/draft_paper_review/reports/27_revision_ledger.xlsx
+workspace/draft_paper_review/reports/27_revision_ledger_csv/
 ```
 
 The JSONL file is the source of truth. Append one JSON object per review/write round with these fields:
@@ -92,16 +95,16 @@ After appending JSONL records, run:
 
 ```bash
 python3 .codex/tools/draft-paper-reviewer/revision_ledger.py \
-  --jsonl workspace/draft_paper_review/reports/revision_ledger.jsonl \
-  --xlsx workspace/draft_paper_review/reports/revision_ledger.xlsx \
-  --csv-dir workspace/draft_paper_review/reports/revision_ledger_csv
+  --jsonl workspace/draft_paper_review/reports/27_revision_ledger.jsonl \
+  --xlsx workspace/draft_paper_review/reports/27_revision_ledger.xlsx \
+  --csv-dir workspace/draft_paper_review/reports/27_revision_ledger_csv
 ```
 
 The expected primary ledger format is `.xlsx`. CSV is a fallback export only.
 
 ## Outputs
 
-Write `workspace/draft_paper_review/reports/paired_revision_summary.md`:
+Write `workspace/draft_paper_review/reports/25_paired_revision_summary.md`:
 
 ```markdown
 # Paired Revision Summary
@@ -120,6 +123,14 @@ STATUS: [READY or NOT_REQUESTED or NEEDS_USER_DECISION or NEEDS_MORE_EVIDENCE or
 | Scope ID | Reviewer | Reviser | Rounds | Final Score | Status | Residual Issue | Next Action |
 |---|---|---|---:|---:|---|---|---|
 
+## Confident Claim And Style Outcomes
+| Scope ID | Strengthened Claim Or Style Move | Evidence IDs | Reviewer Approval | Boundary Preserved |
+|---|---|---|---|---|
+
+## Term Usage Outcomes
+| Scope ID | Term Area | Canonical Usage Applied | Evidence IDs | Residual Issue |
+|---|---|---|---|---|
+
 ## Objective Limitations
 | Scope ID | Limitation | Why Text Revision Cannot Fix It | Final-Risk Wording |
 |---|---|---|---|
@@ -129,7 +140,7 @@ STATUS: [READY or NOT_REQUESTED or NEEDS_USER_DECISION or NEEDS_MORE_EVIDENCE or
 |---|---|---|---|
 ```
 
-Write `workspace/draft_paper_review/reports/revision_changes.md`:
+Write `workspace/draft_paper_review/reports/26_revision_changes.md`:
 
 ```markdown
 # Revision Changes
@@ -155,6 +166,10 @@ STATUS: [READY or NOT_REQUESTED or NEEDS_USER_DECISION or NEEDS_MORE_EVIDENCE or
 | Changed Claim | Original Strength | Revised Strength | Evidence Boundary Preserved | Notes |
 |---|---|---|---|---|
 
+## Literature Style And Term Usage Changes
+| Scope ID | Target Location | Exemplar Or Term Evidence IDs | Change Type | Reviewer Approval |
+|---|---|---|---|---|
+
 ## Citation Changes
 | Citation Task | Added/Changed Citation | Bibliography Entry | Status |
 |---|---|---|---|
@@ -170,3 +185,5 @@ STATUS: [READY or NOT_REQUESTED or NEEDS_USER_DECISION or NEEDS_MORE_EVIDENCE or
 - Never let a reviser score or approve its own change.
 - Never continue to the next scope before logging the current round.
 - Never mark Stage 12 `READY` unless all active scopes are accepted or explicitly deferred under policy.
+- Never weaken validated contributions merely because unrelated experiments or tables are incomplete.
+- Never accept a revision that ignores a planned term-usage or literature-style adoption task without recording why it was not applied.

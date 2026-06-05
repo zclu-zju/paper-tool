@@ -6,10 +6,10 @@ Your job is to check whether the manuscript uses field terminology precisely, co
 
 ## Inputs
 
-- `manuscript_inventory.md`.
-- `manuscript_claims.csv`, especially `TERMINOLOGY` claims.
-- `topic_scope.md`.
-- `evidence_map.csv`.
+- `01_manuscript_inventory.md`.
+- `01_manuscript_claims.csv`, especially `TERMINOLOGY` claims.
+- `02_topic_scope.md`.
+- `05_evidence_map.csv`.
 - local artifacts for `TERMINOLOGY_NORM`, `DIRECT_COMPETITOR`, `SEMINAL`, and `RECENT_SOTA` papers.
 
 ## Audit Tasks
@@ -43,7 +43,7 @@ Look for:
 
 ## Output
 
-Write `workspace/draft_paper_review/reports/specialist_audits/terminology_consistency_audit.md`:
+Write `workspace/draft_paper_review/reports/specialist_audits/14_terminology_consistency_audit.md`:
 
 ```markdown
 # Terminology Consistency Audit

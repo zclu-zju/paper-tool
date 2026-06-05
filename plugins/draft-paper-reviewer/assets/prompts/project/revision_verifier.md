@@ -6,15 +6,15 @@ Your job is to verify whether the revised manuscript or revision package satisfi
 
 ## Inputs
 
-- `workspace/draft_paper_review/reports/requirements.md`
-- `workspace/draft_paper_review/reports/revision_plan.md`
-- `workspace/draft_paper_review/reports/paired_revision_summary.md`
-- `workspace/draft_paper_review/reports/revision_changes.md`
-- `workspace/draft_paper_review/reports/revision_ledger.jsonl`
-- `workspace/draft_paper_review/reports/revision_ledger.xlsx`
+- `workspace/draft_paper_review/reports/00_requirements.md`
+- `workspace/draft_paper_review/reports/24_revision_plan.md`
+- `workspace/draft_paper_review/reports/25_paired_revision_summary.md`
+- `workspace/draft_paper_review/reports/26_revision_changes.md`
+- `workspace/draft_paper_review/reports/27_revision_ledger.jsonl`
+- `workspace/draft_paper_review/reports/27_revision_ledger.xlsx`
 - revised files under `workspace/draft_paper_review/revision/`
 - original manuscript inventory and claims.
-- `workspace/draft_paper_review/reports/evidence_map.csv`
+- `workspace/draft_paper_review/reports/05_evidence_map.csv`
 - editorial decision and reviewer/audit reports.
 
 ## Verification Tasks
@@ -32,8 +32,10 @@ Your job is to verify whether the revised manuscript or revision package satisfi
 11. Verify that deferred objective limitations remain visible and are not represented as fixed.
 12. Verify that every active revision scope has a paired reviewer and paired reviser.
 13. Verify that the same scope reviewer rechecked changes after each reviser round.
-14. Verify that `revision_ledger.xlsx` exists and corresponds to `revision_ledger.jsonl`.
+14. Verify that `27_revision_ledger.xlsx` exists and corresponds to `27_revision_ledger.jsonl`.
 15. Verify that each active scope has a sheet or exported fallback record with review columns on the left and change columns on the right.
+16. Verify that planned `STRENGTHEN_DEFENSIBLE_CLAIM`, `ADOPT_LITERATURE_STYLE_MOVE`, and `FIX_TERM_USAGE` tasks were applied or explicitly deferred with evidence.
+17. Verify that revised sections did not become unnecessarily timid, generic, or globally hedged because of local missing experiment/table/result material.
 
 ## How To Locate Verification Problems
 
@@ -54,10 +56,13 @@ Look for:
 - revised scope marked accepted by the reviser instead of the paired reviewer;
 - missing ledger round for a reviewer or reviser action;
 - XLSX ledger missing when revision was allowed and performed.
+- validated contribution language weakened without an evidence-based reason;
+- related-paper style or term-usage tasks ignored without being recorded as unapplied;
+- local result-needed placeholders spilling into unrelated contribution, motivation, or method text.
 
 ## Output
 
-Write `workspace/draft_paper_review/reports/revision_verification.md`:
+Write `workspace/draft_paper_review/reports/28_revision_verification.md`:
 
 ```markdown
 # Revision Verification
@@ -94,6 +99,14 @@ STATUS: [READY or NOT_REQUESTED or REVISION_INCOMPLETE or NEEDS_REWORK or FAILED
 | Revised Claim | Evidence Boundary | Status | Notes |
 |---|---|---|---|
 
+## Confidence And Underclaiming Check
+| Revised Location | Validated Strength | Evidence IDs | Current Wording Status | Needed Action |
+|---|---|---|---|---|
+
+## Literature Style And Term Usage Verification
+| Task Or Scope | Evidence IDs | Expected Literature/Term Move | Applied | Residual Problem |
+|---|---|---|---|---|
+
 ## Citation And Terminology Check
 - Citation issues:
 - Terminology issues:
@@ -121,3 +134,4 @@ STATUS: [READY or NOT_REQUESTED or REVISION_INCOMPLETE or NEEDS_REWORK or FAILED
 - Do not mark a task verified unless the revised text actually addresses its acceptance criteria.
 - Do not treat review-only mode as revision failure.
 - Do not accept a revision package whose paired scope rounds are missing from the ledger.
+- Do not accept a revision that prevents overclaiming by making the entire paper timid when the evidence supports stronger bounded claims.

@@ -7,7 +7,7 @@ Authoritative prompt:
 - Read .codex/prompts/draft-paper-reviewer/review_requirement_collector.md and follow it strictly.
 
 Output:
-- workspace/draft_paper_review/reports/requirements.md
+- workspace/draft_paper_review/reports/00_requirements.md
 
 Rules:
 - Do not search literature.

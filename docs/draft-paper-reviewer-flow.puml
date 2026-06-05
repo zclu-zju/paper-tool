@@ -8,23 +8,23 @@ start
 if (Submitted manuscript is TeX source?) then (yes)
   :Show full parameter table with defaults;
   if (All parameters confirmed?) then (yes)
-    :Write requirements.md\nSTATUS: READY;
+    :Write 00_requirements.md\nSTATUS: READY;
   else (no)
-    :Write requirements.md\nSTATUS: NEEDS_USER_CONFIRMATION\nor NEEDS_USER_INPUT;
+    :Write 00_requirements.md\nSTATUS: NEEDS_USER_CONFIRMATION\nor NEEDS_USER_INPUT;
     :Ask user no more than 3 question blocks;
     stop
   endif
 else (no)
-  :Write requirements.md\nSTATUS: UNSUPPORTED_INPUT;
+  :Write 00_requirements.md\nSTATUS: UNSUPPORTED_INPUT;
   :Tell user draft-paper-reviewer requires\nTeX source folder or explicit .tex root;
   stop
 endif
 
 :Stage 1 - manuscript-ingestor;
-:Write manuscript_inventory.md,\nmanuscript_claims.csv,\nand manuscript extraction artifacts;
+:Write 01_manuscript_inventory.md,\n01_manuscript_claims.csv,\nand manuscript extraction artifacts;
 
 :Stage 2 - topic-scope-analyst;
-:Write topic_scope.md\nSTATUS: NEEDS_USER_CONFIRMATION;
+:Write 02_topic_scope.md\nSTATUS: NEEDS_USER_CONFIRMATION;
 
 :Stage 3 - user-scope-confirmation-gate;
 :Ask user to confirm or correct topic,\nmethod family, comparison boundary,\ntarget community, and exclusions;
@@ -36,7 +36,8 @@ else (no)
 endif
 
 :Stage 4 - literature-discovery-scout;
-:Write literature_candidates.csv\nand literature_discovery.md;
+:Write 03_literature_candidates.csv\nand 03_literature_discovery.md;
+:Record review evidence and section-level\nwriting exemplar roles;
 if (Literature discovery shortage,\nweak evidence, or scope problem?) then (yes)
   if (Scope review needed?) then (yes)
     :Loop back to Stage 3;
@@ -50,10 +51,11 @@ endif
 
 :Stage 5 - review-paper-artifact-collector;
 :Download or reuse related-paper PDFs\nand public TeX/source archives when required;
-:Write paper_artifacts.csv\nand paper_artifacts.md;
+:Write 04_paper_artifacts.csv\nand 04_paper_artifacts.md;
 
 :Stage 6 - evidence-map-builder;
-:Write evidence_map.csv\nand evidence_map.md;
+:Write 05_evidence_map.csv\nand 05_evidence_map.md;
+:Map claims, terms, writing moves,\nclaim strength guidance, and evidence boundaries;
 if (Evidence map needs literature replenishment?) then (yes)
   :Loop back to Stage 4 or Stage 5\nas specified by Stage 6;
   detach
@@ -61,22 +63,24 @@ else (no)
 endif
 
 :Stage 7 - reviewer-panel-configurator;
-:Write reviewer_configuration.md;
+:Write 06_reviewer_configuration.md;
 
 :Stage 8 - evidence-reviewer-panel-coordinator;
 :Run EIC, methodology, domain,\nperspective, and Devil's Advocate reviewers;
-:Write reviewer reports and panel_summary.md;
+:Require validated strengths,\nsafe strengthening opportunities,\nand evidence-backed weaknesses;
+:Write reviewer reports and 12_panel_summary.md;
 
 :Stage 9 - specialist-diagnostic-panel-coordinator;
-:Run novelty, terminology, field style,\nprofessional precision, literature positioning,\nargument coherence, citation, and writing audits;
-:Write specialist audits and specialist_summary.md;
+:Run novelty, terminology, term usage,\nfield style, professional precision,\nliterature positioning, argument coherence,\ncitation, and writing audits;
+:Write specialist audits and 22_specialist_summary.md;
 
 :Stage 10 - editorial-synthesizer-scorer;
 :Synthesize existing review/audit issues only;
-:Write editorial_decision.md;
+:Separate unsupported result boundaries\nfrom actual contribution weakness;
+:Write 23_editorial_decision.md;
 
 :Stage 11 - revision-planner;
-:Write revision_plan.md;
+:Write 24_revision_plan.md;
 if (Revision requested or required\nand revision allowed?) then (yes)
   :Stage 12 - paired-revision-coordinator;
   :Copy original TeX source into\nworkspace/draft_paper_review/revision/tex/;
@@ -84,50 +88,54 @@ if (Revision requested or required\nand revision allowed?) then (yes)
     :Select one fixed or issue-based scope;
     :Run scope reviewer on copied TeX;
     if (Reviewer accepts scope?) then (yes)
-      :Log acceptance round to revision_ledger.jsonl;
+      :Log acceptance round to 27_revision_ledger.jsonl;
     else (no)
       if (Needs user input?) then (yes)
-        :Write paired_revision_summary.md\nSTATUS: NEEDS_USER_DECISION;
+        :Write 25_paired_revision_summary.md\nSTATUS: NEEDS_USER_DECISION;
         :Export current ledger workbook when possible;
         stop
       elseif (Needs more evidence?) then (yes)
-        :Write paired_revision_summary.md\nSTATUS: NEEDS_MORE_EVIDENCE;
+        :Write 25_paired_revision_summary.md\nSTATUS: NEEDS_MORE_EVIDENCE;
         :Target Stage 4, Stage 5, or Stage 6\nfor loopback;
         detach
       elseif (Objective limitation or max rounds reached?) then (yes)
         :Record deferred issue or max-round result\naccording to requirements policy;
-        :Log round to revision_ledger.jsonl;
+        :Log round to 27_revision_ledger.jsonl;
       else (needs revision)
         :Run paired scope reviser on copied TeX;
-        :Log change record to revision_ledger.jsonl;
+        :Strengthen defensible claims,\nadopt literature style moves,\nor fix term usage when planned;
+        :Log change record to 27_revision_ledger.jsonl;
         :Run the same scope reviewer again;
-        :Log reviewer recheck to revision_ledger.jsonl;
+        :Log reviewer recheck to 27_revision_ledger.jsonl;
       endif
     endif
-    :Update revision_ledger.xlsx\nwith openpyxl ledger tool;
+    :Update 27_revision_ledger.xlsx\nwith openpyxl ledger tool;
   endwhile (no)
-  :Write paired_revision_summary.md,\nrevision_changes.md,\nrevision_ledger.jsonl,\nrevision_ledger.xlsx,\nand CSV fallback exports;
+  :Write 25_paired_revision_summary.md,\n26_revision_changes.md,\n27_revision_ledger.jsonl,\n27_revision_ledger.xlsx,\nand CSV fallback exports;
 else (no)
-  :Write revision_plan.md\nSTATUS: NOT_REQUESTED;
+  :Write 24_revision_plan.md\nSTATUS: NOT_REQUESTED;
 endif
 
 :Stage 13 - revision-verifier;
 if (Revision was performed?) then (yes)
   :Verify revision tasks, paired scope acceptance,\nledger completeness, claim safety, citations,\nand optional TeX compile status;
+  :Verify validated contributions were not\nunnecessarily weakened;
 else (no)
-  :Write revision_verification.md\nSTATUS: NOT_REQUESTED;
+  :Write 28_revision_verification.md\nSTATUS: NOT_REQUESTED;
 endif
-:Write revision_verification.md;
+:Write 28_revision_verification.md;
 
 :Stage 14 - evidence-review-integrity-reviewer;
 :Check requirements, TeX ingestion,\ntopic confirmation, literature, evidence map,\nreviews, audits, synthesis, revision artifacts,\nledger, iteration policy, and hard gates;
 if (VERDICT: GO?) then (yes)
-  :Finalize concise summary and output paths;
+  :Stage 15 - ultimate-report-synthesizer;
+  :Read numbered reports 00 through 31\nand available revision artifacts;
+  :Write 99_ultimate_summary.md\nwith agent conclusions, actions,\nvalidated strengths, risks,\nand recommended reading path;
   stop
 else (VERDICT: REJECT)
   :Read exactly one target stage and rejection reason;
   :Compute issue_signature;
-  :Read iteration_log.md and count same-issue retries;
+  :Read 30_iteration_log.md and count same-issue retries;
   if (Global iteration cap reached?) then (yes)
     :Write final report\nSTOPPED_MAX_TOTAL_ITERATIONS;
     stop
@@ -140,12 +148,12 @@ else (VERDICT: REJECT)
       :Stop and report blocker;
       stop
     else (DEFER_AND_CONTINUE)
-      :Append deferred_issues.md\nand exclude issue from further loopback;
+      :Append 31_deferred_issues.md\nand exclude issue from further loopback;
       :Continue downstream from affected stage;
       detach
     endif
   else (retry allowed)
-    :Append retry record to iteration_log.md;
+    :Append retry record to 30_iteration_log.md;
     :Re-run target stage with rejection\nas high-priority constraint;
     :Re-run all downstream affected stages;
     :Return to Stage 14;

@@ -2,11 +2,11 @@
 
 Role: Stage 3 user scope confirmation gate.
 
-Your job is to prevent premature literature search. You present the inferred manuscript topic and comparison boundary to the user, then update `topic_scope.md` only after the user confirms or corrects it.
+Your job is to prevent premature literature search. You present the inferred manuscript topic and comparison boundary to the user, then update `02_topic_scope.md` only after the user confirms or corrects it.
 
 ## Inputs
 
-- `workspace/draft_paper_review/reports/topic_scope.md`
+- `workspace/draft_paper_review/reports/02_topic_scope.md`
 - The user's confirmation or correction.
 
 ## Behavior
@@ -20,7 +20,7 @@ If the user has not yet confirmed the topic:
 
 If the user confirms:
 
-1. Update `topic_scope.md`.
+1. Update `02_topic_scope.md`.
 2. Mark `STATUS: USER_CONFIRMED`.
 3. Preserve the confirmed scope as the downstream contract.
 
@@ -32,7 +32,7 @@ If the user corrects:
 
 ## Output
 
-Update `workspace/draft_paper_review/reports/topic_scope.md` so it contains:
+Update `workspace/draft_paper_review/reports/02_topic_scope.md` so it contains:
 
 ```markdown
 ## STATUS

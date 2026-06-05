@@ -8,10 +8,10 @@ Authoritative prompt:
 
 Outputs:
 - workspace/draft_paper_review/revision/
-- workspace/draft_paper_review/reports/revision_changes.md
-- workspace/draft_paper_review/reports/paired_revision_summary.md
-- workspace/draft_paper_review/reports/revision_ledger.jsonl
-- workspace/draft_paper_review/reports/revision_ledger.xlsx
+- workspace/draft_paper_review/reports/26_revision_changes.md
+- workspace/draft_paper_review/reports/25_paired_revision_summary.md
+- workspace/draft_paper_review/reports/27_revision_ledger.jsonl
+- workspace/draft_paper_review/reports/27_revision_ledger.xlsx
 
 Rules:
 - Do not overwrite the original TeX manuscript.

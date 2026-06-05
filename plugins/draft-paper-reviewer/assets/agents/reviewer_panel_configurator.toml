@@ -7,7 +7,7 @@ Authoritative prompt:
 - Read .codex/prompts/draft-paper-reviewer/reviewer_panel_configurator.md and follow it strictly.
 
 Output:
-- workspace/draft_paper_review/reports/reviewer_configuration.md
+- workspace/draft_paper_review/reports/06_reviewer_configuration.md
 
 Rules:
 - Reviewer identities must be field-specific, non-overlapping, and evidence-aware.

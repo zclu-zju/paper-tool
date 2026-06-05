@@ -10,53 +10,55 @@ Be strict. This is the final quality gate for the whole workflow.
 
 Read all available workflow artifacts:
 
-- `requirements.md`
-- `manuscript_inventory.md`
-- `manuscript_claims.csv`
-- `topic_scope.md`
-- `literature_candidates.csv`
-- `literature_discovery.md`
-- `paper_artifacts.csv`
-- `paper_artifacts.md`
-- `evidence_map.csv`
-- `evidence_map.md`
-- `reviewer_configuration.md`
+- `00_requirements.md`
+- `01_manuscript_inventory.md`
+- `01_manuscript_claims.csv`
+- `02_topic_scope.md`
+- `03_literature_candidates.csv`
+- `03_literature_discovery.md`
+- `04_paper_artifacts.csv`
+- `04_paper_artifacts.md`
+- `05_evidence_map.csv`
+- `05_evidence_map.md`
+- `06_reviewer_configuration.md`
 - all reviewer reports
 - all specialist audits
-- `panel_summary.md`
-- `specialist_summary.md`
-- `editorial_decision.md`
-- `revision_plan.md` when present
-- `paired_revision_summary.md` when present
-- `revision_changes.md` when present
-- `revision_ledger.jsonl` when present
-- `revision_ledger.xlsx` when present
-- `revision_verification.md` when present
-- `iteration_log.md` when present
-- `deferred_issues.md` when present
+- `12_panel_summary.md`
+- `22_specialist_summary.md`
+- `23_editorial_decision.md`
+- `24_revision_plan.md` when present
+- `25_paired_revision_summary.md` when present
+- `26_revision_changes.md` when present
+- `27_revision_ledger.jsonl` when present
+- `27_revision_ledger.xlsx` when present
+- `28_revision_verification.md` when present
+- `30_iteration_log.md` when present
+- `31_deferred_issues.md` when present
 
 ## Required Checks
 
 1. Requirement completeness: source path, review mode, literature count, artifact policy, revision policy, threshold.
 2. Manuscript ingestion quality: enough text, claims, references, and locations for review.
 3. Topic confirmation: user confirmed or corrected scope before search.
-4. Literature discovery: related-paper set covers direct competitors, recent/SOTA, method norms, terminology/style exemplars, and contradictory evidence when needed.
+4. Literature discovery: related-paper set covers direct competitors, recent/SOTA, method norms, terminology/style exemplars, section-level writing exemplars, term-usage exemplars, and contradictory evidence when needed.
 5. Artifact collection: local artifacts downloaded or skipped with valid reason.
 6. Evidence map: major manuscript claims are mapped to related literature.
 7. Reviewer configuration: reviewer identities are specific and non-overlapping.
 8. Reviewer reports: all required reports exist and cite manuscript locations and evidence IDs for Major/Critical findings.
-9. Specialist audits: all required audits exist and are evidence-compliant.
-10. Editorial synthesis: no invented issues, scores consistent with reports, hard gates applied.
-11. Revision plan: required fixes trace to source reports and evidence.
+9. Specialist audits: all required audits exist and are evidence-compliant, including `15_term_usage_consistency_audit.md`.
+10. Editorial synthesis: no invented issues, scores consistent with reports, hard gates applied, validated strengths summarized, and claim boundaries separated from contribution weakness.
+11. Revision plan: required fixes trace to source reports and evidence, including tasks for strengthening defensible claims, adopting literature style moves, and fixing term usage when applicable.
 12. Paired revision summary: if revision allowed, every active scope has a one-to-one reviewer/reviser pair, final scope status, and residual issue record.
 13. Revision ledger: if revision allowed, JSONL and XLSX ledgers exist, and each scope has review records on the left and change records on the right in its workbook sheet or CSV fallback export.
 14. Revision changes: if revision allowed, revised files are copies and changes trace to tasks.
-15. Revision verification: required tasks verified, paired rounds checked, or loopback specified.
+15. Revision verification: required tasks verified, paired rounds checked, confident-but-bounded claim calibration checked, or loopback specified.
 16. Final threshold: score meets threshold or output is explicitly marked not ready.
 17. Iteration policy: repeated stage/problem caps are respected and deferred issues are recorded instead of retried indefinitely.
 18. Missing score policy: objective missing evidence is marked N/A/deferred according to requirements and is not silently converted into a numeric score.
 19. Hard gates: no unresolved DA-CRITICAL, methodology <= 2, literature integration <= 2, originality <= 2 without repositioning, writing <= 2 without revision, unless explicitly deferred by policy and surfaced as not fully ready.
-20. Loopback readiness: if any check fails, target exactly one stage.
+20. Report numbering: user-facing reports use numbered filenames and the workflow is ready to produce `99_ultimate_summary.md` after `VERDICT: GO`.
+21. No deflationary failure mode: missing draft experiments/tables/results were localized to result claims or objective limitations and did not suppress unrelated validated contributions.
+22. Loopback readiness: if any check fails, target exactly one stage.
 
 ## Target Stage Selection
 
@@ -79,7 +81,7 @@ Use exactly one target stage when rejecting:
 
 ## Output
 
-Write `workspace/draft_paper_review/reports/integrity_report.md`:
+Write `workspace/draft_paper_review/reports/29_integrity_report.md`:
 
 ```markdown
 # Draft Paper Reviewer Integrity Report
@@ -104,7 +106,9 @@ Write `workspace/draft_paper_review/reports/integrity_report.md`:
 17. Final Threshold Status: [Yes/No] - [Reason]
 18. Iteration Policy Compliance: [Yes/No] - [Reason]
 19. Missing Score Policy Compliance: [Yes/No] - [Reason]
-20. Loopback Readiness: [Yes/No] - [Reason]
+20. Report Numbering And Final Summary Readiness: [Yes/No] - [Reason]
+21. No Deflationary Failure Mode: [Yes/No] - [Reason]
+22. Loopback Readiness: [Yes/No] - [Reason]
 
 ## VERDICT
 VERDICT: [GO or REJECT]
@@ -125,6 +129,7 @@ Deferred Issue Handling: [None / Properly Deferred / Improperly Deferred]
 - Revision Ledger XLSX:
 - Revised Manuscript:
 - Integrity Report:
+- Ultimate Summary To Generate After GO:
 ```
 
 ## Strict Rules
@@ -137,3 +142,6 @@ Deferred Issue Handling: [None / Properly Deferred / Improperly Deferred]
 - Do not accept a performed revision without a paired revision summary and XLSX ledger unless the ledger tool explicitly failed and CSV fallback is complete.
 - Do not reject solely because an objectively missing experiment/data artifact hit the repeated-issue cap and was properly deferred by policy. Verify that the final report clearly states the limitation and does not claim full readiness.
 - Do not accept hidden N/A dimensions. N/A is acceptable only when the missing score policy is applied visibly.
+- Do not accept a workflow that omitted the term-usage consistency audit in a full review.
+- Do not accept reports that treat missing draft data as a blanket reason to weaken motivation, method, contribution, literature positioning, or term usage.
+- Do not require `99_ultimate_summary.md` before `VERDICT: GO`; Stage 15 generates it after this integrity gate passes. Do require the orchestrator to run Stage 15 before the workflow is finished.

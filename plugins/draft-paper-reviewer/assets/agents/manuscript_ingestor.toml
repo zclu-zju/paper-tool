@@ -7,8 +7,8 @@ Authoritative prompt:
 - Read .codex/prompts/draft-paper-reviewer/manuscript_ingestor.md and follow it strictly.
 
 Outputs:
-- workspace/draft_paper_review/reports/manuscript_inventory.md
-- workspace/draft_paper_review/reports/manuscript_claims.csv
+- workspace/draft_paper_review/reports/01_manuscript_inventory.md
+- workspace/draft_paper_review/reports/01_manuscript_claims.csv
 - workspace/draft_paper_review/manuscript/
 
 Rules:

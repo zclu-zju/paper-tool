@@ -8,11 +8,11 @@ This is not general proofreading. It is field-style alignment based on related p
 
 ## Inputs
 
-- `manuscript_inventory.md`.
+- `01_manuscript_inventory.md`.
 - extracted manuscript text.
-- `topic_scope.md`.
-- `literature_candidates.csv`.
-- `evidence_map.csv`.
+- `02_topic_scope.md`.
+- `03_literature_candidates.csv`.
+- `05_evidence_map.csv`.
 - local artifacts for `FIELD_STYLE_EXEMPLAR`, `DIRECT_COMPETITOR`, `RECENT_SOTA`, and target-venue papers.
 
 ## Audit Tasks
@@ -23,7 +23,9 @@ This is not general proofreading. It is field-style alignment based on related p
 4. Check introduction moves: problem, gap, prior work, contribution, roadmap.
 5. Check results and discussion style against field norms.
 6. Identify writing habits that make the paper feel outside the field.
-7. Provide concrete rewrite guidance without changing scientific meaning.
+7. Extract concrete writing moves from related-paper exemplar sections and explain how the manuscript should adapt them.
+8. Identify places where the manuscript sounds too timid, generic, or under-positioned relative to field-standard contribution framing.
+9. Provide concrete rewrite guidance without changing scientific meaning.
 
 ## How To Locate Problems
 
@@ -37,16 +39,20 @@ Look for:
 - abstracts missing key expected elements;
 - method/results sections using another field's rhetorical style;
 - lack of signposting in long technical arguments.
+- contribution, motivation, or method framing that is weaker than target-field exemplars when evidence supports a stronger stance;
+- limitations or missing-result placeholders that spill into unrelated sections and make the whole paper sound uncertain.
 
 ## Evidence Use Rules
 
 - Field-style judgments must cite `STYLE_NORM` evidence rows or local exemplar papers.
 - If no style exemplars were collected, request loopback to Stage 4.
 - Do not impose generic style rules when field exemplars show a different convention.
+- Use `ABSTRACT_STYLE_NORM`, `INTRODUCTION_MOVE_NORM`, `CONTRIBUTION_FRAMING_NORM`, `METHOD_EXPOSITION_NORM`, `EXPERIMENT_REPORTING_NORM`, `RESULT_TABLE_NORM`, `LIMITATION_FRAMING_NORM`, and `CONFIDENT_CLAIM_MODEL` rows when available.
+- A limitation should be framed honestly but locally. Do not recommend global hedging when only a specific result, table, or experiment is incomplete.
 
 ## Output
 
-Write `workspace/draft_paper_review/reports/specialist_audits/field_style_audit.md`:
+Write `workspace/draft_paper_review/reports/specialist_audits/16_field_style_audit.md`:
 
 ```markdown
 # Field Style Audit
@@ -75,6 +81,10 @@ STATUS: [READY or NEEDS_STYLE_EXEMPLARS]
 ## Section-Level Guidance
 | Section | Expected Field Move | Current Status | Revision Guidance |
 |---|---|---|---|
+
+## Confident Field-Standard Moves
+| Section | Exemplar Evidence IDs | Move To Learn | Current Underuse | Recommended Adaptation |
+|---|---|---|---|---|
 
 ## Phrase-Level Guidance
 | Current Phrase | Issue | Field-Appropriate Alternative | Evidence Basis |

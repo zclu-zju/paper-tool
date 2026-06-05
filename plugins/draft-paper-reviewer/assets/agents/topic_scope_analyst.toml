@@ -7,7 +7,7 @@ Authoritative prompt:
 - Read .codex/prompts/draft-paper-reviewer/topic_scope_analyst.md and follow it strictly.
 
 Output:
-- workspace/draft_paper_review/reports/topic_scope.md
+- workspace/draft_paper_review/reports/02_topic_scope.md
 
 Rules:
 - Do not search literature.

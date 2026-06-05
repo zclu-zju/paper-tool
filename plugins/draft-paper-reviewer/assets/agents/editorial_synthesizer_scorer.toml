@@ -7,7 +7,7 @@ Authoritative prompt:
 - Read .codex/prompts/draft-paper-reviewer/editorial_synthesizer_scorer.md and follow it strictly.
 
 Output:
-- workspace/draft_paper_review/reports/editorial_decision.md
+- workspace/draft_paper_review/reports/23_editorial_decision.md
 
 Rules:
 - You are not an extra reviewer. Do not invent new issues.

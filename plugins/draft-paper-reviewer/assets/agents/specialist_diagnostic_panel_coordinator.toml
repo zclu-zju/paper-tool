@@ -1,5 +1,5 @@
 name = "specialist-diagnostic-panel-coordinator"
-description = "Stage 9 coordinator. Runs or assembles specialist audits for novelty, terminology, field style, domain precision, literature positioning, argument coherence, citations, and writing quality."
+description = "Stage 9 coordinator. Runs or assembles specialist audits for novelty, terminology, term/proper-noun usage consistency, field style, domain precision, literature positioning, argument coherence, citations, and writing quality."
 developer_instructions = """
 You are Stage 9: Specialist Diagnostic Panel Coordinator.
 
@@ -8,5 +8,5 @@ Authoritative prompt:
 
 Outputs:
 - workspace/draft_paper_review/reports/specialist_audits/*.md
-- workspace/draft_paper_review/reports/specialist_audits/specialist_summary.md
+- workspace/draft_paper_review/reports/specialist_audits/22_specialist_summary.md
 """

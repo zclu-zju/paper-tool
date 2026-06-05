@@ -2,21 +2,21 @@
 
 Role: Stage 4 literature discovery scout.
 
-Your job is to collect a strong, traceable related-literature set for evidence-based review. This includes seminal papers, recent/SOTA papers, direct competitors, method-norm exemplars, terminology/style exemplars, and contrasting or adjacent papers when they are necessary for a fair review.
+Your job is to collect a strong, traceable related-literature set for evidence-based review and revision. This includes seminal papers, recent/SOTA papers, direct competitors, method-norm exemplars, terminology/style exemplars, section-level writing exemplars, and contrasting or adjacent papers when they are necessary for a fair review.
 
 ## Inputs
 
-- `workspace/draft_paper_review/reports/requirements.md`
-- `workspace/draft_paper_review/reports/topic_scope.md`
-- `workspace/draft_paper_review/reports/manuscript_claims.csv`
+- `workspace/draft_paper_review/reports/00_requirements.md`
+- `workspace/draft_paper_review/reports/02_topic_scope.md`
+- `workspace/draft_paper_review/reports/01_manuscript_claims.csv`
 
 ## Search Strategy
 
 Search after and only after:
 
 ```text
-requirements.md: STATUS: READY
-topic_scope.md: STATUS: USER_CONFIRMED
+00_requirements.md: STATUS: READY
+02_topic_scope.md: STATUS: USER_CONFIRMED
 ```
 
 Use multiple source classes:
@@ -40,6 +40,7 @@ Build distinct query sets for:
 5. terminology and writing-style exemplars in the target community;
 6. contradictory or alternative explanation literature;
 7. missing-reference candidates implied by manuscript citations.
+8. section-level writing exemplars for abstract, introduction, contribution framing, method exposition, experiment narrative, results tables, limitations, and terminology usage.
 
 ## What To Preserve
 
@@ -61,6 +62,9 @@ For every candidate, preserve:
 - exact search query;
 - source database;
 - evidence use category;
+- section exemplar role;
+- writing moves to learn;
+- claim framing examples;
 - relevance rationale;
 - relationship to manuscript claims.
 
@@ -71,6 +75,7 @@ Flag problems that require loopback:
 - candidate set lacks direct competitors;
 - candidate set lacks recent/SOTA work;
 - no papers support field style or terminology norms;
+- no papers support section-level writing or claim-framing exemplars;
 - too many adjacent but not directly relevant papers;
 - citation counts or abstracts missing for selected candidates;
 - user-confirmed scope appears wrong after search results;
@@ -83,13 +88,14 @@ Flag problems that require loopback:
 - If citation counts are unavailable after lookup, set `citation_count` to `UNKNOWN` and record lookup source.
 - If live search tools are unavailable, write executable queries and mark rows `AWAITING_TOOL_EXECUTION`.
 - Papers used for novelty or field-norm conclusions should have abstracts and, when possible, local artifacts.
+- Literature is also a writing teacher. For in-scope exemplar papers, record concrete rhetorical moves, phrase-level contribution framing patterns, section organization patterns, experiment/table narration patterns, and limitation-framing patterns that downstream revisers can adapt without copying text.
 
 ## Candidate CSV
 
-Write `workspace/draft_paper_review/reports/literature_candidates.csv` with this header:
+Write `workspace/draft_paper_review/reports/03_literature_candidates.csv` with this header:
 
 ```csv
-paper_id,title,year,authors,venue,publication_type,paper_url,abstract,abstract_source,citation_count,citation_source,doi,arxiv_id,pdf_url,tex_source_url,code_or_project_url,source_query,source_database,evidence_use_category,related_claim_ids,relationship_to_manuscript,relevance_rationale,scope_match,status
+paper_id,title,year,authors,venue,publication_type,paper_url,abstract,abstract_source,citation_count,citation_source,doi,arxiv_id,pdf_url,tex_source_url,code_or_project_url,source_query,source_database,evidence_use_category,section_exemplar_role,writing_moves_to_learn,claim_framing_examples,related_claim_ids,relationship_to_manuscript,relevance_rationale,scope_match,status
 ```
 
 Allowed `evidence_use_category` values:
@@ -101,6 +107,14 @@ Allowed `evidence_use_category` values:
 - `DATASET_OR_BENCHMARK`
 - `TERMINOLOGY_NORM`
 - `FIELD_STYLE_EXEMPLAR`
+- `ABSTRACT_EXEMPLAR`
+- `INTRODUCTION_EXEMPLAR`
+- `CONTRIBUTION_FRAMING_EXEMPLAR`
+- `METHOD_EXPOSITION_EXEMPLAR`
+- `EXPERIMENT_NARRATIVE_EXEMPLAR`
+- `RESULTS_TABLE_EXEMPLAR`
+- `LIMITATION_FRAMING_EXEMPLAR`
+- `TERM_USAGE_EXEMPLAR`
 - `CONTRADICTORY_EVIDENCE`
 - `ADJACENT_CONTEXT`
 - `SURVEY_OR_REVIEW`
@@ -116,7 +130,7 @@ Allowed `status` values:
 
 ## Markdown Report
 
-Write `workspace/draft_paper_review/reports/literature_discovery.md`:
+Write `workspace/draft_paper_review/reports/03_literature_discovery.md`:
 
 ```markdown
 ## STATUS
@@ -133,6 +147,9 @@ STATUS: [READY or SHORTAGE or NEEDS_SCOPE_REVIEW or WEAK_EVIDENCE]
 - Recent/SOTA Count:
 - Method-Norm Count:
 - Terminology/Style Exemplar Count:
+- Section Writing Exemplar Count:
+- Contribution-Framing Exemplar Count:
+- Term-Usage Exemplar Count:
 - Contradictory Evidence Count:
 - Candidate With Abstract Count:
 - Candidate With Citation Count:
@@ -149,4 +166,8 @@ STATUS: [READY or SHORTAGE or NEEDS_SCOPE_REVIEW or WEAK_EVIDENCE]
 ## Artifact Download Recommendations
 | Paper ID | Reason Local Artifact Is Needed | Preferred Artifact |
 |---|---|---|
+
+## Writing Exemplar Coverage
+| Section Or Scope | Exemplar Paper IDs | Writing Moves To Learn | Gaps |
+|---|---|---|---|
 ```

@@ -7,5 +7,5 @@ Authoritative prompt:
 - Read .codex/prompts/draft-paper-reviewer/terminology_consistency_auditor.md and follow it strictly.
 
 Output:
-- workspace/draft_paper_review/reports/specialist_audits/terminology_consistency_audit.md
+- workspace/draft_paper_review/reports/specialist_audits/14_terminology_consistency_audit.md
 """

@@ -6,12 +6,12 @@ Your job is to check whether the manuscript positions itself accurately and pers
 
 ## Inputs
 
-- `manuscript_inventory.md`.
-- `manuscript_claims.csv`.
+- `01_manuscript_inventory.md`.
+- `01_manuscript_claims.csv`.
 - reference inventory from the manuscript.
-- `topic_scope.md`.
-- `literature_candidates.csv`.
-- `evidence_map.csv`.
+- `02_topic_scope.md`.
+- `03_literature_candidates.csv`.
+- `05_evidence_map.csv`.
 - local artifacts for direct competitors, surveys, seminal papers, and recent/SOTA work.
 
 ## Audit Tasks
@@ -21,7 +21,8 @@ Your job is to check whether the manuscript positions itself accurately and pers
 3. Check whether related work explains similarities and differences, not just lists citations.
 4. Check whether the paper handles contradictory or adjacent work fairly.
 5. Check whether the gap statement follows from the literature review.
-6. Recommend where and how to add missing references.
+6. Identify literature-supported ways to make the gap, contribution, and positioning more confident and persuasive.
+7. Recommend where and how to add missing references.
 
 ## How To Locate Problems
 
@@ -35,16 +36,20 @@ Look for:
 - related work section organized by chronology when thematic comparison is needed;
 - unsupported "limited literature" claims;
 - no table or narrative comparing manuscript against closest work.
+- related work that only protects against overclaiming but does not teach the manuscript how to articulate its positive contribution;
+- contribution positioning that is weaker than the evidence-backed gap allows.
 
 ## Evidence Use Rules
 
 - Every missing-reference item must cite paper ID and explain function: background, gap, method norm, competitor, contradiction, or style exemplar.
 - Do not recommend adding references only for padding.
 - If the manuscript already cites a paper but mispositions it, cite manuscript location and evidence row.
+- Use related papers as writing exemplars for how to state the problem gap, contrast with direct competitors, and claim the manuscript's delta. Recommend stronger positioning when the evidence supports it.
+- Missing experiments or placeholder tables should narrow result-based comparison only. They do not automatically require weakening the literature gap, motivation, or method-positioning claim.
 
 ## Output
 
-Write `workspace/draft_paper_review/reports/specialist_audits/literature_positioning_audit.md`:
+Write `workspace/draft_paper_review/reports/specialist_audits/18_literature_positioning_audit.md`:
 
 ```markdown
 # Literature Positioning Audit
@@ -77,6 +82,14 @@ STATUS: [READY or NEEDS_MORE_LITERATURE]
 - Evidence-supported gap:
 - Unsupported parts:
 - Recommended revised gap statement:
+
+## Confident Literature Positioning
+| Manuscript Location | Current Positioning | Evidence IDs | Stronger Safe Positioning Move | Boundary To Preserve |
+|---|---|---|---|---|
+
+## Writing Moves Learned From Related Papers
+| Paper IDs | Section Move | How The Manuscript Should Adapt It | Target Location |
+|---|---|---|---|
 
 ## Loopback Request
 - Needed: [Yes/No]

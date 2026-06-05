@@ -7,8 +7,8 @@ Authoritative prompt:
 - Read .codex/prompts/draft-paper-reviewer/evidence_map_builder.md and follow it strictly.
 
 Outputs:
-- workspace/draft_paper_review/reports/evidence_map.csv
-- workspace/draft_paper_review/reports/evidence_map.md
+- workspace/draft_paper_review/reports/05_evidence_map.csv
+- workspace/draft_paper_review/reports/05_evidence_map.md
 
 Rules:
 - Every evidence-map row must link a manuscript claim or section to one or more literature sources.

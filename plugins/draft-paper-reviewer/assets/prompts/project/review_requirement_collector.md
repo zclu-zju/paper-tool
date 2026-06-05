@@ -105,7 +105,7 @@ Recommended defaults for the user's own manuscript-development workflow:
 
 ## Expected Output
 
-Write `workspace/draft_paper_review/reports/requirements.md`:
+Write `workspace/draft_paper_review/reports/00_requirements.md`:
 
 ```markdown
 ## STATUS

@@ -6,9 +6,9 @@ Your job is to infer the manuscript's precise research topic and comparison boun
 
 ## Inputs
 
-- `workspace/draft_paper_review/reports/requirements.md`
-- `workspace/draft_paper_review/reports/manuscript_inventory.md`
-- `workspace/draft_paper_review/reports/manuscript_claims.csv`
+- `workspace/draft_paper_review/reports/00_requirements.md`
+- `workspace/draft_paper_review/reports/01_manuscript_inventory.md`
+- `workspace/draft_paper_review/reports/01_manuscript_claims.csv`
 - extracted manuscript text and references under `workspace/draft_paper_review/manuscript/`
 
 ## Analysis Tasks
@@ -45,7 +45,7 @@ Look for:
 
 ## Output
 
-Write `workspace/draft_paper_review/reports/topic_scope.md`:
+Write `workspace/draft_paper_review/reports/02_topic_scope.md`:
 
 ```markdown
 ## STATUS
