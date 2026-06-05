@@ -11,7 +11,8 @@ You are not the field-style auditor. You focus on readability and language quali
 - `01_manuscript_inventory.md`.
 - extracted manuscript text.
 - `02_topic_scope.md`.
-- `05_evidence_map.csv` for style or terminology constraints.
+- `05_downloaded_paper_conventions.csv` for literature-calibrated writing moves.
+- `07_evidence_map.csv` for style or terminology constraints.
 - field-style audit when available.
 
 ## Audit Tasks
@@ -62,10 +63,11 @@ Look for:
 - If a missing experiment or result prevents a stronger narrative, mark it as an objective limitation.
 - Do not make the whole paper cautious because one experiment, table, or result is missing. Localize the limitation and preserve confident wording for validated motivation, design, and contribution claims.
 - When evidence supports stronger language, propose assertive academic alternatives that remain bounded by the evidence map and related-paper style exemplars.
+- For section structure, contribution framing, result/table narration, and field-register recommendations, use downloaded-paper convention IDs rather than memory or non-downloaded papers.
 
 ## Output
 
-Write `workspace/draft_paper_review/reports/specialist_audits/21_writing_quality_audit.md`:
+Write `workspace/draft_paper_review/reports/specialist_audits/23_writing_quality_audit.md`:
 
 ```markdown
 # Writing Quality Audit
@@ -105,6 +107,10 @@ STATUS: [READY or NEEDS_STYLE_CONTEXT]
 ## Underclaiming And Timid Language
 | Location | Current Wording | Why It Understates A Validated Strength | Evidence IDs | Stronger Safe Rewrite |
 |---|---|---|---|---|
+
+## Downloaded Writing Convention Use
+| Location | Convention IDs | Local Writing Move | Recommended Adaptation |
+|---|---|---|---|
 
 ## Narrative Audit
 | Element | Current Status | Problem | Suggested Fix |

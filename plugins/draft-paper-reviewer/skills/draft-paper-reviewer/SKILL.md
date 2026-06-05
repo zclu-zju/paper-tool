@@ -1,6 +1,6 @@
 ---
 name: draft-paper-reviewer
-description: Use for TeX-only academic draft review and revision in a Codex repo. Installs repo-local custom agents from this plugin, rejects non-TeX submitted manuscripts, confirms all workflow parameters with defaults, infers and asks the user to confirm the paper topic, discovers and optionally downloads related papers, builds a local evidence map, runs multi-perspective reviewer and specialist audit agents, synthesizes scores and decisions, revises copied TeX files through one-to-one reviewer/reviser loops, records every round in an XLSX ledger, verifies revisions, writes a numbered 99 ultimate summary, and loops back until quality gates pass or objective limitations are deferred.
+description: Use for TeX-only academic draft review and revision in a Codex repo. Installs repo-local custom agents from this plugin, rejects non-TeX submitted manuscripts, confirms all workflow parameters with defaults, infers and asks the user to confirm the paper topic, discovers related papers by topic and citation rank, downloads public artifacts according to all/top-X/required-only policy, mines downloaded papers for writing/table/figure/term conventions, gates figure/table deletion, builds a local evidence map, runs material reviewer and specialist audits, synthesizes scores and decisions, revises copied TeX files through one-to-one reviewer/reviser loops, records every round in an XLSX ledger, verifies revisions, writes a numbered 99 ultimate summary, and loops back until quality gates pass or objective limitations are deferred.
 ---
 
 # Draft Paper Reviewer
@@ -18,7 +18,11 @@ Stage 0 must first confirm all workflow parameters with explicit defaults. Stage
 
 The workflow is for improving the user's own draft. Missing experiments, incomplete tables, unfinished figures, and absent numeric results constrain only the affected result claims. They must not automatically weaken the motivation, method framing, contribution language, literature positioning, terminology, or field-style confidence. Agents must surface validated strengths and state them confidently within evidence boundaries.
 
-Related literature is used both as review evidence and as writing evidence. Discovery and evidence mapping preserve section-level examples of abstract structure, introduction moves, contribution framing, method exposition, experiment/table narration, limitation framing, and term usage so the paired revisers can adapt field-standard writing moves.
+Related literature is used both as review evidence and as writing evidence. Discovery groups papers by topic and citation rank; artifact collection downloads public PDFs or TeX/source according to the confirmed all/top-X/required-only policy. Downloaded local papers are then mined for section-level examples of abstract structure, introduction moves, contribution framing, method exposition, formula/notation explanation patterns, experiment/table/figure narration, limitation framing, and term usage so the paired revisers can adapt field-standard writing moves from durable local context.
+
+For computer-science manuscripts, formula-symbol usage is a hard clarity gate. Stage 1 extracts `01_formula_symbol_inventory.csv`. Downstream reviewers, auditors, planners, paired revisers, and verifiers must reject or fix symbols that are unnecessary at first occurrence, used before explanation, explained only later, unexplained, or ambiguously reused.
+
+Figure and table changes are gated. Existing tables, figures, algorithms, proofs, appendix evidence, and other evidence carriers cannot be deleted, merged, moved, or replaced unless the retention gate says the proof chain and paper structure remain sufficient. New or redesigned tables/figures must be supported by downloaded-paper convention evidence or escalated for user decision.
 
 ## Install Agents
 
@@ -44,7 +48,7 @@ python3 ../../scripts/install_project_agents.py --repo <target-repo> --keep-obso
 
 The installer is conservative about current files. It copies missing files, leaves identical files unchanged, reports conflicts without overwriting, and removes only known obsolete draft-paper-reviewer files by default.
 
-Project prompts are installed under `.codex/prompts/draft-paper-reviewer/`. Tooling, including the XLSX revision ledger builder, is installed under `.codex/tools/draft-paper-reviewer/`.
+Project prompts are installed under `.codex/prompts/draft-paper-reviewer/`. Tooling, including the related-paper artifact downloader/text extractor and XLSX revision ledger builder, is installed under `.codex/tools/draft-paper-reviewer/`.
 
 ## Launch
 
@@ -72,7 +76,13 @@ Stage 0 must collect required parameters before any paper search or review:
 - target review strictness and desired output language;
 - minimum related-paper count;
 - minimum recent/SOTA related-paper count;
-- whether related-paper PDFs or TeX sources must be downloaded locally;
+- related-paper artifact retrieval policy: all discovered public artifacts, top-cited per topic, top-cited overall, required evidence only, or no new downloads;
+- artifact download top-X when a top-cited policy is selected;
+- topic grouping policy for discovered literature;
+- local artifact evidence policy for writing/style/table/figure/term/common-practice decisions;
+- formula-symbol first-use policy: symbols must be needed at first occurrence and explained at or before first use;
+- report materiality policy with fixed numbering and no user-facing records for unwritten reports;
+- figure/table deletion policy requiring retention-gate approval;
 - whether manuscript revision is requested or review-only mode is desired;
 - paired revision granularity, active scopes, pair acceptance threshold, and maximum rounds per pair;
 - final quality threshold, with 3.5/5 as the default only after stating it;
@@ -93,7 +103,7 @@ Only after:
 
 may the workflow search related papers.
 
-After the integrity gate passes, Stage 15 must run the final summary agent and write:
+After the integrity gate passes, Stage 17 must run the final summary agent and write:
 
 ```text
 workspace/draft_paper_review/reports/99_ultimate_summary.md
@@ -105,7 +115,7 @@ That report is the first report the user should read.
 
 All review and audit conclusions must be traceable to:
 - a manuscript location, such as page/section/paragraph, line, figure, table, claim ID, or TeX file path;
-- one or more entries in `workspace/draft_paper_review/reports/05_evidence_map.csv`;
+- one or more entries in `workspace/draft_paper_review/reports/07_evidence_map.csv`;
 - downloaded or verified related literature when the issue concerns novelty, terminology, field norms, literature positioning, SOTA comparison, methods, or writing style.
 
 Generic comments such as "the novelty is weak" are invalid unless they name the overlapping prior work and explain the specific overlap.
@@ -123,25 +133,29 @@ Main report paths:
 ```text
 workspace/draft_paper_review/reports/00_requirements.md
 workspace/draft_paper_review/reports/01_manuscript_inventory.md
+workspace/draft_paper_review/reports/01_formula_symbol_inventory.csv
 workspace/draft_paper_review/reports/02_topic_scope.md
 workspace/draft_paper_review/reports/03_literature_candidates.csv
 workspace/draft_paper_review/reports/04_paper_artifacts.csv
-workspace/draft_paper_review/reports/05_evidence_map.csv
-workspace/draft_paper_review/reports/06_reviewer_configuration.md
+workspace/draft_paper_review/reports/05_downloaded_paper_conventions.csv
+workspace/draft_paper_review/reports/06_figure_table_retention_gate.csv
+workspace/draft_paper_review/reports/07_evidence_map.csv
+workspace/draft_paper_review/reports/08_reviewer_configuration.md
 workspace/draft_paper_review/reports/reviewer_reports/
 workspace/draft_paper_review/reports/specialist_audits/
-workspace/draft_paper_review/reports/specialist_audits/15_term_usage_consistency_audit.md
-workspace/draft_paper_review/reports/23_editorial_decision.md
-workspace/draft_paper_review/reports/24_revision_plan.md
-workspace/draft_paper_review/reports/25_paired_revision_summary.md
-workspace/draft_paper_review/reports/26_revision_changes.md
-workspace/draft_paper_review/reports/27_revision_ledger.jsonl
-workspace/draft_paper_review/reports/27_revision_ledger.xlsx
-workspace/draft_paper_review/reports/27_revision_ledger_csv/
-workspace/draft_paper_review/reports/28_revision_verification.md
-workspace/draft_paper_review/reports/29_integrity_report.md
-workspace/draft_paper_review/reports/30_iteration_log.md
-workspace/draft_paper_review/reports/31_deferred_issues.md
+workspace/draft_paper_review/reports/specialist_audits/17_term_usage_consistency_audit.md
+workspace/draft_paper_review/reports/25_editorial_decision.md
+workspace/draft_paper_review/reports/26_revision_plan.md
+workspace/draft_paper_review/reports/27_paired_revision_summary.md
+workspace/draft_paper_review/reports/28_revision_changes.md
+workspace/draft_paper_review/reports/29_revision_ledger.jsonl
+workspace/draft_paper_review/reports/29_revision_ledger.xlsx
+workspace/draft_paper_review/reports/29_revision_ledger_csv/
+workspace/draft_paper_review/reports/30_revision_verification.md
+workspace/draft_paper_review/reports/31_integrity_report.md
+workspace/draft_paper_review/reports/32_iteration_log.md
+workspace/draft_paper_review/reports/33_deferred_issues.md
+workspace/draft_paper_review/reports/34_report_materiality_index.md
 workspace/draft_paper_review/reports/99_ultimate_summary.md
 workspace/draft_paper_review/revision/
 workspace/draft_paper_review/literature/papers/
@@ -188,13 +202,15 @@ The integrity reviewer can reject and return to:
 - Stage 3 User Scope Confirmation Gate;
 - Stage 4 Literature Discovery Scout;
 - Stage 5 Paper Artifact Collector;
-- Stage 6 Evidence Map Builder;
-- Stage 7 Reviewer Panel Configurator;
-- Stage 8 Reviewer Panel;
-- Stage 9 Specialist Diagnostic Panel;
-- Stage 10 Editorial Synthesizer And Scorer;
-- Stage 11 Revision Planner;
-- Stage 12 Paired Revision Coordinator;
-- Stage 13 Revision Verifier.
+- Stage 6 Downloaded Paper Convention Miner;
+- Stage 7 Figure And Table Retention Gatekeeper;
+- Stage 8 Evidence Map Builder;
+- Stage 9 Reviewer Panel Configurator;
+- Stage 10 Reviewer Panel;
+- Stage 11 Specialist Diagnostic Panel;
+- Stage 12 Editorial Synthesizer And Scorer;
+- Stage 13 Revision Planner;
+- Stage 14 Paired Revision Coordinator;
+- Stage 15 Revision Verifier.
 
-If no new user input is required, the orchestrator retries automatically subject to the configured iteration policy. By default, the workflow has no global iteration cap, but the same stage/problem pair is retried at most 3 times unless the user sets another value. When the cap is reached, the issue is recorded in `30_iteration_log.md` and `31_deferred_issues.md`, excluded from further loopback, and carried into the final risk summary.
+If no new user input is required, the orchestrator retries automatically subject to the configured iteration policy. By default, the workflow has no global iteration cap, but the same stage/problem pair is retried at most 3 times unless the user sets another value. When the cap is reached, the issue is recorded in `32_iteration_log.md` and `33_deferred_issues.md`, excluded from further loopback, and carried into the final risk summary.

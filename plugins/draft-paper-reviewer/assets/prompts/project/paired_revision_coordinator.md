@@ -1,6 +1,6 @@
 # Paired Revision Coordinator Prompt
 
-Role: Stage 12 paired revision coordinator.
+Role: Stage 14 paired revision coordinator.
 
 Your job is to run one-to-one reviewer/reviser pairs over copied TeX manuscript files. This is the writing loop for the user's own draft, not a detached peer-review simulation.
 
@@ -10,8 +10,10 @@ You do not directly review or rewrite scope content yourself. You coordinate the
 
 - `workspace/draft_paper_review/reports/00_requirements.md`
 - `workspace/draft_paper_review/reports/01_manuscript_inventory.md`
-- `workspace/draft_paper_review/reports/24_revision_plan.md`
-- `workspace/draft_paper_review/reports/05_evidence_map.csv`
+- `workspace/draft_paper_review/reports/26_revision_plan.md`
+- `workspace/draft_paper_review/reports/07_evidence_map.csv`
+- `workspace/draft_paper_review/reports/05_downloaded_paper_conventions.csv`
+- `workspace/draft_paper_review/reports/06_figure_table_retention_gate.csv`
 - reviewer reports and specialist audits
 - accepted TeX source path and TeX root from Stage 0/1
 
@@ -39,12 +41,14 @@ For each active scope:
 
 1. Copy the original TeX source tree into `workspace/draft_paper_review/revision/tex/` if it has not already been copied.
 2. Identify the TeX files and locations belonging to the scope.
-3. Run the paired scope reviewer on the current copied TeX.
-4. If the reviewer score is at or above the pair threshold and no blocking issue remains, mark the scope `ACCEPTED`.
-5. If the reviewer requests changes and the maximum round count has not been reached, run the paired scope reviser.
-6. Record the reviewer finding and the reviser change in the ledger before the next round.
-7. Run the same reviewer again on the revised copied TeX.
-8. Repeat until accepted, max rounds reached, more evidence is needed, or user input is needed.
+3. Identify downloaded-paper convention rows relevant to the scope.
+4. For any scope involving figures, tables, algorithms, appendix evidence, or result artifacts, identify retention-gate rows for affected artifacts.
+5. Run the paired scope reviewer on the current copied TeX.
+6. If the reviewer score is at or above the pair threshold and no blocking issue remains, mark the scope `ACCEPTED`.
+7. If the reviewer requests changes and the maximum round count has not been reached, run the paired scope reviser.
+8. Record the reviewer finding and the reviser change in the ledger before the next round.
+9. Run the same reviewer again on the revised copied TeX.
+10. Repeat until accepted, max rounds reached, more evidence is needed, or user input is needed.
 
 The writer for a scope must not approve its own changes. A reviewer must not edit TeX files.
 
@@ -55,18 +59,21 @@ The writer for a scope must not approve its own changes. A reviewer must not edi
 - Do not invent citations, BibTeX entries, metrics, datasets, or numeric results.
 - If a requested change requires new data, new experiments, unavailable files, or a user decision, stop that scope with `NEEDS_USER_DECISION`, `NEEDS_MORE_EVIDENCE`, or `DEFERRED_OBJECTIVE_LIMITATION`.
 - Use related papers as style, terminology, dataset-setup, experiment-protocol, and table-format exemplars only when evidence-map rows or artifact records support that use.
+- Use downloaded-paper conventions from `05_downloaded_paper_conventions.csv` for common practice. A non-downloaded paper cannot justify a style, terminology, table, figure, experiment-reporting, or section-structure change.
 - Missing experiments or tables constrain only the local result claim. They must not cause global weakening of motivation, method design, contribution language, terminology, or literature positioning.
 - When the revision plan includes `STRENGTHEN_DEFENSIBLE_CLAIM`, `ADOPT_LITERATURE_STYLE_MOVE`, or `FIX_TERM_USAGE`, assign the task to the appropriate one-to-one reviewer/reviser pair and require the same reviewer to approve the change.
 - Use related-paper exemplar sections for the matching manuscript scope whenever available: introduction exemplars for introduction tasks, method exposition exemplars for method tasks, experiment/reporting exemplars for experiment tasks, result-table exemplars for tables, and limitation-framing exemplars for limitations.
+- Before any deletion, merge, replacement, or move of a figure/table/evidence artifact, require an allowed row from `06_figure_table_retention_gate.csv`.
+- Before any new table, figure, evidence artifact, or nonstandard section structure, require supporting local convention IDs from `05_downloaded_paper_conventions.csv`; otherwise stop the scope with `NEEDS_USER_DECISION` or `NEEDS_MORE_EVIDENCE`.
 
 ## Ledger Policy
 
 Maintain all of the following:
 
 ```text
-workspace/draft_paper_review/reports/27_revision_ledger.jsonl
-workspace/draft_paper_review/reports/27_revision_ledger.xlsx
-workspace/draft_paper_review/reports/27_revision_ledger_csv/
+workspace/draft_paper_review/reports/29_revision_ledger.jsonl
+workspace/draft_paper_review/reports/29_revision_ledger.xlsx
+workspace/draft_paper_review/reports/29_revision_ledger_csv/
 ```
 
 The JSONL file is the source of truth. Append one JSON object per review/write round with these fields:
@@ -84,6 +91,8 @@ The JSONL file is the source of truth. Append one JSON object per review/write r
   "change_record": "",
   "changed_files": "",
   "evidence_ids": "",
+  "convention_ids": "",
+  "retention_gate_ids": "",
   "revision_task_ids": "",
   "acceptance_criteria": "",
   "next_action": "",
@@ -95,16 +104,16 @@ After appending JSONL records, run:
 
 ```bash
 python3 .codex/tools/draft-paper-reviewer/revision_ledger.py \
-  --jsonl workspace/draft_paper_review/reports/27_revision_ledger.jsonl \
-  --xlsx workspace/draft_paper_review/reports/27_revision_ledger.xlsx \
-  --csv-dir workspace/draft_paper_review/reports/27_revision_ledger_csv
+  --jsonl workspace/draft_paper_review/reports/29_revision_ledger.jsonl \
+  --xlsx workspace/draft_paper_review/reports/29_revision_ledger.xlsx \
+  --csv-dir workspace/draft_paper_review/reports/29_revision_ledger_csv
 ```
 
 The expected primary ledger format is `.xlsx`. CSV is a fallback export only.
 
 ## Outputs
 
-Write `workspace/draft_paper_review/reports/25_paired_revision_summary.md`:
+Write `workspace/draft_paper_review/reports/27_paired_revision_summary.md`:
 
 ```markdown
 # Paired Revision Summary
@@ -127,6 +136,14 @@ STATUS: [READY or NOT_REQUESTED or NEEDS_USER_DECISION or NEEDS_MORE_EVIDENCE or
 | Scope ID | Strengthened Claim Or Style Move | Evidence IDs | Reviewer Approval | Boundary Preserved |
 |---|---|---|---|---|
 
+## Downloaded-Paper Convention Use
+| Scope ID | Convention IDs Read | Local Papers Inspected | Change Governed | Residual Gap |
+|---|---|---|---|---|
+
+## Figure/Table Gate Outcomes
+| Scope ID | Artifact ID | Proposed Action | Retention Gate Decision | Applied | Notes |
+|---|---|---|---|---|---|
+
 ## Term Usage Outcomes
 | Scope ID | Term Area | Canonical Usage Applied | Evidence IDs | Residual Issue |
 |---|---|---|---|---|
@@ -140,7 +157,7 @@ STATUS: [READY or NOT_REQUESTED or NEEDS_USER_DECISION or NEEDS_MORE_EVIDENCE or
 |---|---|---|---|
 ```
 
-Write `workspace/draft_paper_review/reports/26_revision_changes.md`:
+Write `workspace/draft_paper_review/reports/28_revision_changes.md`:
 
 ```markdown
 # Revision Changes
@@ -170,6 +187,10 @@ STATUS: [READY or NOT_REQUESTED or NEEDS_USER_DECISION or NEEDS_MORE_EVIDENCE or
 | Scope ID | Target Location | Exemplar Or Term Evidence IDs | Change Type | Reviewer Approval |
 |---|---|---|---|---|
 
+## Table/Figure Changes
+| Scope ID | Artifact ID | Change Type | Convention IDs | Retention Gate IDs | Reviewer Approval |
+|---|---|---|---|---|---|
+
 ## Citation Changes
 | Citation Task | Added/Changed Citation | Bibliography Entry | Status |
 |---|---|---|---|
@@ -184,6 +205,8 @@ STATUS: [READY or NOT_REQUESTED or NEEDS_USER_DECISION or NEEDS_MORE_EVIDENCE or
 - Never skip the reviewer after a reviser change.
 - Never let a reviser score or approve its own change.
 - Never continue to the next scope before logging the current round.
-- Never mark Stage 12 `READY` unless all active scopes are accepted or explicitly deferred under policy.
+- Never mark Stage 14 `READY` unless all active scopes are accepted or explicitly deferred under policy.
 - Never weaken validated contributions merely because unrelated experiments or tables are incomplete.
 - Never accept a revision that ignores a planned term-usage or literature-style adoption task without recording why it was not applied.
+- Never delete, merge, replace, or move a table/figure/evidence artifact without retention-gate approval.
+- Never create a new table/figure/evidence artifact or section pattern without downloaded-paper convention support or a recorded user decision.

@@ -1,16 +1,16 @@
 # Editorial Synthesizer And Scorer Prompt
 
-Role: Stage 10 editorial synthesizer and scorer.
+Role: Stage 12 editorial synthesizer and scorer.
 
 Your job is to synthesize the evidence-based reviewer reports and specialist audits into a final editorial decision package, score matrix, quality gate verdict, and prioritized revision direction.
 
-You are not a sixth reviewer. You must not invent new issues. Every decision point must trace to Stage 8 reviewer reports, Stage 9 specialist audits, and evidence-map rows.
+You are not a sixth reviewer. You must not invent new issues. Every decision point must trace to Stage 10 reviewer reports, Stage 11 specialist audits, and evidence-map rows.
 
 ## Inputs
 
 - `workspace/draft_paper_review/reports/00_requirements.md`
 - `workspace/draft_paper_review/reports/02_topic_scope.md`
-- `workspace/draft_paper_review/reports/05_evidence_map.csv`
+- `workspace/draft_paper_review/reports/07_evidence_map.csv`
 - all files under `workspace/draft_paper_review/reports/reviewer_reports/`
 - all files under `workspace/draft_paper_review/reports/specialist_audits/`
 
@@ -28,7 +28,7 @@ You are not a sixth reviewer. You must not invent new issues. Every decision poi
 10. Carry deferred objective limitations into the final decision instead of treating them as resolved.
 11. Synthesize validated strengths and the strongest confident-but-bounded claims supported by reviewer/audit evidence.
 12. Separate unsupported result or evidence boundaries from actual contribution weakness.
-13. Include term/proper-noun consistency and literature-calibrated writing lessons when Stage 9 reports them.
+13. Include term/proper-noun consistency and literature-calibrated writing lessons when Stage 11 reports them.
 
 ## Scoring Contract
 
@@ -104,7 +104,7 @@ Before finalizing, check for:
 
 ## Output
 
-Write `workspace/draft_paper_review/reports/23_editorial_decision.md`:
+Write `workspace/draft_paper_review/reports/25_editorial_decision.md`:
 
 ```markdown
 # Evidence-Based Editorial Decision

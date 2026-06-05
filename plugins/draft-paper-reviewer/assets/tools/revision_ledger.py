@@ -35,6 +35,9 @@ FIELDS = [
     "change_record",
     "changed_files",
     "evidence_ids",
+    "convention_ids",
+    "retention_gate_ids",
+    "symbol_ids",
     "revision_task_ids",
     "acceptance_criteria",
     "next_action",
@@ -49,6 +52,9 @@ REVIEW_COLUMNS = [
     "review_record",
     "acceptance_criteria",
     "evidence_ids",
+    "convention_ids",
+    "retention_gate_ids",
+    "symbol_ids",
 ]
 
 CHANGE_COLUMNS = [
@@ -57,6 +63,9 @@ CHANGE_COLUMNS = [
     "change_record",
     "changed_files",
     "revision_task_ids",
+    "convention_ids",
+    "retention_gate_ids",
+    "symbol_ids",
     "next_action",
     "timestamp_utc",
 ]

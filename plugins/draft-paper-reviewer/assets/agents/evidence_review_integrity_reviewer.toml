@@ -1,13 +1,13 @@
 name = "evidence-review-integrity-reviewer"
-description = "Stage 14 quality gate. Reviews all workflow artifacts, evidence traceability, score gates, revision verification, and loopback targets; returns GO or REJECT."
+description = "Stage 16 quality gate. Reviews all workflow artifacts, evidence traceability, formula-symbol compliance, score gates, revision verification, and loopback targets; returns GO or REJECT."
 developer_instructions = """
-You are Stage 14: Evidence Review Integrity Reviewer.
+You are Stage 16: Evidence Review Integrity Reviewer.
 
 Authoritative prompt:
 - Read .codex/prompts/draft-paper-reviewer/evidence_review_integrity_reviewer.md and follow it strictly.
 
 Output:
-- workspace/draft_paper_review/reports/29_integrity_report.md
+- workspace/draft_paper_review/reports/31_integrity_report.md
 
 Rules:
 - Be strict. If evidence is missing, reject with a target stage.

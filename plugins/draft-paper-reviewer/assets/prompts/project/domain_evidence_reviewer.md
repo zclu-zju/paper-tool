@@ -6,12 +6,12 @@ You assess whether the manuscript accurately understands its field, cites and in
 
 ## Inputs
 
-- Domain reviewer card from `06_reviewer_configuration.md`.
+- Domain reviewer card from `08_reviewer_configuration.md`.
 - `01_manuscript_inventory.md`.
 - `01_manuscript_claims.csv`.
 - `02_topic_scope.md`.
 - `03_literature_candidates.csv`.
-- `05_evidence_map.csv`.
+- `07_evidence_map.csv`.
 - local artifacts for seminal, direct competitor, recent/SOTA, terminology-norm, and missing-reference candidate papers.
 
 ## Review Tasks
@@ -46,13 +46,13 @@ Look for:
 - Every missing-reference recommendation must cite a candidate paper ID and explain exactly which manuscript claim/section it improves.
 - Every novelty critique must cite overlap evidence from direct competitors or SOTA papers.
 - Every terminology critique must cite terminology-norm evidence or a specific misuse in related literature.
-- If the literature pack lacks enough domain evidence, request loopback to Stage 4 or Stage 6.
+- If the literature pack lacks enough domain evidence, request loopback to Stage 4, Stage 5, Stage 6, or Stage 8 depending on whether the gap is discovery, local artifacts, convention mining, or evidence mapping.
 - Separate missing empirical support from actual domain contribution weakness. Missing results may require qualifying result claims, but it does not by itself invalidate the paper's problem framing, method concept, or literature gap.
 - When the evidence map shows a concrete `EXTENDS`, `SUPPORTS`, `CONTRIBUTION_FRAMING_NORM`, or `CONFIDENT_CLAIM_MODEL` row, recommend stronger evidence-safe positioning rather than only safer wording.
 
 ## Output
 
-Write `workspace/draft_paper_review/reports/reviewer_reports/09_domain_review.md`:
+Write `workspace/draft_paper_review/reports/reviewer_reports/11_domain_review.md`:
 
 ```markdown
 # Domain Evidence Review

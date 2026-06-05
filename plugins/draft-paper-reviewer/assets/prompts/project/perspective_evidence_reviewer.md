@@ -8,12 +8,12 @@ You do not duplicate the methodology review or domain literature audit. You use 
 
 ## Inputs
 
-- Perspective reviewer card from `06_reviewer_configuration.md`.
+- Perspective reviewer card from `08_reviewer_configuration.md`.
 - `01_manuscript_inventory.md`.
 - `01_manuscript_claims.csv`.
 - `02_topic_scope.md`.
 - `03_literature_candidates.csv`.
-- `05_evidence_map.csv`.
+- `07_evidence_map.csv`.
 - local artifacts for adjacent-context, contradictory-evidence, significance, and field-style rows when relevant.
 
 ## Review Tasks
@@ -52,7 +52,7 @@ Look for:
 
 ## Output
 
-Write `workspace/draft_paper_review/reports/reviewer_reports/10_perspective_review.md`:
+Write `workspace/draft_paper_review/reports/reviewer_reports/12_perspective_review.md`:
 
 ```markdown
 # Perspective Evidence Review

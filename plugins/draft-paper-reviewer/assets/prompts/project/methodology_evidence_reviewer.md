@@ -8,11 +8,12 @@ You do not judge domain literature completeness except where missing literature 
 
 ## Inputs
 
-- Methodology reviewer card from `06_reviewer_configuration.md`.
+- Methodology reviewer card from `08_reviewer_configuration.md`.
 - `01_manuscript_inventory.md`.
 - `01_manuscript_claims.csv`.
+- `01_formula_symbol_inventory.csv`.
 - `02_topic_scope.md`.
-- `05_evidence_map.csv`.
+- `07_evidence_map.csv`.
 - `03_literature_candidates.csv`.
 - local related-paper artifacts for `METHOD_NORM`, `DATASET_OR_BENCHMARK`, `RECENT_SOTA`, and `DIRECT_COMPETITOR` rows.
 
@@ -24,8 +25,9 @@ You do not judge domain literature completeness except where missing literature 
 4. Check data, sample, benchmark, baseline, control, ablation, statistics, uncertainty, and reproducibility reporting as applicable.
 5. Check whether conclusions overreach the evidence.
 6. Identify missing methodological details that prevent replication.
-7. Identify what can still be claimed confidently about the method design, evaluation plan, dataset setup, or reproducibility structure even when some experiments or tables are incomplete.
-8. Score the seven dimensions, with special authority over Methodological Rigor and Evidence Sufficiency.
+7. Check whether formulas, losses, objectives, algorithms, metrics, and notation introduce every symbol only when needed and explain every symbol at or before first use.
+8. Identify what can still be claimed confidently about the method design, evaluation plan, dataset setup, or reproducibility structure even when some experiments or tables are incomplete.
+9. Score the seven dimensions, with special authority over Methodological Rigor and Evidence Sufficiency.
 
 ## How To Locate Problems
 
@@ -53,6 +55,9 @@ ML/AI or computational:
 - statistical significance or uncertainty;
 - compute and reproducibility.
 - draft-incomplete experiments being treated as failed experiments rather than unassessable objective limitations.
+- formulas, losses, objectives, metrics, or algorithm variables that use symbols before explaining them;
+- notation introduced before the reader needs it;
+- symbols explained only after their first use;
 
 Qualitative:
 - sampling rationale;
@@ -86,10 +91,11 @@ Theoretical/conceptual:
 - If no method-norm evidence exists, request Stage 4/6 loopback instead of guessing.
 - If experiment results, ablations, tables, raw data, checkpoints, or approvals are missing, classify the affected assessment as `N/A_OBJECTIVE_MISSING` or `DEFERRED_OBJECTIVE_LIMITATION` when appropriate. Do not convert absent draft material into a blanket low score for motivation, method exposition, terminology, or contribution framing.
 - Preserve and name method strengths that are visible from the TeX draft, such as a clear protocol, appropriate baselines, reproducibility details, or well-defined assumptions. Recommend confident but bounded language for those strengths.
+- Formula-symbol compliance is manuscript-internal and does not require literature evidence: a symbol is compliant only when it is needed at first occurrence and explained at or before first use.
 
 ## Output
 
-Write `workspace/draft_paper_review/reports/reviewer_reports/08_methodology_review.md`:
+Write `workspace/draft_paper_review/reports/reviewer_reports/10_methodology_review.md`:
 
 ```markdown
 # Methodology Evidence Review
@@ -154,7 +160,12 @@ Write `workspace/draft_paper_review/reports/reviewer_reports/08_methodology_revi
 | Baseline/control adequacy | | | | |
 | Metric/statistical reporting | | | | |
 | Reproducibility | | | | |
+| Formula-symbol first-use compliance | | | | |
 | Conclusion conservatism | | | | |
+
+## Formula And Notation Clarity
+| Symbol ID | Formula Or Location | First-Use Problem | Why It Affects Method Clarity | Required Fix |
+|---|---|---|---|---|
 
 ## Confident But Bounded Method Claims
 | Method Aspect | What The Draft Supports | Evidence IDs | Safe Claim Wording | Result Boundary |

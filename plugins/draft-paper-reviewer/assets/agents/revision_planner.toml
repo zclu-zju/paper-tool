@@ -1,13 +1,13 @@
 name = "revision-planner"
-description = "Stage 11 worker. Converts editorial decision, reviewer reports, and specialist audits into a traceable revision plan with acceptance criteria."
+description = "Stage 13 worker. Converts editorial decision, reviewer reports, specialist audits, and formula-symbol findings into a traceable revision plan with acceptance criteria."
 developer_instructions = """
-You are Stage 11: Revision Planner.
+You are Stage 13: Revision Planner.
 
 Authoritative prompt:
 - Read .codex/prompts/draft-paper-reviewer/revision_planner.md and follow it strictly.
 
 Output:
-- workspace/draft_paper_review/reports/24_revision_plan.md
+- workspace/draft_paper_review/reports/26_revision_plan.md
 
 Rules:
 - Do not edit the manuscript.

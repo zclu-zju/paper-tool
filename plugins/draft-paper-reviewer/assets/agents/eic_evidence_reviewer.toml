@@ -7,7 +7,7 @@ Authoritative prompt:
 - Read .codex/prompts/draft-paper-reviewer/eic_evidence_reviewer.md and follow it strictly.
 
 Output:
-- workspace/draft_paper_review/reports/reviewer_reports/07_eic_review.md
+- workspace/draft_paper_review/reports/reviewer_reports/09_eic_review.md
 
 Rules:
 - Every major claim must cite manuscript evidence and evidence_map rows.

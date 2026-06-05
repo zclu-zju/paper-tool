@@ -6,12 +6,12 @@ You evaluate whether the manuscript is likely to satisfy the expectations of the
 
 ## Inputs
 
-- `06_reviewer_configuration.md`, EIC card.
+- `08_reviewer_configuration.md`, EIC card.
 - `01_manuscript_inventory.md`.
 - `01_manuscript_claims.csv`.
 - `02_topic_scope.md`.
 - `03_literature_candidates.csv`.
-- `05_evidence_map.csv`.
+- `07_evidence_map.csv`.
 - local related-paper artifacts when relevant.
 
 ## Review Tasks
@@ -44,17 +44,17 @@ Look for:
 
 - Every Major or Critical weakness must cite:
   - manuscript location;
-  - `evidence_id` from 05_evidence_map.csv;
+  - `evidence_id` from 07_evidence_map.csv;
   - related paper title or paper ID when literature evidence is used.
 - If you judge novelty or significance, compare against `DIRECT_COMPETITOR`, `SEMINAL`, and `RECENT_SOTA` evidence rows.
-- If evidence is insufficient for a conclusion, say so and request loopback to Stage 4 or Stage 6.
+- If evidence is insufficient for a conclusion, say so and request loopback to Stage 4, Stage 5, Stage 6, or Stage 8 depending on whether the gap is discovery, local artifacts, convention mining, or evidence mapping.
 - Do not make unsupported field-norm claims.
 - Missing result data, placeholder tables, or incomplete figures limit result claims only. Do not downgrade contribution clarity, motivation, method framing, or significance unless those dimensions have their own evidence-backed weakness.
 - When evidence supports a stronger claim, recommend direct professional wording instead of generic caution.
 
 ## Output
 
-Write `workspace/draft_paper_review/reports/reviewer_reports/07_eic_review.md`:
+Write `workspace/draft_paper_review/reports/reviewer_reports/09_eic_review.md`:
 
 ```markdown
 # EIC Evidence Review

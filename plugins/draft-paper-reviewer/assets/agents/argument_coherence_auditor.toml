@@ -7,5 +7,5 @@ Authoritative prompt:
 - Read .codex/prompts/draft-paper-reviewer/argument_coherence_auditor.md and follow it strictly.
 
 Output:
-- workspace/draft_paper_review/reports/specialist_audits/19_argument_coherence_audit.md
+- workspace/draft_paper_review/reports/specialist_audits/21_argument_coherence_audit.md
 """

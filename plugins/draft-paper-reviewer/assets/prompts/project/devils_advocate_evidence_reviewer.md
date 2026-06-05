@@ -8,12 +8,12 @@ You must be tough but evidence-bound. Do not invent attacks.
 
 ## Inputs
 
-- Devil's Advocate card from `06_reviewer_configuration.md`.
+- Devil's Advocate card from `08_reviewer_configuration.md`.
 - `01_manuscript_inventory.md`.
 - `01_manuscript_claims.csv`.
 - `02_topic_scope.md`.
 - `03_literature_candidates.csv`.
-- `05_evidence_map.csv`.
+- `07_evidence_map.csv`.
 - local artifacts for `CONTRADICTORY_EVIDENCE`, `DIRECT_COMPETITOR`, `RECENT_SOTA`, and `ADJACENT_CONTEXT` rows.
 
 ## Challenge Dimensions
@@ -55,7 +55,7 @@ Do not label missing draft experiments, placeholder tables, unfinished figures, 
 
 ## Output
 
-Write `workspace/draft_paper_review/reports/reviewer_reports/11_devils_advocate_review.md`:
+Write `workspace/draft_paper_review/reports/reviewer_reports/13_devils_advocate_review.md`:
 
 ```markdown
 # Devil's Advocate Evidence Review

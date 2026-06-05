@@ -31,20 +31,25 @@ Collect all of the following:
 11. Minimum related-paper count.
 12. Minimum recent/SOTA related-paper count.
 13. Target year range or recency window for related literature.
-14. Whether related-paper PDFs or TeX/source artifacts should be downloaded locally.
-15. Whether manuscript revision is requested: `REVIEW_ONLY`, `REVIEW_AND_REVISE`, or `UNKNOWN`.
-16. Revision granularity: fixed section pairs, issue-based pairs, or both.
-17. Active paired revision scopes, such as abstract, introduction, motivation, related work positioning, method exposition, experiment setup, results/table narrative, terminology/style, limitations/reproducibility, or user-defined scopes.
-18. Pair acceptance threshold. Default is 4.0/5 for each scope after stating it.
-19. Maximum review-write rounds per pair. Default is 3 after stating it.
-20. Final quality threshold. Use default 3.5/5 only after stating it.
-21. Maximum total workflow iterations. Default is `UNLIMITED` unless the user specifies a cap.
-22. Maximum repeated iterations for the same stage/problem pair. Default is `3` after stating it.
-23. Objective limitation policy: whether issues that cannot be fixed from the current manuscript and local workspace should be `DEFER_AND_CONTINUE`, `ASK_USER`, or `BLOCK`.
-24. Missing score policy: whether unassessable dimensions caused by objective missing evidence should be `MARK_NA_AND_REWEIGHT`, `MARK_NA_NO_REWEIGHT`, or `BLOCK`.
-25. Related-paper style-control policy: whether the workflow should use related papers as style, terminology, dataset-setting, experiment-protocol, and table-format exemplars.
-26. Inclusion and exclusion constraints for related literature, if provided.
-27. Any private/sensitive data handling constraints.
+14. Related-paper artifact retrieval policy: `DOWNLOAD_ALL_DISCOVERED_PUBLIC_ARTIFACTS`, `DOWNLOAD_TOP_CITED_PER_TOPIC`, `DOWNLOAD_TOP_CITED_OVERALL`, `DOWNLOAD_REQUIRED_EVIDENCE_ONLY`, or `DO_NOT_DOWNLOAD`.
+15. Artifact download top-X value and unit when a top-cited policy is selected.
+16. Topic grouping policy for discovered literature: inferred topic groups, user-provided topic groups, or single-topic mode.
+17. Local artifact evidence policy for downstream agents: whether novelty, field norms, writing style, terminology, table/figure conventions, and deletion/addition decisions require downloaded local artifacts.
+18. Report materiality policy: whether detailed diagnostic reports are always written or written only when the issue is material for the author's decisions, paper principles, verification/comparison validity, or high-impact writing/revision choices.
+19. Whether manuscript revision is requested: `REVIEW_ONLY`, `REVIEW_AND_REVISE`, or `UNKNOWN`.
+20. Revision granularity: fixed section pairs, issue-based pairs, or both.
+21. Active paired revision scopes, such as abstract, introduction, motivation, related work positioning, method exposition, experiment setup, results/table narrative, terminology/style, limitations/reproducibility, or user-defined scopes.
+22. Pair acceptance threshold. Default is 4.0/5 for each scope after stating it.
+23. Maximum review-write rounds per pair. Default is 3 after stating it.
+24. Final quality threshold. Use default 3.5/5 only after stating it.
+25. Maximum total workflow iterations. Default is `UNLIMITED` unless the user specifies a cap.
+26. Maximum repeated iterations for the same stage/problem pair. Default is `3` after stating it.
+27. Objective limitation policy: whether issues that cannot be fixed from the current manuscript and local workspace should be `DEFER_AND_CONTINUE`, `ASK_USER`, or `BLOCK`.
+28. Missing score policy: whether unassessable dimensions caused by objective missing evidence should be `MARK_NA_AND_REWEIGHT`, `MARK_NA_NO_REWEIGHT`, or `BLOCK`.
+29. Related-paper style-control policy: whether the workflow should use related papers as style, terminology, dataset-setting, experiment-protocol, and table-format exemplars.
+30. Figure/table deletion policy: whether any deletion, merge, or replacement of a figure/table must pass the figure/table retention gate before revision.
+31. Inclusion and exclusion constraints for related literature, if provided.
+32. Any private/sensitive data handling constraints.
 
 ## TeX-Only Source Scan
 
@@ -70,7 +75,11 @@ Recommended defaults for the user's own manuscript-development workflow:
 - Minimum Related Paper Count: 20.
 - Minimum Recent/SOTA Paper Count: 8.
 - Target Years: last 5 years plus seminal papers, unless the field requires a different window.
-- Related Paper Artifact Retrieval: `DOWNLOAD_WHEN_NEEDED_FOR_EVIDENCE`.
+- Related Paper Artifact Retrieval Policy: `DOWNLOAD_ALL_DISCOVERED_PUBLIC_ARTIFACTS`. This is the safest default for durable downstream context. The user may choose `DOWNLOAD_TOP_CITED_PER_TOPIC`, `DOWNLOAD_TOP_CITED_OVERALL`, `DOWNLOAD_REQUIRED_EVIDENCE_ONLY`, or `DO_NOT_DOWNLOAD`.
+- Artifact Download Top X: `20 per topic` only when `DOWNLOAD_TOP_CITED_PER_TOPIC` is selected; `40 overall` only when `DOWNLOAD_TOP_CITED_OVERALL` is selected.
+- Topic Grouping Policy: `INFER_TOPIC_GROUPS_FROM_CONFIRMED_SCOPE_AND_SEARCH_RESULTS`.
+- Local Artifact Evidence Policy: `REQUIRE_DOWNLOADED_LOCAL_ARTIFACTS_FOR_NOVELTY_FIELD_NORMS_WRITING_STYLE_TERMS_TABLES_AND_FIGURES`.
+- Report Materiality Policy: `WRITE_DETAILED_REPORTS_ONLY_FOR_MATERIAL_AUTHOR_DECISIONS_OR_PRINCIPLE_RISKS_WITH_FIXED_NUMBERING_AND_NO_RECORDS_FOR_UNWRITTEN_REPORTS`.
 - Review Mode: `REVIEW_AND_REVISE`.
 - Revision Granularity: `BOTH_SECTION_AND_ISSUE_PAIRS`.
 - Active Paired Revision Scopes: abstract/contribution, introduction, motivation/problem gap, related-work positioning, method exposition, experiment setup/datasets/metrics, results/table/figure narrative, terminology/professional style, limitations/reproducibility.
@@ -82,6 +91,7 @@ Recommended defaults for the user's own manuscript-development workflow:
 - Objective Limitation Policy: `DEFER_AND_CONTINUE`.
 - Missing Score Policy: `MARK_NA_AND_REWEIGHT`.
 - Style-Control Policy: `USE_RELATED_PAPERS_AS_STYLE_AND_EXPERIMENT_EXEMPLARS`.
+- Figure/Table Deletion Policy: `REQUIRE_RETENTION_GATE_APPROVAL_BEFORE_DELETE_MERGE_OR_REPLACE`.
 
 ## Decision Rules
 
@@ -93,6 +103,12 @@ Recommended defaults for the user's own manuscript-development workflow:
 - Do not proceed unless the manuscript source is TeX and the TeX root is known or can be safely inferred.
 - If the input is unsupported, do not ask review-parameter questions. Tell the user that this workflow requires TeX source and stop.
 - Do not assume manuscript artifact download is allowed. Use the stated default only after confirmation.
+- If the user chooses a top-cited download policy but does not give X, ask for X or display the default X in the confirmation table and stop for confirmation.
+- Do not allow downstream writing, table/figure convention, field-style, terminology, or major novelty conclusions to depend on non-downloaded papers unless the requirements explicitly allow weaker metadata-only reasoning.
+- If the user chooses `DO_NOT_DOWNLOAD`, mark style/table/figure/term-norm revision as evidence-limited unless the user provided local related-paper artifacts.
+- Do not allow figure/table deletion, merging, or replacement unless the figure/table deletion policy is confirmed.
+- Do not write every possible diagnostic report by default. The materiality policy must be confirmed and passed downstream so only author-relevant, principle-level, comparison/verification, or high-impact writing reports are expanded into standalone reports.
+- Report numbering is fixed. If a report is left unwritten by materiality, do not renumber later reports and do not move another report into that number. Do not write placeholders, omission logs, or user-facing explanations for unwritten reports.
 - Do not assume the manuscript is complete. Ask the user to classify the manuscript maturity when it is unknown.
 - Do not punish incomplete experiments, missing tables, or unfinished figures as if they were failed completed work. Record them as known incomplete parts and pass them downstream as development constraints.
 - Do not assume revision is allowed unless the user confirmed `REVIEW_AND_REVISE` or accepted defaults.
@@ -146,7 +162,10 @@ STATUS: [READY or NEEDS_USER_CONFIRMATION or NEEDS_USER_INPUT or UNSUPPORTED_INP
 - Minimum Related Paper Count:
 - Minimum Recent/SOTA Paper Count:
 - Target Years:
-- Related Paper Artifact Retrieval: [DOWNLOAD_PDFS / DOWNLOAD_TEX / DOWNLOAD_PDF_AND_TEX / DO_NOT_DOWNLOAD / DOWNLOAD_WHEN_NEEDED_FOR_EVIDENCE]
+- Related Paper Artifact Retrieval Policy: [DOWNLOAD_ALL_DISCOVERED_PUBLIC_ARTIFACTS / DOWNLOAD_TOP_CITED_PER_TOPIC / DOWNLOAD_TOP_CITED_OVERALL / DOWNLOAD_REQUIRED_EVIDENCE_ONLY / DO_NOT_DOWNLOAD]
+- Artifact Download Top X:
+- Topic Grouping Policy:
+- Local Artifact Evidence Policy:
 - Literature Inclusion Criteria:
 - Literature Exclusion Criteria:
 - Review Mode: [REVIEW_ONLY / REVIEW_AND_REVISE]
@@ -160,6 +179,8 @@ STATUS: [READY or NEEDS_USER_CONFIRMATION or NEEDS_USER_INPUT or UNSUPPORTED_INP
 - Objective Limitation Policy: [DEFER_AND_CONTINUE / ASK_USER / BLOCK]
 - Missing Score Policy: [MARK_NA_AND_REWEIGHT / MARK_NA_NO_REWEIGHT / BLOCK]
 - Style-Control Policy:
+- Figure/Table Deletion Policy:
+- Report Materiality Policy:
 - Sensitive Data Constraints:
 
 ## Draft-Aware Review Strategy
@@ -174,7 +195,10 @@ STATUS: [READY or NEEDS_USER_CONFIRMATION or NEEDS_USER_INPUT or UNSUPPORTED_INP
 - Topic Scope Analyst:
 - Literature Discovery:
 - Artifact Collection:
+- Downloaded Paper Convention Mining:
+- Figure/Table Retention Gate:
 - Evidence Map:
+- Report Materiality Gate:
 - Reviewer Panel:
 - Specialist Audits:
 - Paired Revision Loop:

@@ -7,7 +7,7 @@ Authoritative prompt:
 - Read .codex/prompts/draft-paper-reviewer/perspective_evidence_reviewer.md and follow it strictly.
 
 Output:
-- workspace/draft_paper_review/reports/reviewer_reports/10_perspective_review.md
+- workspace/draft_paper_review/reports/reviewer_reports/12_perspective_review.md
 
 Rules:
 - Use the evidence map to distinguish in-scope contribution from adjacent-field opportunities.

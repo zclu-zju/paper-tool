@@ -12,7 +12,7 @@ This is not just formatting. It is evidence support and citation integrity.
 - `01_manuscript_claims.csv`.
 - extracted manuscript text.
 - `03_literature_candidates.csv`.
-- `05_evidence_map.csv`.
+- `07_evidence_map.csv`.
 - local bibliography files when TeX source is provided.
 
 ## Audit Tasks
@@ -55,7 +55,7 @@ Look for:
 
 ## Output
 
-Write `workspace/draft_paper_review/reports/specialist_audits/20_citation_reference_audit.md`:
+Write `workspace/draft_paper_review/reports/specialist_audits/22_citation_reference_audit.md`:
 
 ```markdown
 # Citation And Reference Audit

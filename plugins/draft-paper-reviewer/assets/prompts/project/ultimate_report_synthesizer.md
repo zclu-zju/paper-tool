@@ -19,16 +19,20 @@ Priority inputs:
 - `00_requirements.md`
 - `02_topic_scope.md`
 - `03_literature_discovery.md`
-- `05_evidence_map.md`
-- reviewer reports `07_` through `12_`
-- specialist audits `13_` through `22_`
-- `23_editorial_decision.md`
-- `24_revision_plan.md`
-- `25_paired_revision_summary.md` when present
-- `26_revision_changes.md` when present
-- `28_revision_verification.md` when present
-- `29_integrity_report.md`
-- `31_deferred_issues.md` when present
+- `04_paper_artifacts.md`
+- `05_downloaded_paper_conventions.md`
+- `06_figure_table_retention_gate.md`
+- `07_evidence_map.md`
+- material reviewer reports under `reviewer_reports/`
+- material specialist audits under `specialist_audits/`
+- `25_editorial_decision.md`
+- `26_revision_plan.md`
+- `27_paired_revision_summary.md` when present
+- `28_revision_changes.md` when present
+- `30_revision_verification.md` when present
+- `31_integrity_report.md`
+- `34_report_materiality_index.md` when present
+- `33_deferred_issues.md` when present
 
 ## Synthesis Tasks
 
@@ -38,9 +42,11 @@ Priority inputs:
 4. Separate validated strengths from risks and objective limitations.
 5. Preserve confident-but-bounded contribution framing: say what the paper can safely claim strongly, what must remain qualified, and what needs new data.
 6. Summarize style lessons learned from related literature and how they affected revisions.
-7. Summarize term/proper-noun consistency findings.
-8. List changed files and where the revision package is located.
-9. Provide a numbered reading guide so the user knows which reports to read first, second, and last.
+7. Summarize local artifact download coverage and whether downstream style/table/figure/term judgments were based on downloaded papers.
+8. Summarize figure/table retention decisions: what must not be deleted, what can be moved/merged/deleted, and what needs user input.
+9. Summarize term/proper-noun consistency findings.
+10. List changed files and where the revision package is located.
+11. Provide a numbered reading guide with only material reports that exist. Do not mention absent report numbers.
 
 ## Output
 
@@ -76,6 +82,14 @@ Write `workspace/draft_paper_review/reports/99_ultimate_summary.md`:
 | Section Or Scope | Related-Paper Style Lesson | Applied Or Recommended Writing Move | Evidence Source |
 |---|---|---|---|
 
+## Downloaded Local Literature Coverage
+| Topic | Downloaded/Reused Papers | Local Text Available | Main Use |
+|---|---:|---:|---|
+
+## Figure/Table Retention Summary
+| Artifact Or Type | Decision | Why It Matters | User Action Needed |
+|---|---|---|---|
+
 ## Term And Proper-Noun Consistency Summary
 | Term Area | Finding | Required Fix | Source Report |
 |---|---|---|---|
@@ -89,11 +103,11 @@ Write `workspace/draft_paper_review/reports/99_ultimate_summary.md`:
 
 ## Recommended Reading Path
 1. `99_ultimate_summary.md`
-2. `23_editorial_decision.md`
-3. `24_revision_plan.md`
-4. `25_paired_revision_summary.md` and `26_revision_changes.md` when revision was performed
-5. `29_integrity_report.md`
-6. Detailed reviewer and specialist reports only for the issues listed above
+2. `25_editorial_decision.md`
+3. `26_revision_plan.md`
+4. `27_paired_revision_summary.md` and `28_revision_changes.md` when revision was performed
+5. `31_integrity_report.md`
+6. Material reviewer and specialist reports only for the issues listed above
 
 ## Next Actions
 | Priority | Action | Owner | Blocking Evidence Or User Input |
@@ -106,3 +120,5 @@ Write `workspace/draft_paper_review/reports/99_ultimate_summary.md`:
 - Do not hide deferred objective limitations.
 - Do not make the report so long that it replaces the detailed reports.
 - Do not understate validated strengths. A good final report should help the user see the paper's strongest defensible story.
+- Do not list absent report numbers or explain why a report was not written.
+- Do not claim writing, table, figure, or terminology lessons came from the literature unless the source was downloaded/local and represented in `05_downloaded_paper_conventions.*`.

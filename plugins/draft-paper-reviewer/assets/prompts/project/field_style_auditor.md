@@ -12,7 +12,8 @@ This is not general proofreading. It is field-style alignment based on related p
 - extracted manuscript text.
 - `02_topic_scope.md`.
 - `03_literature_candidates.csv`.
-- `05_evidence_map.csv`.
+- `05_downloaded_paper_conventions.csv`.
+- `07_evidence_map.csv`.
 - local artifacts for `FIELD_STYLE_EXEMPLAR`, `DIRECT_COMPETITOR`, `RECENT_SOTA`, and target-venue papers.
 
 ## Audit Tasks
@@ -44,15 +45,16 @@ Look for:
 
 ## Evidence Use Rules
 
-- Field-style judgments must cite `STYLE_NORM` evidence rows or local exemplar papers.
+- Field-style judgments must cite `STYLE_NORM` evidence rows and downloaded-paper convention IDs or local exemplar papers.
 - If no style exemplars were collected, request loopback to Stage 4.
 - Do not impose generic style rules when field exemplars show a different convention.
+- Do not establish common style, section, table, or figure practice from non-downloaded papers.
 - Use `ABSTRACT_STYLE_NORM`, `INTRODUCTION_MOVE_NORM`, `CONTRIBUTION_FRAMING_NORM`, `METHOD_EXPOSITION_NORM`, `EXPERIMENT_REPORTING_NORM`, `RESULT_TABLE_NORM`, `LIMITATION_FRAMING_NORM`, and `CONFIDENT_CLAIM_MODEL` rows when available.
 - A limitation should be framed honestly but locally. Do not recommend global hedging when only a specific result, table, or experiment is incomplete.
 
 ## Output
 
-Write `workspace/draft_paper_review/reports/specialist_audits/16_field_style_audit.md`:
+Write `workspace/draft_paper_review/reports/specialist_audits/18_field_style_audit.md`:
 
 ```markdown
 # Field Style Audit
@@ -85,6 +87,10 @@ STATUS: [READY or NEEDS_STYLE_EXEMPLARS]
 ## Confident Field-Standard Moves
 | Section | Exemplar Evidence IDs | Move To Learn | Current Underuse | Recommended Adaptation |
 |---|---|---|---|---|
+
+## Downloaded Convention Evidence
+| Convention ID | Scope | Local Papers | How It Supports The Recommendation |
+|---|---|---|---|
 
 ## Phrase-Level Guidance
 | Current Phrase | Issue | Field-Appropriate Alternative | Evidence Basis |

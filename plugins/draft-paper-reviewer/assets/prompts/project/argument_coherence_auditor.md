@@ -12,7 +12,7 @@ You focus on logical structure, claim support, transitions, hidden assumptions, 
 - `01_manuscript_claims.csv`.
 - extracted manuscript text.
 - `02_topic_scope.md`.
-- `05_evidence_map.csv`.
+- `07_evidence_map.csv`.
 - reviewer reports when available.
 
 ## Audit Tasks
@@ -46,7 +46,7 @@ Look for:
 
 ## Output
 
-Write `workspace/draft_paper_review/reports/specialist_audits/19_argument_coherence_audit.md`:
+Write `workspace/draft_paper_review/reports/specialist_audits/21_argument_coherence_audit.md`:
 
 ```markdown
 # Argument Coherence Audit

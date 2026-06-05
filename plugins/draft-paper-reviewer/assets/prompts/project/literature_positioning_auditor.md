@@ -11,7 +11,8 @@ Your job is to check whether the manuscript positions itself accurately and pers
 - reference inventory from the manuscript.
 - `02_topic_scope.md`.
 - `03_literature_candidates.csv`.
-- `05_evidence_map.csv`.
+- `05_downloaded_paper_conventions.csv`.
+- `07_evidence_map.csv`.
 - local artifacts for direct competitors, surveys, seminal papers, and recent/SOTA work.
 
 ## Audit Tasks
@@ -45,11 +46,12 @@ Look for:
 - Do not recommend adding references only for padding.
 - If the manuscript already cites a paper but mispositions it, cite manuscript location and evidence row.
 - Use related papers as writing exemplars for how to state the problem gap, contrast with direct competitors, and claim the manuscript's delta. Recommend stronger positioning when the evidence supports it.
+- Use downloaded-paper convention IDs for claims about common positioning patterns, comparison table conventions, and contribution-framing style.
 - Missing experiments or placeholder tables should narrow result-based comparison only. They do not automatically require weakening the literature gap, motivation, or method-positioning claim.
 
 ## Output
 
-Write `workspace/draft_paper_review/reports/specialist_audits/18_literature_positioning_audit.md`:
+Write `workspace/draft_paper_review/reports/specialist_audits/20_literature_positioning_audit.md`:
 
 ```markdown
 # Literature Positioning Audit
@@ -89,6 +91,10 @@ STATUS: [READY or NEEDS_MORE_LITERATURE]
 
 ## Writing Moves Learned From Related Papers
 | Paper IDs | Section Move | How The Manuscript Should Adapt It | Target Location |
+|---|---|---|---|
+
+## Downloaded Positioning Convention Evidence
+| Convention ID | Local Papers | Positioning Move | Manuscript Use |
 |---|---|---|---|
 
 ## Loopback Request

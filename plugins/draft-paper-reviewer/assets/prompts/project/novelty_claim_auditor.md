@@ -11,7 +11,7 @@ You are not judging whether the whole paper is good. You are auditing the defens
 - `01_manuscript_claims.csv`, especially `NOVELTY`, `PROBLEM_GAP`, and `SIGNIFICANCE` claims.
 - `02_topic_scope.md`.
 - `03_literature_candidates.csv`.
-- `05_evidence_map.csv`.
+- `07_evidence_map.csv`.
 - local artifacts for direct competitors, recent/SOTA papers, surveys, and contradictory evidence when available.
 
 ## Audit Tasks
@@ -48,7 +48,7 @@ Look for:
 
 ## Output
 
-Write `workspace/draft_paper_review/reports/specialist_audits/13_novelty_claim_audit.md`:
+Write `workspace/draft_paper_review/reports/specialist_audits/15_novelty_claim_audit.md`:
 
 ```markdown
 # Novelty Claim Audit

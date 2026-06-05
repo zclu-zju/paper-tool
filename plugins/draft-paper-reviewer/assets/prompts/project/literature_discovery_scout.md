@@ -46,6 +46,10 @@ Build distinct query sets for:
 
 For every candidate, preserve:
 
+- topic group ID and topic label;
+- topic rank by citation count;
+- overall rank by citation count;
+- whether the paper is required by the confirmed local artifact download policy;
 - title;
 - year;
 - authors;
@@ -68,6 +72,19 @@ For every candidate, preserve:
 - relevance rationale;
 - relationship to manuscript claims.
 
+## Topic Grouping And Citation Ranking
+
+Use the confirmed `Topic Grouping Policy` from `00_requirements.md`.
+
+- If the paper has one topic, use a single topic group such as `T01`.
+- If the paper has multiple topics or subtopics, group candidates by the confirmed scope, manuscript claim families, method family, dataset/benchmark family, and search result clusters.
+- A paper may have a primary topic and secondary topic notes, but assign exactly one primary `topic_id` for ranking and download selection.
+- Within each topic group, sort in-scope papers by citation count descending. Place `UNKNOWN` citation counts after known counts and preserve the citation source.
+- Also compute an overall citation rank across all in-scope candidates.
+- Do not let high citation count rescue an out-of-scope paper. Out-of-scope papers remain out of scope.
+- If the user requested 80 papers, collect around that count across topic groups while preserving topic coverage instead of filling with one easy topic.
+- Mark download priority according to the confirmed policy: all discovered public artifacts, top cited per topic, top cited overall, required evidence only, or no download.
+
 ## How To Locate Problems
 
 Flag problems that require loopback:
@@ -89,13 +106,15 @@ Flag problems that require loopback:
 - If live search tools are unavailable, write executable queries and mark rows `AWAITING_TOOL_EXECUTION`.
 - Papers used for novelty or field-norm conclusions should have abstracts and, when possible, local artifacts.
 - Literature is also a writing teacher. For in-scope exemplar papers, record concrete rhetorical moves, phrase-level contribution framing patterns, section organization patterns, experiment/table narration patterns, and limitation-framing patterns that downstream revisers can adapt without copying text.
+- Papers used later for writing style, terminology, table/figure conventions, deletion/addition judgments, or field-norm conclusions must be marked `NEEDS_LOCAL_ARTIFACT` unless a local artifact already exists.
+- The discovery report must make it clear which papers are expected to be downloaded under the confirmed policy.
 
 ## Candidate CSV
 
 Write `workspace/draft_paper_review/reports/03_literature_candidates.csv` with this header:
 
 ```csv
-paper_id,title,year,authors,venue,publication_type,paper_url,abstract,abstract_source,citation_count,citation_source,doi,arxiv_id,pdf_url,tex_source_url,code_or_project_url,source_query,source_database,evidence_use_category,section_exemplar_role,writing_moves_to_learn,claim_framing_examples,related_claim_ids,relationship_to_manuscript,relevance_rationale,scope_match,status
+paper_id,topic_id,topic_label,topic_rank_by_citations,overall_rank_by_citations,download_priority,download_required_reason,title,year,authors,venue,publication_type,paper_url,abstract,abstract_source,citation_count,citation_source,doi,arxiv_id,pdf_url,tex_source_url,code_or_project_url,source_query,source_database,evidence_use_category,section_exemplar_role,writing_moves_to_learn,claim_framing_examples,related_claim_ids,relationship_to_manuscript,relevance_rationale,scope_match,status
 ```
 
 Allowed `evidence_use_category` values:
@@ -156,6 +175,10 @@ STATUS: [READY or SHORTAGE or NEEDS_SCOPE_REVIEW or WEAK_EVIDENCE]
 - Candidate With PDF URL Count:
 - Candidate With TeX/Source URL Count:
 
+## Topic Groups And Ranked Candidates
+| Topic ID | Topic Label | Candidate Count | Top-Cited Paper IDs | Download-Required Paper IDs | Coverage Gap |
+|---|---|---:|---|---|---|
+
 ## Scope Concerns
 [Any discovered mismatch with confirmed scope, or None]
 
@@ -164,8 +187,8 @@ STATUS: [READY or SHORTAGE or NEEDS_SCOPE_REVIEW or WEAK_EVIDENCE]
 |---|---|---|---|
 
 ## Artifact Download Recommendations
-| Paper ID | Reason Local Artifact Is Needed | Preferred Artifact |
-|---|---|---|
+| Paper ID | Topic ID | Citation Rank | Reason Local Artifact Is Needed | Preferred Artifact | Download Priority |
+|---|---|---:|---|---|---|
 
 ## Writing Exemplar Coverage
 | Section Or Scope | Exemplar Paper IDs | Writing Moves To Learn | Gaps |

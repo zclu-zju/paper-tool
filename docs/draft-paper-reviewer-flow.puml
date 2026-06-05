@@ -6,7 +6,7 @@ start
 :Stage 0 - review-requirement-collector;
 :Scan submitted manuscript path for TeX source;
 if (Submitted manuscript is TeX source?) then (yes)
-  :Show full parameter table with defaults;
+  :Show complete parameter table with defaults\nincluding download policy, top-X,\nfigure/table deletion policy,\nand report materiality policy;
   if (All parameters confirmed?) then (yes)
     :Write 00_requirements.md\nSTATUS: READY;
   else (no)
@@ -22,6 +22,7 @@ endif
 
 :Stage 1 - manuscript-ingestor;
 :Write 01_manuscript_inventory.md,\n01_manuscript_claims.csv,\nand manuscript extraction artifacts;
+:Extract formulas, notation, and symbols;\nwrite 01_formula_symbol_inventory.csv\nwith first-use and first-explanation status;
 
 :Stage 2 - topic-scope-analyst;
 :Write 02_topic_scope.md\nSTATUS: NEEDS_USER_CONFIRMATION;
@@ -36,8 +37,9 @@ else (no)
 endif
 
 :Stage 4 - literature-discovery-scout;
+:Search only after 00 READY\nand 02 USER_CONFIRMED;
+:Group candidates by topic,\nrank by citation count per topic\nand overall, mark download priority;
 :Write 03_literature_candidates.csv\nand 03_literature_discovery.md;
-:Record review evidence and section-level\nwriting exemplar roles;
 if (Literature discovery shortage,\nweak evidence, or scope problem?) then (yes)
   if (Scope review needed?) then (yes)
     :Loop back to Stage 3;
@@ -50,92 +52,143 @@ else (no)
 endif
 
 :Stage 5 - review-paper-artifact-collector;
-:Download or reuse related-paper PDFs\nand public TeX/source archives when required;
+if (Download policy?) then (DOWNLOAD_ALL)
+  :Download/reuse all public artifacts\nfrom in-scope discovered papers;
+elseif (TOP_CITED_PER_TOPIC)
+  :Download/reuse top X public artifacts\nby citation rank inside each topic;
+elseif (TOP_CITED_OVERALL)
+  :Download/reuse top X public artifacts\nby overall citation rank;
+elseif (REQUIRED_EVIDENCE_ONLY)
+  :Download/reuse artifacts required\nfor novelty, field norms, writing,\nterminology, table/figure evidence;
+else (DO_NOT_DOWNLOAD)
+  :Reuse already local artifacts only\nand mark downstream convention evidence limited;
+endif
 :Write 04_paper_artifacts.csv\nand 04_paper_artifacts.md;
+:Store papers under\nworkspace/draft_paper_review/literature/papers/;
 
-:Stage 6 - evidence-map-builder;
-:Write 05_evidence_map.csv\nand 05_evidence_map.md;
-:Map claims, terms, writing moves,\nclaim strength guidance, and evidence boundaries;
-if (Evidence map needs literature replenishment?) then (yes)
+:Stage 6 - downloaded-paper-convention-miner;
+:Read downloaded/local paper artifacts;
+:Mine section writing, terminology,\nformula/notation explanation,\nexperiment, table, figure,\nclaim-strength, and limitation conventions;
+:Write 05_downloaded_paper_conventions.csv\nand 05_downloaded_paper_conventions.md;
+if (Need more local artifacts?) then (yes)
   :Loop back to Stage 4 or Stage 5\nas specified by Stage 6;
   detach
 else (no)
 endif
 
-:Stage 7 - reviewer-panel-configurator;
-:Write 06_reviewer_configuration.md;
+:Stage 7 - figure-table-retention-gatekeeper;
+:Inspect manuscript figures, tables,\nalgorithms, appendix evidence,\nand supported claims;
+:Decide MUST_KEEP, revise, move,\nmerge, delete, needs user decision,\nor needs more evidence;
+:Write 06_figure_table_retention_gate.csv\nand 06_figure_table_retention_gate.md;
+if (Needs user decision?) then (yes)
+  :Ask user and stop;
+  stop
+elseif (Needs more evidence?) then (yes)
+  :Loop back to Stage 5 or Stage 6;
+  detach
+else (ready)
+endif
 
-:Stage 8 - evidence-reviewer-panel-coordinator;
+:Stage 8 - evidence-map-builder;
+:Write 07_evidence_map.csv\nand 07_evidence_map.md;
+:Map claims, formulas, symbols, terms,\nwriting moves, local convention IDs,\nfigure/table gate IDs, claim strength guidance,\nand evidence boundaries;
+if (Evidence map needs replenishment?) then (yes)
+  :Loop back to Stage 4, Stage 5,\nStage 6, or Stage 7 as specified;
+  detach
+else (no)
+endif
+
+:Stage 9 - reviewer-panel-configurator;
+:Write 08_reviewer_configuration.md;
+
+:Stage 10 - evidence-reviewer-panel-coordinator;
 :Run EIC, methodology, domain,\nperspective, and Devil's Advocate reviewers;
-:Require validated strengths,\nsafe strengthening opportunities,\nand evidence-backed weaknesses;
-:Write reviewer reports and 12_panel_summary.md;
+:Require evidence IDs and local artifact support\nfor major literature, style, terminology,\nformula-symbol, table, figure,\nor field-norm claims;
+:Run report-materiality-gatekeeper\nfor each human-facing report candidate;
+:Write material reviewer reports using fixed numbers\nand 14_panel_summary.md when material/needed;
 
-:Stage 9 - specialist-diagnostic-panel-coordinator;
-:Run novelty, terminology, term usage,\nfield style, professional precision,\nliterature positioning, argument coherence,\ncitation, and writing audits;
-:Write specialist audits and 22_specialist_summary.md;
+:Stage 11 - specialist-diagnostic-panel-coordinator;
+:Run novelty, terminology, term usage,\nformula-symbol first-use,\nfield style, professional precision,\nliterature positioning, argument coherence,\ncitation, and writing audits;
+:Use downloaded-paper conventions\nfor common-practice judgments;
+:Run report-materiality-gatekeeper\nfor each human-facing audit candidate;
+:Write material specialist audits using fixed numbers\nand 24_specialist_summary.md when material/needed;
 
-:Stage 10 - editorial-synthesizer-scorer;
-:Synthesize existing review/audit issues only;
+:Stage 12 - editorial-synthesizer-scorer;
+:Synthesize existing material review/audit issues only;
 :Separate unsupported result boundaries\nfrom actual contribution weakness;
-:Write 23_editorial_decision.md;
+:Write 25_editorial_decision.md;
 
-:Stage 11 - revision-planner;
-:Write 24_revision_plan.md;
+:Stage 13 - revision-planner;
+:Write 26_revision_plan.md;
+:Require convention IDs for new/redesigned\nfigures, tables, structures, terminology,\nand retention-gate IDs for deletions/merges/moves;
+:Require formula-symbol tasks when symbols\nare unnecessary at first occurrence,\nused before explanation, explained only later,\nunexplained, or ambiguously reused;
 if (Revision requested or required\nand revision allowed?) then (yes)
-  :Stage 12 - paired-revision-coordinator;
+  :Stage 14 - paired-revision-coordinator;
   :Copy original TeX source into\nworkspace/draft_paper_review/revision/tex/;
   while (Active revision scopes remain?) is (yes)
     :Select one fixed or issue-based scope;
+    :Read matching convention IDs,\nretention-gate rows, and symbol IDs;
     :Run scope reviewer on copied TeX;
     if (Reviewer accepts scope?) then (yes)
-      :Log acceptance round to 27_revision_ledger.jsonl;
+      :Log acceptance round to 29_revision_ledger.jsonl;
     else (no)
       if (Needs user input?) then (yes)
-        :Write 25_paired_revision_summary.md\nSTATUS: NEEDS_USER_DECISION;
+        :Write 27_paired_revision_summary.md\nSTATUS: NEEDS_USER_DECISION;
         :Export current ledger workbook when possible;
         stop
       elseif (Needs more evidence?) then (yes)
-        :Write 25_paired_revision_summary.md\nSTATUS: NEEDS_MORE_EVIDENCE;
-        :Target Stage 4, Stage 5, or Stage 6\nfor loopback;
+        :Write 27_paired_revision_summary.md\nSTATUS: NEEDS_MORE_EVIDENCE;
+        :Target Stage 4, Stage 5,\nStage 6, Stage 7, or Stage 8;
         detach
       elseif (Objective limitation or max rounds reached?) then (yes)
         :Record deferred issue or max-round result\naccording to requirements policy;
-        :Log round to 27_revision_ledger.jsonl;
+        :Log round to 29_revision_ledger.jsonl;
       else (needs revision)
-        :Run paired scope reviser on copied TeX;
-        :Strengthen defensible claims,\nadopt literature style moves,\nor fix term usage when planned;
-        :Log change record to 27_revision_ledger.jsonl;
+        if (Edit changes formula/notation/symbols?) then (yes)
+          :Ensure every symbol is needed\nand explained at or before first use;
+        endif
+        if (Edit changes table/figure/evidence artifact?) then (yes)
+          if (Retention/convention support exists?) then (yes)
+            :Run paired scope reviser on copied TeX;
+          else (no)
+            :Stop scope with NEEDS_USER_DECISION\nor NEEDS_MORE_EVIDENCE;
+            detach
+          endif
+        else (no)
+          :Run paired scope reviser on copied TeX;
+        endif
+        :Log change record to 29_revision_ledger.jsonl;
         :Run the same scope reviewer again;
-        :Log reviewer recheck to 27_revision_ledger.jsonl;
+        :Log reviewer recheck to 29_revision_ledger.jsonl;
       endif
     endif
-    :Update 27_revision_ledger.xlsx\nwith openpyxl ledger tool;
+    :Update 29_revision_ledger.xlsx\nwith openpyxl ledger tool;
   endwhile (no)
-  :Write 25_paired_revision_summary.md,\n26_revision_changes.md,\n27_revision_ledger.jsonl,\n27_revision_ledger.xlsx,\nand CSV fallback exports;
+  :Write 27_paired_revision_summary.md,\n28_revision_changes.md,\n29_revision_ledger.jsonl,\n29_revision_ledger.xlsx,\nand CSV fallback exports;
 else (no)
-  :Write 24_revision_plan.md\nSTATUS: NOT_REQUESTED;
+  :Write 26_revision_plan.md\nSTATUS: NOT_REQUESTED;
 endif
 
-:Stage 13 - revision-verifier;
+:Stage 15 - revision-verifier;
 if (Revision was performed?) then (yes)
-  :Verify revision tasks, paired scope acceptance,\nledger completeness, claim safety, citations,\nand optional TeX compile status;
+  :Verify revision tasks, paired scope acceptance,\nledger completeness, claim safety, citations,\nformula-symbol first-use compliance,\nconvention IDs, retention-gate IDs,\nand optional TeX compile status;
   :Verify validated contributions were not\nunnecessarily weakened;
 else (no)
-  :Write 28_revision_verification.md\nSTATUS: NOT_REQUESTED;
+  :Write 30_revision_verification.md\nSTATUS: NOT_REQUESTED;
 endif
-:Write 28_revision_verification.md;
+:Write 30_revision_verification.md;
 
-:Stage 14 - evidence-review-integrity-reviewer;
-:Check requirements, TeX ingestion,\ntopic confirmation, literature, evidence map,\nreviews, audits, synthesis, revision artifacts,\nledger, iteration policy, and hard gates;
+:Stage 16 - evidence-review-integrity-reviewer;
+:Check requirements, TeX ingestion,\nformula-symbol inventory,\ntopic confirmation, literature, downloads,\nconvention mining, figure/table gate,\nevidence map, material reports, synthesis,\nrevision artifacts, ledger, iteration policy,\nnumbering, and hard gates;
 if (VERDICT: GO?) then (yes)
-  :Stage 15 - ultimate-report-synthesizer;
-  :Read numbered reports 00 through 31\nand available revision artifacts;
-  :Write 99_ultimate_summary.md\nwith agent conclusions, actions,\nvalidated strengths, risks,\nand recommended reading path;
+  :Stage 17 - ultimate-report-synthesizer;
+  :Read numbered material reports\nand traceability artifacts;
+  :Write 99_ultimate_summary.md\nwith agent conclusions, actions,\ndownloaded-paper lessons, figure/table decisions,\nvalidated strengths, risks,\nand recommended reading path;
   stop
 else (VERDICT: REJECT)
   :Read exactly one target stage and rejection reason;
   :Compute issue_signature;
-  :Read 30_iteration_log.md and count same-issue retries;
+  :Read 32_iteration_log.md and count same-issue retries;
   if (Global iteration cap reached?) then (yes)
     :Write final report\nSTOPPED_MAX_TOTAL_ITERATIONS;
     stop
@@ -148,15 +201,15 @@ else (VERDICT: REJECT)
       :Stop and report blocker;
       stop
     else (DEFER_AND_CONTINUE)
-      :Append 31_deferred_issues.md\nand exclude issue from further loopback;
+      :Append 33_deferred_issues.md\nand exclude issue from further loopback;
       :Continue downstream from affected stage;
       detach
     endif
   else (retry allowed)
-    :Append retry record to 30_iteration_log.md;
+    :Append retry record to 32_iteration_log.md;
     :Re-run target stage with rejection\nas high-priority constraint;
     :Re-run all downstream affected stages;
-    :Return to Stage 14;
+    :Return to Stage 16;
     detach
   endif
 endif

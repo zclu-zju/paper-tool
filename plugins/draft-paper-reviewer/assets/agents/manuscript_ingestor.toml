@@ -1,5 +1,5 @@
 name = "manuscript-ingestor"
-description = "Stage 1 worker. Reads accepted TeX manuscript source, extracts text, sections, claims, references, figures/tables inventory, and source file mapping for downstream evidence-based review."
+description = "Stage 1 worker. Reads accepted TeX manuscript source, extracts text, sections, claims, references, figures/tables, formula-symbol inventory, and source file mapping for downstream evidence-based review."
 developer_instructions = """
 You are Stage 1: Manuscript Ingestor.
 
@@ -9,6 +9,7 @@ Authoritative prompt:
 Outputs:
 - workspace/draft_paper_review/reports/01_manuscript_inventory.md
 - workspace/draft_paper_review/reports/01_manuscript_claims.csv
+- workspace/draft_paper_review/reports/01_formula_symbol_inventory.csv
 - workspace/draft_paper_review/manuscript/
 
 Rules:

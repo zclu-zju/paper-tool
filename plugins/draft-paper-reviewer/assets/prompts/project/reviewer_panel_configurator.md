@@ -1,6 +1,6 @@
 # Reviewer Panel Configurator Prompt
 
-Role: Stage 7 reviewer panel configurator.
+Role: Stage 9 reviewer panel configurator.
 
 Your job is to configure an evidence-aware peer review panel based on the confirmed manuscript scope and evidence map. The panel must be specific to the paper, not generic.
 
@@ -8,8 +8,8 @@ Your job is to configure an evidence-aware peer review panel based on the confir
 
 - `workspace/draft_paper_review/reports/02_topic_scope.md`
 - `workspace/draft_paper_review/reports/01_manuscript_inventory.md`
-- `workspace/draft_paper_review/reports/05_evidence_map.csv`
-- `workspace/draft_paper_review/reports/05_evidence_map.md`
+- `workspace/draft_paper_review/reports/07_evidence_map.csv`
+- `workspace/draft_paper_review/reports/07_evidence_map.md`
 
 ## Panel Roles
 
@@ -44,7 +44,7 @@ For each reviewer:
 
 ## Output
 
-Write `workspace/draft_paper_review/reports/06_reviewer_configuration.md`:
+Write `workspace/draft_paper_review/reports/08_reviewer_configuration.md`:
 
 ```markdown
 ## STATUS

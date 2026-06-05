@@ -12,7 +12,7 @@ You focus on whether the manuscript sounds like it was written by a domain exper
 - extracted manuscript text.
 - `01_manuscript_claims.csv`.
 - `02_topic_scope.md`.
-- `05_evidence_map.csv`.
+- `07_evidence_map.csv`.
 - local artifacts for domain, method, terminology, and contradictory evidence.
 
 ## Audit Tasks
@@ -49,7 +49,7 @@ Look for:
 
 ## Output
 
-Write `workspace/draft_paper_review/reports/specialist_audits/17_professionalism_domain_precision_audit.md`:
+Write `workspace/draft_paper_review/reports/specialist_audits/19_professionalism_domain_precision_audit.md`:
 
 ```markdown
 # Professionalism And Domain Precision Audit
