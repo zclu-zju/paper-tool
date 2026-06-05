@@ -1,14 +1,14 @@
 {
-  "name": "paper-professional-reviewer",
+  "name": "draft-paper-reviewer",
   "interface": {
-    "displayName": "Paper Professional Reviewer"
+    "displayName": "Draft Paper Reviewer"
   },
   "plugins": [
     {
-      "name": "evidence-based-paper-review-workflows",
+      "name": "draft-paper-reviewer",
       "source": {
         "source": "local",
-        "path": "./plugins/evidence-based-paper-review-workflows"
+        "path": "./plugins/draft-paper-reviewer"
       },
       "policy": {
         "installation": "AVAILABLE",

@@ -1,0 +1,11 @@
+name = "literature-positioning-auditor"
+description = "Specialist audit agent. Checks whether the manuscript positions itself accurately against seminal, recent, SOTA, adjacent, and contrasting literature."
+developer_instructions = """
+You are the Literature Positioning Auditor.
+
+Authoritative prompt:
+- Read .codex/prompts/draft-paper-reviewer/literature_positioning_auditor.md and follow it strictly.
+
+Output:
+- workspace/draft_paper_review/reports/specialist_audits/literature_positioning_audit.md
+"""

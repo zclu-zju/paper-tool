@@ -1,0 +1,37 @@
+{
+  "name": "draft-paper-reviewer",
+  "version": "0.2.0+codex.20260605034458",
+  "description": "TeX-only draft paper review and revision workflow for Codex with literature discovery, evidence packs, paired reviewer/reviser loops, XLSX revision ledgers, objective-limitation deferral, and loopback verification.",
+  "author": {
+    "name": "Draft Paper Reviewer"
+  },
+  "repository": "local",
+  "keywords": [
+    "codex",
+    "paper-review",
+    "academic-review",
+    "literature-review",
+    "subagents",
+    "revision"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Draft Paper Reviewer",
+    "shortDescription": "Run a literature-evidence-driven manuscript review and revision workflow.",
+    "longDescription": "Installs repo-local Codex custom agents for an iterative draft-paper review workflow. The submitted manuscript input is TeX-only: Stage 0 accepts a TeX source directory or explicit .tex root file, rejects PDF/Word/Markdown/plain-text/image manuscripts, and confirms all parameters with defaults before any ingestion, literature search, review, or revision. The workflow serves the user's own manuscript-development process, handles incomplete experiments/tables as draft constraints, discovers related literature, builds an evidence map, runs reviewer and specialist audits, synthesizes scores, plans revisions, then revises copied TeX files through one-to-one reviewer/reviser pairs. Each paired review/write round is logged to JSONL and exported to an XLSX workbook with one sheet per pair, with CSV fallback exports. Objective limitations such as missing experiments or unavailable raw data can be deferred after repeated attempts, and writing guidance is used for narrative, citation, reproducibility, limitations, style, dataset-setting, and venue-checklist revisions.",
+    "developerName": "Draft Paper Reviewer",
+    "category": "Productivity",
+    "capabilities": [
+      "Interactive",
+      "Write"
+    ],
+    "defaultPrompt": [
+      "Review my paper using literature evidence.",
+      "Review the TeX source in this repository.",
+      "Infer the paper topic, ask me to confirm all workflow parameters and topic scope, then research related papers and review.",
+      "Run evidence-based peer review and produce a revision plan.",
+      "Review and revise my TeX draft using paired reviewer/reviser loops and downloaded related papers.",
+      "Install draft-paper-reviewer workflow agents."
+    ]
+  }
+}

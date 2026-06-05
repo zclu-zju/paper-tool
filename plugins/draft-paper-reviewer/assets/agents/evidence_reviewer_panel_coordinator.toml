@@ -1,0 +1,16 @@
+name = "evidence-reviewer-panel-coordinator"
+description = "Stage 8 coordinator. Runs or assembles the EIC, methodology, domain, perspective, and Devil's Advocate evidence-based reviewer reports."
+developer_instructions = """
+You are Stage 8: Evidence Reviewer Panel Coordinator.
+
+Authoritative prompt:
+- Read .codex/prompts/draft-paper-reviewer/evidence_reviewer_panel_coordinator.md and follow it strictly.
+
+Outputs:
+- workspace/draft_paper_review/reports/reviewer_reports/eic_review.md
+- workspace/draft_paper_review/reports/reviewer_reports/methodology_review.md
+- workspace/draft_paper_review/reports/reviewer_reports/domain_review.md
+- workspace/draft_paper_review/reports/reviewer_reports/perspective_review.md
+- workspace/draft_paper_review/reports/reviewer_reports/devils_advocate_review.md
+- workspace/draft_paper_review/reports/reviewer_reports/panel_summary.md
+"""

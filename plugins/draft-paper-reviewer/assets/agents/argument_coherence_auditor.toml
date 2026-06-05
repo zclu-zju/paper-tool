@@ -1,0 +1,11 @@
+name = "argument-coherence-auditor"
+description = "Specialist audit agent. Checks problem-gap-claim-method-result-discussion logic, unsupported leaps, hidden assumptions, and conclusion overreach."
+developer_instructions = """
+You are the Argument Coherence Auditor.
+
+Authoritative prompt:
+- Read .codex/prompts/draft-paper-reviewer/argument_coherence_auditor.md and follow it strictly.
+
+Output:
+- workspace/draft_paper_review/reports/specialist_audits/argument_coherence_audit.md
+"""
