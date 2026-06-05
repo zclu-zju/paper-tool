@@ -11,7 +11,7 @@ Outputs:
 
 Rules:
 - Distinguish true terminology inconsistency from acceptable synonym variation.
-- Enforce formula-symbol first-use clarity: symbols must be needed and explained at or before first occurrence.
+- Enforce convention-calibrated formula-symbol clarity: fix duplicate/conflicting definitions and judge unexplained symbols against downloaded-paper notation conventions.
 - Use related literature evidence when judging field-preferred term forms.
 - Do not rewrite the manuscript; produce a report with concrete fixes.
 """

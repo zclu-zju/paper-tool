@@ -28,9 +28,9 @@ You are not reviewing the user's manuscript. You mine the local related-paper co
 4. Extract common writing moves and structural patterns by topic group and section.
 5. Extract experiment-reporting conventions: datasets, metrics, baselines, protocols, ablations, statistical tests, compute/resource reporting, human evaluation, qualitative analysis, robustness analysis, and missing-data disclosure patterns.
 6. Extract table and figure conventions: common table types, required columns, caption style, figure roles, placement, result narration, and what evidence each visual artifact normally carries.
-7. Extract formula and notation conventions: where papers define symbols, whether definitions appear before or at first use, how equations introduce variables, how algorithms reuse notation, and how notation tables are used when formulas are dense.
+7. Extract formula and notation conventions: where papers define symbols, which symbols are normally defined, which symbols are commonly left unexplained, whether one-off symbols are left unexplained, whether definitions appear before or at first use, how equations introduce variables, how algorithms reuse notation, how duplicate definitions are avoided, and how notation tables are used when formulas are dense.
 8. Extract terminology and proper-noun conventions: acronym expansion, capitalization, hyphenation, dataset/model/metric names, method-family terms, task names, and terms that the target community does not conflate.
-9. Identify anti-patterns that downstream writers must avoid, especially unexplained symbols, symbols defined only after use, invented tables, unsupported comparison layouts, nonstandard dataset/metric presentation, generic contribution phrasing, or timid global hedging caused by local missing results.
+9. Identify anti-patterns that downstream writers must avoid, especially unexplained symbols that local papers normally explain, duplicate/conflicting symbol definitions, symbols defined only after use when the local corpus defines at first use, invented tables, unsupported comparison layouts, nonstandard dataset/metric presentation, generic contribution phrasing, or timid global hedging caused by local missing results.
 10. Record corpus coverage and evidence strength. If local artifact coverage is too weak for a downstream style/table/figure/term/notation conclusion, request Stage 4 or Stage 5 loopback.
 
 ## Commonality Rules
@@ -59,6 +59,8 @@ Allowed `convention_type` values:
 - `METHOD_EXPOSITION`
 - `FORMULA_NOTATION`
 - `SYMBOL_DEFINITION`
+- `SYMBOL_UNEXPLAINED_ALLOWED`
+- `SYMBOL_DUPLICATE_DEFINITION_RISK`
 - `EXPERIMENT_SETUP`
 - `DATASET_REPORTING`
 - `METRIC_REPORTING`
@@ -107,8 +109,8 @@ STATUS: [READY or NEEDS_MORE_LOCAL_ARTIFACTS or FAILED]
 |---|---|---|---|
 
 ## Formula And Notation Conventions
-| Formula Or Notation Area | Common Local Usage | First-Use Definition Pattern | Supporting Convention IDs | Downstream Use |
-|---|---|---|---|---|
+| Formula Or Notation Area | Common Local Usage | First-Use Definition Pattern | Symbols Commonly Left Unexplained | One-Off Symbol Practice | Duplicate Definition Practice | Supporting Convention IDs | Downstream Use |
+|---|---|---|---|---|---|---|---|
 
 ## Writing Posture Lessons
 | Section Or Scope | How Strong Papers State Contributions | Boundary Style | Supporting Convention IDs |
@@ -130,4 +132,6 @@ STATUS: [READY or NEEDS_MORE_LOCAL_ARTIFACTS or FAILED]
 - Do not use non-downloaded papers to establish conventions.
 - Do not copy phrases from related papers. Extract reusable structure and writing moves only.
 - Do not let missing manuscript results create global timid writing. Mine how related papers state supported contributions confidently and how they localize limitations.
+- Do not require explanation for every symbol by default. Mine the local corpus first: if downloaded papers commonly leave comparable conventional or one-off symbols unexplained, downstream agents may accept that practice with convention IDs.
+- Do not excuse duplicate or conflicting symbol definitions merely because some symbols can remain unexplained. Repeated definitions require local-scope justification; conflicting definitions are a material clarity problem.
 - Do not approve new tables, figures, section structures, terminology choices, or notation conventions unless they are supported by local convention IDs or explicitly marked for user decision.

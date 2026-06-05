@@ -26,8 +26,9 @@ This is distinct from generic terminology auditing. You are looking at actual te
 4. Compare term form and context against related-paper usage when literature evidence is available.
 5. Identify field-preferred terms and terms that should not be conflated.
 6. Flag only issues that affect clarity, professional polish, reproducibility, searchability, or field credibility.
-7. Check whether each formula symbol is needed at first occurrence and explained at or before first use.
-8. Produce concrete replacement, definition, move, or deletion guidance, not vague "be consistent" comments.
+7. Check whether each formula symbol's definition and explanation pattern matches downloaded-paper notation conventions, including cases where conventional or one-off symbols may remain unexplained.
+8. Check duplicate definitions: the same symbol defined more than once, defined inconsistently, or redefined across equations/algorithms/tables without clear local scope.
+9. Produce concrete replacement, definition, move, disambiguation, or deletion guidance, not vague "be consistent" comments.
 
 ## How To Locate Problems
 
@@ -40,10 +41,13 @@ Look for:
 - synonym drift that changes meaning, such as using "benchmark", "dataset", and "corpus" interchangeably;
 - term usage that differs from direct competitors or SOTA papers without explanation;
 - table/caption terminology that differs from the method or experiment section;
-- formula, algorithm, metric, table, or caption symbols used before they are explained;
-- symbols explained only after the first formula where they appear;
+- formula, algorithm, metric, table, or caption symbols used before they are explained when downloaded-paper conventions indicate comparable symbols are normally explained;
+- symbols explained only after the first formula where they appear when local convention expects first-use explanation;
+- unexplained symbols that are not covered by local `SYMBOL_UNEXPLAINED_ALLOWED` conventions;
 - symbols introduced before they are needed;
 - one symbol used for different entities without local disambiguation;
+- one symbol defined multiple times without a clear local scope reason;
+- repeated definitions that distract or contradict each other;
 - contribution terms that are weaker or less precise than the manuscript's own evidence supports;
 - terms whose context overclaims evidence, especially metric/result terms tied to missing values.
 
@@ -52,7 +56,9 @@ Look for:
 - For manuscript-internal inconsistency, cite all relevant manuscript locations.
 - For field-preferred usage, cite evidence IDs or local related-paper artifacts.
 - For common field usage, cite downloaded-paper convention IDs. Do not use non-downloaded papers to establish naming norms.
-- For formula-symbol first-use compliance, cite `01_formula_symbol_inventory.csv` and manuscript locations. A later definition does not cure an earlier unexplained use.
+- For formula-symbol definition compliance, cite `01_formula_symbol_inventory.csv`, manuscript locations, and relevant convention IDs from `05_downloaded_paper_conventions.csv`.
+- Do not require explanation for every symbol by default. If downloaded papers commonly leave comparable conventional or one-off symbols unexplained, accept that pattern when the manuscript use is unambiguous.
+- Do not use unexplained-symbol tolerance to excuse duplicate or conflicting definitions. Repeated definitions require local-scope justification; conflicting definitions require a fix.
 - For field-specific notation style, cite downloaded-paper convention IDs when available.
 - If related-paper term evidence is absent, mark the recommendation as `MANUSCRIPT_INTERNAL_ONLY` or request Stage 4/5/6 loopback.
 - Do not force all synonyms into one form when the field uses them for distinct concepts.
@@ -78,14 +84,15 @@ STATUS: [READY or NEEDS_TERM_EVIDENCE or NEEDS_AUDIT_RERUN]
 - Recommended Canonical Terms:
 - Issues Affecting Claims Or Tables:
 - Formula-Symbol First-Use Issues:
+- Duplicate Or Conflicting Symbol Definitions:
 
 ## Term Inventory
 | Term ID | Canonical Term | Variants Found | Term Type | Manuscript Locations | Related Literature Form | Evidence IDs | Status |
 |---|---|---|---|---|---|---|---|
 
 ## Formula Symbol Inventory Check
-| Symbol ID | Symbol | Formula Or Context | First Occurrence | First Explanation | Status | Required Fix |
-|---|---|---|---|---|---|---|
+| Symbol ID | Symbol | Formula Or Context | First Occurrence | First Explanation | Definition Count | Definition Consistency | Convention Judgment | Status | Required Fix |
+|---|---|---|---|---|---:|---|---|---|---|
 
 ## Context Consistency Findings
 | Finding ID | Canonical Term | Variant Or Context Problem | Manuscript Locations | Evidence Basis | Severity | Required Fix |
@@ -104,8 +111,8 @@ STATUS: [READY or NEEDS_TERM_EVIDENCE or NEEDS_AUDIT_RERUN]
 |---|---|---|---|---|
 
 ## Formula And Notation Usage Check
-| Location | Symbol Or Formula | Risk | Required Definition Or Move | Notes |
-|---|---|---|---|---|
+| Location | Symbol Or Formula | Risk | Convention IDs | Required Definition, Disambiguation, Or Move | Notes |
+|---|---|---|---|---|---|
 
 ## Canonical Term Replacement Plan
 | Canonical Term | Replace These Variants | Do Not Replace These | Rationale |
@@ -123,4 +130,5 @@ STATUS: [READY or NEEDS_TERM_EVIDENCE or NEEDS_AUDIT_RERUN]
 - Do not invent literature usage norms.
 - Do not collapse distinct field concepts into one term.
 - Do not make generic proofreading comments; every finding must cite term occurrences and a specific fix.
-- Do not accept a formula symbol that is first explained only later in the manuscript.
+- Do not flag an unexplained symbol as a required fix without checking downloaded-paper notation conventions.
+- Do not accept duplicate or conflicting symbol definitions unless the manuscript clearly scopes the reuse and local convention evidence supports that notation style.

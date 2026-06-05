@@ -25,7 +25,7 @@ You do not judge domain literature completeness except where missing literature 
 4. Check data, sample, benchmark, baseline, control, ablation, statistics, uncertainty, and reproducibility reporting as applicable.
 5. Check whether conclusions overreach the evidence.
 6. Identify missing methodological details that prevent replication.
-7. Check whether formulas, losses, objectives, algorithms, metrics, and notation introduce every symbol only when needed and explain every symbol at or before first use.
+7. Check formula, loss, objective, algorithm, metric, and notation clarity using downloaded-paper conventions: identify symbols that local papers normally explain, symbols local papers commonly leave unexplained, and duplicate/conflicting definitions.
 8. Identify what can still be claimed confidently about the method design, evaluation plan, dataset setup, or reproducibility structure even when some experiments or tables are incomplete.
 9. Score the seven dimensions, with special authority over Methodological Rigor and Evidence Sufficiency.
 
@@ -55,9 +55,10 @@ ML/AI or computational:
 - statistical significance or uncertainty;
 - compute and reproducibility.
 - draft-incomplete experiments being treated as failed experiments rather than unassessable objective limitations.
-- formulas, losses, objectives, metrics, or algorithm variables that use symbols before explaining them;
+- formulas, losses, objectives, metrics, or algorithm variables that use symbols before explaining them when downloaded-paper conventions indicate comparable symbols are normally explained;
 - notation introduced before the reader needs it;
-- symbols explained only after their first use;
+- symbols explained only after their first use when local convention expects definition before or at use;
+- duplicate or conflicting definitions of the same symbol;
 
 Qualitative:
 - sampling rationale;
@@ -91,7 +92,7 @@ Theoretical/conceptual:
 - If no method-norm evidence exists, request Stage 4/6 loopback instead of guessing.
 - If experiment results, ablations, tables, raw data, checkpoints, or approvals are missing, classify the affected assessment as `N/A_OBJECTIVE_MISSING` or `DEFERRED_OBJECTIVE_LIMITATION` when appropriate. Do not convert absent draft material into a blanket low score for motivation, method exposition, terminology, or contribution framing.
 - Preserve and name method strengths that are visible from the TeX draft, such as a clear protocol, appropriate baselines, reproducibility details, or well-defined assumptions. Recommend confident but bounded language for those strengths.
-- Formula-symbol compliance is manuscript-internal and does not require literature evidence: a symbol is compliant only when it is needed at first occurrence and explained at or before first use.
+- Formula-symbol compliance is convention-calibrated. Use `05_downloaded_paper_conventions.csv` to decide whether comparable symbols must be explained or may remain unexplained because they are conventional, obvious, or one-off. Duplicate or conflicting symbol definitions remain manuscript-internal method-clarity risks.
 
 ## Output
 
@@ -160,7 +161,7 @@ Write `workspace/draft_paper_review/reports/reviewer_reports/10_methodology_revi
 | Baseline/control adequacy | | | | |
 | Metric/statistical reporting | | | | |
 | Reproducibility | | | | |
-| Formula-symbol first-use compliance | | | | |
+| Formula-symbol notation convention compliance | | | | |
 | Conclusion conservatism | | | | |
 
 ## Formula And Notation Clarity

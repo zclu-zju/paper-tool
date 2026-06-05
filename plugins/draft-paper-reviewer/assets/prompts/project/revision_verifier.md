@@ -42,7 +42,7 @@ Your job is to verify whether the revised manuscript or revision package satisfi
 18. Verify that every writing/style/term/table/figure/experiment-reporting change that depends on field common practice cites downloaded-paper convention IDs.
 19. Verify that every table/figure/evidence artifact deletion, merge, replacement, or move cites an allowed retention-gate row.
 20. Verify that no new table, figure, section structure, comparison layout, or evidence artifact was invented without downloaded-paper convention support or a recorded user decision.
-21. Verify that formulas, objectives, algorithms, metrics, table notation, captions, and notation-heavy method text contain no symbols that are unnecessary at first occurrence, used before explanation, explained only later, unexplained, or ambiguously reused.
+21. Verify that formulas, objectives, algorithms, metrics, table notation, captions, and notation-heavy method text follow downloaded-paper notation conventions and contain no duplicate, conflicting, unnecessary, convention-violating unexplained, or ambiguously reused symbols.
 
 ## How To Locate Verification Problems
 
@@ -69,10 +69,11 @@ Look for:
 - table/figure deleted because an agent thought it was unnecessary, without retention-gate authorization;
 - nonstandard table or figure added without local convention support;
 - high-risk evidence artifact moved to appendix or merged in a way that breaks the proof chain.
-- formula symbol still appears before its explanation;
+- formula symbol still appears before its explanation when convention IDs require first-use explanation;
 - a revision moved a formula earlier without moving its symbol definitions;
-- a new symbol was introduced without local explanation;
-- a symbol explanation remains only in a later paragraph, section, appendix, table caption, or algorithm note.
+- a new symbol was introduced without local explanation when convention IDs require explanation;
+- a symbol explanation remains only in a later paragraph, section, appendix, table caption, or algorithm note when local convention requires earlier explanation;
+- duplicate or conflicting symbol definitions remain after revision.
 
 ## Output
 
@@ -122,8 +123,8 @@ STATUS: [READY or NOT_REQUESTED or REVISION_INCOMPLETE or NEEDS_REWORK or FAILED
 |---|---|---|---|---|
 
 ## Formula Symbol Definition Verification
-| Symbol ID | Symbol | Revised Location | First Explanation Location | Needed At First Occurrence | Verified | Residual Problem |
-|---|---|---|---|---|---|---|
+| Symbol ID | Symbol | Revised Location | Definition Count | Definition Consistency | Convention IDs | Convention Judgment | Verified | Residual Problem |
+|---|---|---|---:|---|---|---|---|---|
 
 ## Downloaded Convention Verification
 | Task Or Scope | Convention IDs | Required Common-Practice Support | Applied | Residual Problem |
@@ -163,4 +164,5 @@ STATUS: [READY or NOT_REQUESTED or REVISION_INCOMPLETE or NEEDS_REWORK or FAILED
 - Do not accept a revision that prevents overclaiming by making the entire paper timid when the evidence supports stronger bounded claims.
 - Do not accept table/figure deletion, merge, replacement, or move without retention-gate approval.
 - Do not accept new nonstandard tables, figures, section structures, or comparison layouts without downloaded-paper convention support or a recorded user decision.
-- Do not accept a revision package with formula symbols that are first explained only later than their first occurrence.
+- Do not accept duplicate or conflicting formula-symbol definitions unless the manuscript clearly scopes the reuse and convention evidence supports that notation style.
+- Do not reject unexplained conventional or one-off symbols when downloaded-paper convention IDs support leaving comparable symbols unexplained.

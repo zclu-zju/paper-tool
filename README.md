@@ -37,7 +37,7 @@ The workflow must confirm all parameters with defaults in Stage 0, then confirm 
 
 Downloaded papers are the durable local context for later agents. Writing style, terminology, table/figure conventions, section structure, and figure/table deletion or creation decisions must use downloaded/local papers through `05_downloaded_paper_conventions.*`, not transient memory from search.
 
-For computer-science manuscripts, formulas and notation are checked explicitly. Stage 1 writes `01_formula_symbol_inventory.csv`; downstream review, audit, revision, and verification require each symbol to be needed at first occurrence and explained at or before first use. A later definition does not make an earlier unexplained symbol compliant.
+For computer-science manuscripts, formulas and notation are checked explicitly. Stage 1 writes `01_formula_symbol_inventory.csv`; Stage 6 learns notation practices from downloaded papers. Downstream review, audit, revision, and verification fix duplicate/conflicting symbol definitions and judge unexplained symbols against local downloaded-paper conventions, so conventional or one-off symbols may remain unexplained when comparable papers do the same.
 
 Reports are numbered in fixed reading order from `00_` onward. Low-value human-facing diagnostic reports may be omitted by `report-materiality-gatekeeper`, but later report numbers are not compacted or reused. The workflow does not explain omitted reports. The final report is `workspace/draft_paper_review/reports/99_ultimate_summary.md`, which is intended to be read first after a run completes.
 

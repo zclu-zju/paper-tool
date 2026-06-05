@@ -145,7 +145,7 @@ if (Revision requested or required\nand revision allowed?) then (yes)
         :Log round to 29_revision_ledger.jsonl;
       else (needs revision)
         if (Edit changes formula/notation/symbols?) then (yes)
-          :Ensure every symbol is needed\nand explained at or before first use;
+          :Fix duplicate/conflicting definitions\nand judge unexplained symbols\nagainst downloaded-paper conventions;
         endif
         if (Edit changes table/figure/evidence artifact?) then (yes)
           if (Retention/convention support exists?) then (yes)
@@ -171,7 +171,7 @@ endif
 
 :Stage 15 - revision-verifier;
 if (Revision was performed?) then (yes)
-  :Verify revision tasks, paired scope acceptance,\nledger completeness, claim safety, citations,\nformula-symbol first-use compliance,\nconvention IDs, retention-gate IDs,\nand optional TeX compile status;
+  :Verify revision tasks, paired scope acceptance,\nledger completeness, claim safety, citations,\nformula-symbol notation convention compliance,\nconvention IDs, retention-gate IDs,\nand optional TeX compile status;
   :Verify validated contributions were not\nunnecessarily weakened;
 else (no)
   :Write 30_revision_verification.md\nSTATUS: NOT_REQUESTED;

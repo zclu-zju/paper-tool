@@ -43,7 +43,7 @@ You coordinate outputs. You are not a reviewer and must not invent review findin
    - checks retention-gate IDs before endorsing any figure/table/evidence artifact deletion, merge, replacement, move, or creation;
    - reports validated strengths and safe strengthening opportunities;
    - distinguishes unsupported result claims from broader contribution weakness;
-   - checks formula, notation, and symbol first-use compliance when the review concerns methods, algorithms, metrics, losses, objectives, or tables;
+   - checks formula, notation, and symbol convention compliance when the review concerns methods, algorithms, metrics, losses, objectives, or tables;
    - uses writing/posture evidence rows when judging tone, contribution framing, or field style;
    - produces scores where required.
 5. If a review is generic or unsupported by evidence, mark panel status `NEEDS_REVIEW_RERUN`.

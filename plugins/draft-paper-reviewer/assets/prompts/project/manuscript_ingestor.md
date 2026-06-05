@@ -22,7 +22,7 @@ Extract or record:
 - section hierarchy;
 - paragraph or line anchors when available;
 - figure, table, algorithm, theorem, equation, and appendix inventory;
-- formula and notation inventory, including math symbols, variables, operators, acronyms used inside formulas, first occurrence locations, first explanation locations, and whether any symbol appears before it is explained;
+- formula and notation inventory, including math symbols, variables, operators, acronyms used inside formulas, first occurrence locations, explanation locations, definition counts, whether definitions conflict or repeat, and whether any symbol appears before it is explained;
 - reference list;
 - citation keys and in-text citation contexts;
 - TeX source root file, included files, bibliography files, and build status;
@@ -37,11 +37,15 @@ Computer-science manuscripts often introduce notation in formulas, algorithms, l
 - every named formula, equation, loss, objective, metric definition, algorithm variable, set, matrix/vector/scalar notation, index, superscript/subscript convention, and nonstandard operator;
 - first occurrence location and context;
 - first explicit explanation location and explanation text;
+- all later explanation or definition locations;
+- whether later definitions repeat the first definition, conflict with it, or redefine the symbol in a different scope;
+- occurrence count and whether the symbol is used only once;
 - whether the first occurrence is necessary at that point or can be delayed;
 - whether explanation appears before, at, or after first use;
-- whether a later explanation leaves an earlier use unexplained.
+- whether a later explanation leaves an earlier use unexplained;
+- whether the symbol looks like a conventional math/index/operator token that may not need explanation, subject to Stage 6 downloaded-paper convention evidence.
 
-A symbol is compliant only when it is needed at its first occurrence and is explained at or before that occurrence. Do not count a later explanation as fixing an earlier unexplained use.
+Do not decide final compliance in Stage 1. Stage 1 records facts. Final judgment happens downstream using `05_downloaded_paper_conventions.csv`. Duplicate or conflicting symbol definitions are always suspicious and must be preserved for audit.
 
 ## How To Locate Problems
 
@@ -133,7 +137,7 @@ Allowed `claim_type` values:
 Write `workspace/draft_paper_review/reports/01_formula_symbol_inventory.csv` with this header:
 
 ```csv
-symbol_id,symbol_tex,normalized_symbol,symbol_type,first_occurrence_location,first_occurrence_context,first_explanation_location,first_explanation_text,explanation_timing,needed_at_first_occurrence,appears_before_explanation,status,notes
+symbol_id,symbol_tex,normalized_symbol,symbol_type,first_occurrence_location,first_occurrence_context,occurrence_count,first_explanation_location,first_explanation_text,all_definition_locations,definition_count,definition_consistency,explanation_timing,needed_at_first_occurrence,appears_before_explanation,possibly_conventional_or_one_off,status,notes
 ```
 
 Allowed `symbol_type` values:
@@ -162,10 +166,23 @@ Allowed `explanation_timing` values:
 Allowed `status` values:
 
 - `COMPLIANT`
+- `FACT_ONLY_NEEDS_CONVENTION_JUDGMENT`
+- `POSSIBLY_ACCEPTABLE_UNEXPLAINED`
 - `UNNECESSARY_FIRST_USE`
 - `USED_BEFORE_EXPLANATION`
 - `NOT_EXPLAINED`
+- `DUPLICATE_DEFINITION`
+- `CONFLICTING_DEFINITION`
 - `AMBIGUOUS`
+
+Allowed `definition_consistency` values:
+
+- `SINGLE_DEFINITION`
+- `REPEATED_SAME_DEFINITION`
+- `REDEFINED_COMPATIBLE_LOCAL_SCOPE`
+- `CONFLICTING_DEFINITIONS`
+- `NO_DEFINITION`
+- `UNKNOWN`
 
 Also store extracted plain text, parsed references, and optional compiled inspection artifacts under:
 

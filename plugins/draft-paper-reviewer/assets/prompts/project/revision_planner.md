@@ -35,7 +35,7 @@ Your job is to convert the editorial decision, reviewer reports, and specialist 
 9. Add explicit tasks to strengthen validated claims when reviewers or auditors found the draft too timid or under-positioned.
 10. Add explicit tasks to adopt related-paper writing moves when the evidence map includes section-level exemplars.
 11. Add explicit tasks to fix term/proper-noun usage when the term-usage consistency audit reports inconsistent or nonstandard usage.
-12. Add explicit tasks to fix formula-symbol definition problems when a symbol is unnecessary at first occurrence, used before explanation, explained only later, unexplained, ambiguous, or reused with conflicting meanings.
+12. Add explicit tasks to fix formula-symbol definition problems when a symbol is duplicated, conflictingly defined, unnecessary at first occurrence, used before explanation contrary to downloaded-paper convention, unexplained contrary to downloaded-paper convention, ambiguous, or reused with conflicting meanings.
 13. For any task that adds, deletes, merges, replaces, moves, or redesigns a figure/table/evidence artifact, require both:
    - convention IDs from `05_downloaded_paper_conventions.csv` when adding or redesigning;
    - allowed action rows from `06_figure_table_retention_gate.csv` when deleting, merging, replacing, or moving.
@@ -84,7 +84,7 @@ Look for:
 - requests to fabricate results, citations, or claims.
 - tasks that respond to missing experiments by weakening unrelated motivation, method, contribution, or terminology language;
 - missing tasks for validated strengths that the editorial decision, writing audit, field-style audit, or literature-positioning audit said should be stated more confidently.
-- missing tasks for formula symbols that are used before explanation, explained only later, unnecessary at first occurrence, unexplained, or ambiguous.
+- missing tasks for formula symbols that are duplicated, conflictingly defined, used before explanation contrary to downloaded-paper convention, explained only later contrary to convention, unnecessary at first occurrence, unexplained contrary to convention, or ambiguous.
 - tasks that propose deleting, merging, replacing, or moving a figure/table without retention-gate approval;
 - tasks that propose creating a new table/figure/section pattern without downloaded-paper convention support;
 - serious validation/comparison flaws that deserve a standalone report rather than being buried in a summary.
@@ -101,7 +101,7 @@ Use the ML paper writing principles when the paper is ML/AI or computational:
 - Missing experiments/results should create local result boundaries, placeholders, or objective-limitation records. They should not automatically weaken the abstract's problem motivation, method description, contribution naming, or literature gap.
 - Use related-paper exemplars as concrete models for section structure, rhetorical moves, contribution phrasing, experiment setup prose, table narration, and limitation framing. Cite the relevant evidence IDs in the task.
 - Use downloaded-paper convention IDs as the evidence source for common writing, table, figure, terminology, and experiment-reporting practice.
-- For formulas, objectives, algorithms, metrics, and notation, enforce local first-use clarity: each symbol must be needed where it first appears and explained at or before that first occurrence. Literature conventions can guide notation style, but cannot excuse a symbol that is used before explanation.
+- For formulas, objectives, algorithms, metrics, and notation, enforce downloaded-paper convention-calibrated clarity: explain symbols that local papers normally explain; allow conventional or one-off unexplained symbols only with convention IDs; fix duplicate or conflicting symbol definitions.
 - Do not plan invented tables or figures. If a new artifact is not supported by local convention IDs, mark it `NEEDS_USER_DECISION` or `NEEDS_MORE_EVIDENCE`.
 - Do not plan deletion of high-risk tables, figures, algorithms, proofs, appendix evidence, or reproducibility artifacts unless the retention gate approves a safe action.
 - Plan confident but bounded revisions: strengthen what the draft and literature evidence support, and qualify only the exact unsupported portion.
@@ -160,8 +160,8 @@ STATUS: [READY or NOT_REQUESTED or NEEDS_USER_DECISION or NEEDS_MORE_EVIDENCE]
 |---|---|---|---|---|
 
 ## Formula Symbol Definition Plan
-| Symbol ID | Symbol | Source Audit Or Evidence | Target Location | Required Change | Acceptance Criteria | Revision Task IDs |
-|---|---|---|---|---|---|---|
+| Symbol ID | Symbol | Source Audit Or Evidence | Convention IDs | Target Location | Required Change | Acceptance Criteria | Revision Task IDs |
+|---|---|---|---|---|---|---|---|
 
 ## User Decisions Needed
 | Decision ID | Question | Options | Why User Input Is Needed |
@@ -197,7 +197,7 @@ STATUS: [READY or NOT_REQUESTED or NEEDS_USER_DECISION or NEEDS_MORE_EVIDENCE]
 - Export 29_revision_ledger.xlsx with the openpyxl ledger tool:
 - Use related-paper writing exemplar evidence for style, claim-framing, table-narrative, and limitation-framing edits:
 - Use downloaded-paper convention IDs for common practice:
-- Fix formula-symbol first-use problems before accepting method, algorithm, objective, metric, result-table, or caption scopes:
+- Fix formula-symbol convention, duplicate-definition, and conflicting-definition problems before accepting method, algorithm, objective, metric, result-table, or caption scopes:
 - Enforce figure/table retention gate before any delete/merge/replace/move:
 - Strengthen validated contributions where requested; qualify only the specific unsupported claim boundary:
 - Never invent experiments, results, citations, or unsupported claims:
@@ -211,4 +211,4 @@ STATUS: [READY or NOT_REQUESTED or NEEDS_USER_DECISION or NEEDS_MORE_EVIDENCE]
 - Do not create endless revision tasks for missing objective material. Defer them with explicit risk wording when policy allows.
 - Do not allow a reviser to approve its own edits; every substantive change must return to the paired reviewer.
 - Do not create a revision plan that only weakens claims. If validated strengths exist, include tasks that help the paper state them clearly and professionally.
-- Do not leave formula-symbol problems as generic polish when they affect method, algorithm, metric, objective, table, or caption comprehension.
+- Do not leave formula-symbol problems as generic polish when they affect method, algorithm, metric, objective, table, or caption comprehension. Do not create tasks for unexplained symbols that downloaded-paper conventions treat as acceptable conventional or one-off usage.

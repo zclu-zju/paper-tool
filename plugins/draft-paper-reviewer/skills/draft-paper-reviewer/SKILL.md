@@ -20,7 +20,7 @@ The workflow is for improving the user's own draft. Missing experiments, incompl
 
 Related literature is used both as review evidence and as writing evidence. Discovery groups papers by topic and citation rank; artifact collection downloads public PDFs or TeX/source according to the confirmed all/top-X/required-only policy. Downloaded local papers are then mined for section-level examples of abstract structure, introduction moves, contribution framing, method exposition, formula/notation explanation patterns, experiment/table/figure narration, limitation framing, and term usage so the paired revisers can adapt field-standard writing moves from durable local context.
 
-For computer-science manuscripts, formula-symbol usage is a hard clarity gate. Stage 1 extracts `01_formula_symbol_inventory.csv`. Downstream reviewers, auditors, planners, paired revisers, and verifiers must reject or fix symbols that are unnecessary at first occurrence, used before explanation, explained only later, unexplained, or ambiguously reused.
+For computer-science manuscripts, formula-symbol usage is convention-calibrated. Stage 1 extracts `01_formula_symbol_inventory.csv`. Stage 6 mines downloaded papers for notation practices, including symbols that are normally explained and symbols that are commonly left unexplained because they are conventional or used only once. Downstream reviewers, auditors, planners, paired revisers, and verifiers must fix duplicate/conflicting definitions and require explanations only when local paper conventions or manuscript clarity call for them.
 
 Figure and table changes are gated. Existing tables, figures, algorithms, proofs, appendix evidence, and other evidence carriers cannot be deleted, merged, moved, or replaced unless the retention gate says the proof chain and paper structure remain sufficient. New or redesigned tables/figures must be supported by downloaded-paper convention evidence or escalated for user decision.
 
@@ -80,7 +80,7 @@ Stage 0 must collect required parameters before any paper search or review:
 - artifact download top-X when a top-cited policy is selected;
 - topic grouping policy for discovered literature;
 - local artifact evidence policy for writing/style/table/figure/term/common-practice decisions;
-- formula-symbol first-use policy: symbols must be needed at first occurrence and explained at or before first use;
+- formula-symbol convention policy: duplicate/conflicting definitions must be fixed, and unexplained symbols are judged against downloaded-paper notation conventions;
 - report materiality policy with fixed numbering and no user-facing records for unwritten reports;
 - figure/table deletion policy requiring retention-gate approval;
 - whether manuscript revision is requested or review-only mode is desired;

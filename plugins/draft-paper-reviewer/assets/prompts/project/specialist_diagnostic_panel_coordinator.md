@@ -27,7 +27,7 @@ Run or assemble:
 
 - `novelty-claim-auditor`;
 - `terminology-consistency-auditor`;
-- `term-usage-consistency-auditor`, including formula-symbol first-use compliance;
+- `term-usage-consistency-auditor`, including formula-symbol notation convention compliance;
 - `field-style-auditor`;
 - `professionalism-domain-precision-auditor`;
 - `literature-positioning-auditor`;
@@ -48,7 +48,7 @@ Each audit must:
 - mark evidence gaps and loopback targets.
 - use related-literature writing, terminology, and section-exemplar evidence instead of generic advice when judging style, positioning, wording, or term usage;
 - identify validated contributions that are currently understated or written too timidly.
-- check formula, notation, and symbol usage when relevant: each symbol must be needed at first occurrence and explained at or before first use;
+- check formula, notation, and symbol usage when relevant: duplicate/conflicting definitions must be fixed, and unexplained symbols must be judged against downloaded-paper notation conventions;
 - use downloaded-paper convention IDs for writing, term usage, table, figure, and experiment-reporting common-practice judgments;
 - run `report-materiality-gatekeeper` for each human-facing audit report candidate and write standalone audits only when the issue is material to author decisions, paper principles, verification/comparison validity, or high-impact writing/revision choices. Leave non-material standalone reports unwritten without renumbering later reports and without writing placeholders, omission logs, or explanations.
 

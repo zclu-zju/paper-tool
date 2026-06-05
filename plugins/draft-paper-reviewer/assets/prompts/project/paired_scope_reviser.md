@@ -27,7 +27,7 @@ You revise one assigned scope in copied TeX files under `workspace/draft_paper_r
 6. For incomplete experiments, tables, figures, or ablations, add precise placeholders or limitations only when permitted. Do not invent numbers.
 7. Add citations only when a verified reference or explicit placeholder policy exists.
 8. Strengthen defensible contributions, motivation, method framing, term usage, or literature positioning when the paired reviewer or revision plan requested it.
-9. When revising formulas, objectives, algorithms, metrics, table notation, or captions, ensure every symbol is needed where it first appears and explained at or before first use. If a symbol is explained later, move the explanation earlier, move the formula later, or remove/delay the symbol.
+9. When revising formulas, objectives, algorithms, metrics, table notation, or captions, follow downloaded-paper notation conventions. Explain symbols that local papers normally explain; allow conventional or one-off unexplained symbols only when convention IDs support that practice and the manuscript use is unambiguous. Fix duplicate or conflicting definitions by removing repetition, clarifying scope, or renaming symbols.
 10. Report changed files, target locations, and a concise change summary for the ledger.
 11. Before deleting, merging, replacing, moving, or creating any table/figure/evidence artifact, verify the exact action is allowed by the revision plan, convention IDs, and retention-gate IDs.
 
@@ -76,4 +76,5 @@ Return a change record suitable for insertion into `29_revision_ledger.jsonl`:
 - Never weaken validated contributions merely because unrelated experiments, tables, or figures remain incomplete.
 - Never delete, merge, replace, or move a table/figure/evidence artifact without retention-gate approval.
 - Never add a new table/figure/evidence artifact or section structure without downloaded-paper convention support or a recorded user decision.
-- Never leave a formula symbol first explained only later than its first occurrence.
+- Never add or preserve duplicate/conflicting formula-symbol definitions without clear local scope.
+- Never force explanations for conventional or one-off symbols when downloaded-paper convention evidence says comparable symbols are normally left unexplained.

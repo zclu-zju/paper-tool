@@ -55,11 +55,11 @@ Read all available workflow artifacts:
 10. Reviewer reports: material reviewer reports cite manuscript locations and evidence IDs for Major/Critical findings. Omitted non-material human-facing reports are acceptable only when not needed for traceability, synthesis, or hard gates.
 11. Specialist audits: material specialist audits are evidence-compliant, including term-usage consistency when term/proper-noun issues are material. Specialist checks required by a full review must still be performed even when their standalone human-facing reports are not written.
 12. Editorial synthesis: no invented issues, scores consistent with reports, hard gates applied, validated strengths summarized, and claim boundaries separated from contribution weakness.
-13. Revision plan: required fixes trace to source reports and evidence, including tasks for strengthening defensible claims, adopting downloaded-paper style moves, fixing term usage, fixing formula-symbol first-use problems, and controlling table/figure changes when applicable.
+13. Revision plan: required fixes trace to source reports and evidence, including tasks for strengthening defensible claims, adopting downloaded-paper style moves, fixing term usage, fixing formula-symbol convention or duplicate-definition problems, and controlling table/figure changes when applicable.
 14. Paired revision summary: if revision allowed, every active scope has a one-to-one reviewer/reviser pair, final scope status, and residual issue record.
 15. Revision ledger: if revision allowed, JSONL and XLSX ledgers exist, and each scope has review records on the left and change records on the right in its workbook sheet or CSV fallback export.
 16. Revision changes: if revision allowed, revised files are copies and changes trace to tasks, convention IDs, and retention-gate IDs where relevant.
-17. Revision verification: required tasks verified, paired rounds checked, formula-symbol first-use compliance checked, confident-but-bounded claim calibration checked, convention support checked, figure/table retention checked, or loopback specified.
+17. Revision verification: required tasks verified, paired rounds checked, formula-symbol convention compliance checked, confident-but-bounded claim calibration checked, convention support checked, figure/table retention checked, or loopback specified.
 18. Final threshold: score meets threshold or output is explicitly marked not ready.
 19. Iteration policy: repeated stage/problem caps are respected and deferred issues are recorded instead of retried indefinitely.
 20. Missing score policy: objective missing evidence is marked N/A/deferred according to requirements and is not silently converted into a numeric score.
@@ -67,7 +67,7 @@ Read all available workflow artifacts:
 22. Report numbering and materiality: user-facing reports use fixed numbered filenames, absent report numbers are not reused or compacted, no placeholders or omission logs explain unwritten reports, and the workflow is ready to produce `99_ultimate_summary.md` after `VERDICT: GO`.
 23. No deflationary failure mode: missing draft experiments/tables/results were localized to result claims or objective limitations and did not suppress unrelated validated contributions.
 24. No unsupported artifact changes: no table, figure, evidence artifact, comparison layout, or section structure was added/deleted/merged/replaced/moved without local convention support, retention-gate authorization, or a recorded user decision.
-25. Formula-symbol compliance: symbols in formulas, objectives, algorithms, metrics, table notation, and captions are needed at first occurrence and explained at or before first use, or the issue is explicitly routed to revision.
+25. Formula-symbol compliance: symbols in formulas, objectives, algorithms, metrics, table notation, and captions follow downloaded-paper notation conventions; duplicate/conflicting definitions are fixed or explicitly routed to revision; unexplained conventional or one-off symbols are accepted only when convention IDs support that practice.
 26. Loopback readiness: if any check fails, target exactly one stage.
 
 ## Target Stage Selection
@@ -164,6 +164,6 @@ Deferred Issue Handling: [None / Properly Deferred / Improperly Deferred]
 - Do not accept reports that treat missing draft data as a blanket reason to weaken motivation, method, contribution, literature positioning, or term usage.
 - Do not accept a workflow that uses non-downloaded papers as common-practice evidence for writing, terms, tables, figures, or section structure.
 - Do not accept table/figure deletion, merge, replacement, move, or creation without retention-gate authorization and downloaded-paper convention support where applicable.
-- Do not accept unexplained, late-defined, unnecessary, or ambiguously reused formula symbols in formulas, algorithms, objectives, metrics, table notation, or captions unless the workflow is review-only and the issue is surfaced as a required fix.
+- Do not accept duplicate, conflicting, convention-violating unexplained, unnecessary, or ambiguously reused formula symbols in formulas, algorithms, objectives, metrics, table notation, or captions unless the workflow is review-only and the issue is surfaced as a required fix.
 - Do not reject because a non-material human-facing report number is absent. Do reject if numbering is compacted, later reports are renumbered to fill gaps, or placeholders, omission logs, or explanations are written for unwritten reports.
 - Do not require `99_ultimate_summary.md` before `VERDICT: GO`; Stage 17 generates it after this integrity gate passes. Do require the orchestrator to run Stage 17 before the workflow is finished.

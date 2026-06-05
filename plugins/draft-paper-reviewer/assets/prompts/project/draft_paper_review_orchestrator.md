@@ -13,7 +13,7 @@ This workflow is not a generic review. A review claim is valid only when it can 
 
 For writing style, table/figure conventions, terminology usage, section structure, and figure/table deletion or addition decisions, "related paper evidence" means downloaded or already local artifacts inspected through `05_downloaded_paper_conventions.*`. Search-result memory or non-downloaded paper metadata is not enough.
 
-Formula, notation, and symbol usage is a hard computer-science manuscript clarity check. A symbol may appear only when it is needed at that point and is explained at or before its first occurrence. A later explanation does not make an earlier unexplained use compliant.
+Formula, notation, and symbol usage is a computer-science manuscript clarity check calibrated by downloaded-paper conventions. Duplicate or conflicting symbol definitions are material risks. Unexplained symbols are not automatically wrong: conventional, obvious, or one-off symbols may remain unexplained when `05_downloaded_paper_conventions.csv` shows comparable local papers use that practice and the manuscript context is unambiguous.
 
 ## Global Writing Posture
 
@@ -325,7 +325,7 @@ Default fixed scopes are:
 
 Issue-based scopes from the revision plan may be added when the target location is more precise than a section. Revised files must be TeX copies, not overwrites. Substantive edits must trace to the revision plan, evidence map, paired scope ledger, downloaded-paper convention IDs, and related-paper writing exemplars when the edit changes style, contribution framing, formula notation, term usage, experiment narration, table narration, figure narration, or limitation framing.
 
-When a revision touches formulas, algorithms, objectives, metrics, variables, or notation, the paired reviewer and reviser must use `01_formula_symbol_inventory.csv` and the corresponding revision task to ensure every symbol that remains is needed at first occurrence and explained at or before first use.
+When a revision touches formulas, algorithms, objectives, metrics, variables, or notation, the paired reviewer and reviser must use `01_formula_symbol_inventory.csv`, `05_downloaded_paper_conventions.csv`, and the corresponding revision task to fix duplicate/conflicting definitions and judge unexplained symbols against downloaded-paper notation conventions.
 
 Before any paired reviser deletes, merges, replaces, moves, or creates a table/figure/evidence artifact, the coordinator must check `06_figure_table_retention_gate.csv` and `05_downloaded_paper_conventions.csv`. If no allowed action or convention support exists, stop that scope with `NEEDS_USER_DECISION` or `NEEDS_MORE_EVIDENCE`.
 
@@ -339,7 +339,7 @@ Output:
 workspace/draft_paper_review/reports/30_revision_verification.md
 ```
 
-The verifier checks each required revision item, evidence support, citation consistency, formula-symbol first-use compliance, paired scope acceptance status, revision ledger completeness, whether new unsupported claims were introduced, whether validated contributions were unnecessarily weakened, whether writing/style/table/figure changes used downloaded-paper convention IDs, and whether every deletion/merge/replacement/move of a figure/table/evidence artifact was authorized by the retention gate.
+The verifier checks each required revision item, evidence support, citation consistency, formula-symbol notation convention compliance, paired scope acceptance status, revision ledger completeness, whether new unsupported claims were introduced, whether validated contributions were unnecessarily weakened, whether writing/style/table/figure changes used downloaded-paper convention IDs, and whether every deletion/merge/replacement/move of a figure/table/evidence artifact was authorized by the retention gate.
 
 ## Stage 16: Integrity Review
 
