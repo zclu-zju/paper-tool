@@ -1,0 +1,42 @@
+{
+  "name": "paper-reviewer",
+  "version": "0.3.1",
+  "description": "TeX-only draft paper review and revision workflow for Codex with local related-paper downloads, downloaded-paper convention mining, figure/table retention gates, convention-calibrated formula-symbol checks, material reports, term usage auditing, paired reviewer/reviser loops, XLSX revision ledgers, fixed numbered reports, a 99 ultimate summary, and post-core latexdiff visual-PDF and change-rationale auditing.",
+  "author": {
+    "name": "Draft Paper Reviewer"
+  },
+  "repository": "https://github.com/zcluu/paper-reviewer",
+  "keywords": [
+    "codex",
+    "paper-review",
+    "academic-review",
+    "literature-review",
+    "subagents",
+    "revision"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Paper Reviewer",
+    "shortDescription": "Review and revise TeX manuscripts with literature evidence.",
+    "longDescription": "Installs repo-local Codex custom agents for an iterative draft-paper review workflow. The submitted manuscript input is TeX-only: Stage 0 accepts a TeX source directory or explicit .tex root file, rejects PDF/Word/Markdown/plain-text/image manuscripts, and confirms all parameters with defaults before any ingestion, literature search, review, or revision. The workflow serves the user's own manuscript-development process, handles incomplete experiments/tables as local result-claim constraints rather than blanket contribution weakness, discovers related literature by topic group and citation rank, downloads public related-paper artifacts according to the confirmed all/top-X/required-only/no-download policy, mines downloaded local papers for section-level writing, terminology, formula-notation, experiment, table, and figure conventions, then builds an evidence map. A figure/table retention gate decides whether existing evidence artifacts must be kept, revised, moved, merged, or may be deleted before any TeX revision. The workflow runs material reviewer and specialist audits, synthesizes scores, plans revisions, then revises copied TeX files through one-to-one reviewer/reviser pairs. Literature is used both for evidence and for downloaded-paper writing calibration, including contribution framing, method exposition, formula-symbol explanation patterns, experiment/table/figure narration, limitations, and field-standard term usage. A dedicated term-usage auditor checks nouns, formula symbols, acronyms, method names, dataset names, metrics, and proper nouns for internal and downloaded-literature-aligned consistency; duplicate or conflicting symbol definitions are flagged, while unexplained symbols are judged against downloaded-paper conventions so standard or one-off symbols may be acceptable when the local corpus supports that practice. Report materiality gating writes standalone reports only for author-relevant, principle-level, verification/comparison, or high-impact writing risks while preserving fixed report numbers and leaving absent numbers undocumented. Each paired review/write round is logged to JSONL and exported to an XLSX workbook with one sheet per pair, with CSV fallback exports. Stage 17 writes 99_ultimate_summary.md as the final first-read report. Stage 18 can run latexdiff between the original and revised TeX roots, produce a visual diff TeX, compile a latexdiff PDF when local LaTeX tooling is available, write structured 100_latexdiff reports, and write 101_change_rationale_audit.md/.tex explaining what was added, deleted, or replaced, why each change was made, and whether any edit should return to an earlier agent for recheck. Objective limitations such as missing experiments or unavailable raw data can be deferred after repeated attempts, and writing guidance is used for narrative, citation, reproducibility, limitations, style, dataset-setting, and venue-checklist revisions.",
+    "developerName": "Paper Reviewer",
+    "category": "Productivity",
+    "capabilities": [
+      "Interactive",
+      "Write"
+    ],
+    "defaultPrompt": [
+      "Review my paper using literature evidence.",
+      "Review the TeX source in this repository.",
+      "Infer the paper topic, ask me to confirm all workflow parameters and topic scope, then research related papers and review.",
+      "Run evidence-based peer review and produce a revision plan.",
+      "Review and revise my TeX draft using paired reviewer/reviser loops and downloaded related papers.",
+      "Review my TeX draft, download top-cited related papers by topic, and use them as local writing evidence.",
+      "Check whether my paper's figures and tables can be deleted or must be kept before revising.",
+      "Review my TeX draft, audit term usage, and produce numbered reports ending with 99_ultimate_summary.md.",
+      "Review my TeX draft and check formula symbols against downloaded-paper notation conventions.",
+      "Compare original and revised TeX with latexdiff, produce a visual PDF, and explain every change.",
+      "Install paper reviewer workflow agents."
+    ]
+  }
+}

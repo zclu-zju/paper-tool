@@ -1,0 +1,37 @@
+{
+  "name": "paper-research",
+  "version": "0.6.0",
+  "description": "Interactive loopback literature research workflow for Codex with abstracts, citation counts, optional repository cloning, and optional paper artifact retrieval.",
+  "author": {
+    "name": "Baseline Research"
+  },
+  "repository": "https://github.com/zcluu/paper-research",
+  "keywords": [
+    "codex",
+    "research",
+    "literature-review",
+    "research-workflow",
+    "subagents"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Paper Research",
+    "shortDescription": "Research papers, code links, and paper artifacts.",
+    "longDescription": "Installs repo-local Codex custom agent templates for an iterative literature research workflow with requirement collection, scope locking, paper discovery with abstracts and citation counts, citation-prioritized code verification, optional local repository cloning, optional paper PDF/TeX retrieval and TeX compilation, CSV output, and reviewer-driven loopback.",
+    "developerName": "Paper Research",
+    "category": "Productivity",
+    "capabilities": [
+      "Interactive",
+      "Write"
+    ],
+    "defaultPrompt": [
+      "Research papers after collecting requirements.",
+      "Research papers and include abstracts in the CSV.",
+      "Research papers with citation counts and code links.",
+      "Use my paper as a seed for literature research.",
+      "Research papers and clone verified code repositories.",
+      "Research papers and download PDFs or TeX sources.",
+      "Install paper research workflow agents."
+    ]
+  }
+}

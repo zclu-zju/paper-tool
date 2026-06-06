@@ -1,0 +1,44 @@
+{
+  "name": "paper-tool",
+  "interface": {
+    "displayName": "Paper Tool"
+  },
+  "plugins": [
+    {
+      "name": "paper-reviewer",
+      "source": {
+        "source": "local",
+        "path": "./plugins/paper-reviewer"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    },
+    {
+      "name": "paper-research",
+      "source": {
+        "source": "local",
+        "path": "./plugins/paper-research"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    },
+    {
+      "name": "paper-experiment",
+      "source": {
+        "source": "local",
+        "path": "./plugins/paper-experiment"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    }
+  ]
+}
