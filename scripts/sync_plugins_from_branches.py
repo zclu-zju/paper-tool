@@ -44,7 +44,22 @@ def run(cmd: list[str], cwd: Path | None = None, stdout=None) -> None:
 
 
 def fetch_branches() -> None:
-    run(["git", "fetch", "origin", "tool", "research", "reviewer", "experiment"])
+    try:
+        run(["git", "fetch", "origin", "tool", "research", "reviewer", "experiment"])
+    except subprocess.CalledProcessError:
+        print("Warning: could not fetch origin branches; falling back to local refs")
+
+
+def branch_ref(branch: str) -> str:
+    remote_ref = f"origin/{branch}"
+    result = subprocess.run(
+        ["git", "rev-parse", "--verify", "--quiet", remote_ref],
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+    )
+    if result.returncode == 0:
+        return remote_ref
+    return branch
 
 
 def export_plugin(branch: str, plugin_name: str, destination: Path) -> None:
@@ -57,7 +72,7 @@ def export_plugin(branch: str, plugin_name: str, destination: Path) -> None:
                     "git",
                     "archive",
                     "--format=tar",
-                    f"origin/{branch}",
+                    branch_ref(branch),
                     f"plugins/{plugin_name}",
                 ],
                 stdout=handle,
