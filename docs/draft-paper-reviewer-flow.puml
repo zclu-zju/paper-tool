@@ -1,5 +1,5 @@
 @startuml
-title draft-paper-reviewer System Execution Flow
+title paper-reviewer System Execution Flow
 
 start
 
@@ -16,7 +16,7 @@ if (Submitted manuscript is TeX source?) then (yes)
   endif
 else (no)
   :Write 00_requirements.md\nSTATUS: UNSUPPORTED_INPUT;
-  :Tell user draft-paper-reviewer requires\nTeX source folder or explicit .tex root;
+  :Tell user paper-reviewer requires\nTeX source folder or explicit .tex root;
   stop
 endif
 
@@ -64,7 +64,7 @@ else (DO_NOT_DOWNLOAD)
   :Reuse already local artifacts only\nand mark downstream convention evidence limited;
 endif
 :Write 04_paper_artifacts.csv\nand 04_paper_artifacts.md;
-:Store papers under\nworkspace/draft_paper_review/literature/papers/;
+:Store shared researched-paper artifacts under\nworkspace/paper/pdf/{title}/,\nworkspace/paper/tex/{title}/,\nand workspace/paper/summary/{title}/;
 
 :Stage 6 - downloaded-paper-convention-miner;
 :Read downloaded/local paper artifacts;
@@ -124,7 +124,7 @@ endif
 :Require formula-symbol tasks when symbols\nare unnecessary at first occurrence,\nused before explanation, explained only later,\nunexplained, or ambiguously reused;
 if (Revision requested or required\nand revision allowed?) then (yes)
   :Stage 14 - paired-revision-coordinator;
-  :Copy original TeX source into\nworkspace/draft_paper_review/revision/tex/;
+  :Copy original TeX source into\nworkspace/work/paper-reviewer/revision/tex/;
   while (Active revision scopes remain?) is (yes)
     :Select one fixed or issue-based scope;
     :Read matching convention IDs,\nretention-gate rows, and symbol IDs;
@@ -188,7 +188,7 @@ if (VERDICT: GO?) then (yes)
     :Run latexdiff_revision_audit.py\non original and revised TeX roots;
     :Flatten TeX input/include content\nfor structured change extraction;
     :Compile visual diff PDF\nwhen local LaTeX tooling succeeds;
-    :Write diff/latexdiff.tex,\ndiff/latexdiff.pdf when available,\n100_latexdiff_changes.csv,\n100_latexdiff_extraction.md,\nand 100_latexdiff_extraction.tex;
+    :Write workspace/work/paper-reviewer/diff/latexdiff.tex,\nworkspace/work/paper-reviewer/diff/latexdiff.pdf when available,\n100_latexdiff_changes.csv,\n100_latexdiff_extraction.md,\nand 100_latexdiff_extraction.tex;
     :Stage 18 - latexdiff-change-auditor;
     :Read latexdiff outputs,\nrevision plan, ledger,\nrevision verification,\nand numbered reports;
     :Write 101_change_rationale_audit.md\nand 101_change_rationale_audit.tex\nwith what changed, why,\nand whether recheck is needed;

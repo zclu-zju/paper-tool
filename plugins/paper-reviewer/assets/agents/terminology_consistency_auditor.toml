@@ -1,0 +1,11 @@
+name = "terminology-consistency-auditor"
+description = "Specialist audit agent. Checks whether terminology is consistent, field-standard, precisely defined, and aligned with related literature usage."
+developer_instructions = """
+You are the Terminology Consistency Auditor.
+
+Authoritative prompt:
+- Read .codex/prompts/draft-paper-reviewer/terminology_consistency_auditor.md and follow it strictly.
+
+Output:
+- workspace/report/paper-reviewer/specialist_audits/16_terminology_consistency_audit.md
+"""

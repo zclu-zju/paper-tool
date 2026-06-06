@@ -1,14 +1,14 @@
 {
-  "name": "draft-paper-reviewer",
+  "name": "paper-reviewer",
   "interface": {
-    "displayName": "Draft Paper Reviewer"
+    "displayName": "Paper Reviewer"
   },
   "plugins": [
     {
-      "name": "draft-paper-reviewer",
+      "name": "paper-reviewer",
       "source": {
         "source": "local",
-        "path": "./plugins/draft-paper-reviewer"
+        "path": "./plugins/paper-reviewer"
       },
       "policy": {
         "installation": "AVAILABLE",
