@@ -97,7 +97,7 @@ Stage 11 includes a dedicated term-usage consistency auditor. It extracts techni
 
 ## Latexdiff Change Audit
 
-After the core workflow finishes, Stage 18 can compare the original accepted TeX source with the revised TeX source when the Stage 0 policy allows it. It uses `latexdiff --flatten` when the command is installed; if `latexdiff` is unavailable, the tool still writes a unified-diff fallback and marks the status. The structured change extraction expands `\input{}` and `\include{}` files so multi-file TeX manuscripts are audited beyond the root file.
+After the core workflow finishes, Stage 18 can compare the original accepted TeX source with the revised TeX source when the Stage 0 policy allows it. It uses `latexdiff --flatten` when the command is installed; if `latexdiff` is unavailable, the tool still writes a unified-diff fallback and marks the status. It then tries to compile `workspace/draft_paper_review/diff/latexdiff.pdf` for visual inspection. If local LaTeX compilation fails, the TeX diff and extraction reports are still written with the compile status. The structured change extraction expands `\input{}` and `\include{}` files so multi-file TeX manuscripts are audited beyond the root file.
 
 ```bash
 python3 .codex/tools/draft-paper-reviewer/latexdiff_revision_audit.py \
@@ -110,6 +110,7 @@ Then run `latexdiff-change-auditor`. It reads the diff, revision plan, ledger, v
 
 ```text
 workspace/draft_paper_review/diff/latexdiff.tex
+workspace/draft_paper_review/diff/latexdiff.pdf
 workspace/draft_paper_review/reports/100_latexdiff_changes.csv
 workspace/draft_paper_review/reports/100_latexdiff_extraction.md
 workspace/draft_paper_review/reports/100_latexdiff_extraction.tex
@@ -202,4 +203,5 @@ workspace/draft_paper_review/reports/100_latexdiff_extraction.tex
 workspace/draft_paper_review/reports/101_change_rationale_audit.md
 workspace/draft_paper_review/reports/101_change_rationale_audit.tex
 workspace/draft_paper_review/diff/latexdiff.tex
+workspace/draft_paper_review/diff/latexdiff.pdf
 ```

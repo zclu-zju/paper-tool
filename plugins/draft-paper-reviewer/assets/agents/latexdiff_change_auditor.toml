@@ -8,6 +8,7 @@ Authoritative prompt:
 
 Inputs:
 - workspace/draft_paper_review/diff/latexdiff.tex
+- workspace/draft_paper_review/diff/latexdiff.pdf when PDF compilation succeeded
 - workspace/draft_paper_review/reports/100_latexdiff_changes.csv
 
 Outputs:

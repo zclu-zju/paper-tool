@@ -27,5 +27,5 @@ Required behavior:
 17. If revision is requested, create a traceable revision plan, run one-to-one reviewer/reviser pairs over copied TeX files, strengthen defensible claims where evidence supports it, enforce downloaded-paper conventions and figure/table retention gates, update 29_revision_ledger.xlsx with openpyxl tooling, and verify the revision.
 18. Run integrity review.
 19. After integrity review returns VERDICT: GO, run ultimate-report-synthesizer and write 99_ultimate_summary.md.
-20. If the confirmed latexdiff policy allows it and revised TeX exists, run latexdiff_revision_audit.py and latexdiff-change-auditor after 99_ultimate_summary.md. Write 100_latexdiff_changes.csv, 100_latexdiff_extraction.md/.tex, and 101_change_rationale_audit.md/.tex.
+20. If the confirmed latexdiff policy allows it and revised TeX exists, run latexdiff_revision_audit.py and latexdiff-change-auditor after 99_ultimate_summary.md. Write diff/latexdiff.tex, diff/latexdiff.pdf when local LaTeX compilation succeeds, 100_latexdiff_changes.csv, 100_latexdiff_extraction.md/.tex, and 101_change_rationale_audit.md/.tex.
 21. If any stage is rejected, loop back to the specified target stage and retry automatically unless user input is required.

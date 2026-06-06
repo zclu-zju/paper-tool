@@ -11,6 +11,7 @@ This stage runs after the core workflow has produced `99_ultimate_summary.md`. I
 Read:
 
 - `workspace/draft_paper_review/diff/latexdiff.tex`
+- `workspace/draft_paper_review/diff/latexdiff.pdf` when compilation succeeded
 - `workspace/draft_paper_review/reports/100_latexdiff_changes.csv`
 - `workspace/draft_paper_review/reports/100_latexdiff_extraction.md`
 - `workspace/draft_paper_review/reports/25_editorial_decision.md`
@@ -60,6 +61,8 @@ STATUS: [READY or NEEDS_RECHECK or NEEDS_LATE_DIFF_REPAIR]
 
 ## Inputs
 - Latexdiff TeX:
+- Latexdiff PDF:
+- PDF Compile Status:
 - Change CSV:
 - Original TeX Root:
 - Revised TeX Root:
@@ -75,8 +78,9 @@ STATUS: [READY or NEEDS_RECHECK or NEEDS_LATE_DIFF_REPAIR]
 ## Author Reading Guide
 1. Read `99_ultimate_summary.md` for the overall result.
 2. Read this report to inspect concrete edits.
-3. Open `workspace/draft_paper_review/diff/latexdiff.tex` for visual diff.
-4. Read `100_latexdiff_extraction.md` when line-level change locations are needed.
+3. Open `workspace/draft_paper_review/diff/latexdiff.pdf` for visual diff when it exists.
+4. Open `workspace/draft_paper_review/diff/latexdiff.tex` if PDF compilation failed or TeX-level inspection is needed.
+5. Read `100_latexdiff_extraction.md` when line-level change locations are needed.
 
 ## Change Rationale Table
 | Change ID | Type | Location | What Changed | Why It Changed | Trace Source | Judgment | Recheck Target |

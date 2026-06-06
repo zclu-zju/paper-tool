@@ -187,7 +187,8 @@ if (VERDICT: GO?) then (yes)
   if (Confirmed latexdiff policy allows audit\nand revised TeX exists?) then (yes)
     :Run latexdiff_revision_audit.py\non original and revised TeX roots;
     :Flatten TeX input/include content\nfor structured change extraction;
-    :Write diff/latexdiff.tex,\n100_latexdiff_changes.csv,\n100_latexdiff_extraction.md,\nand 100_latexdiff_extraction.tex;
+    :Compile visual diff PDF\nwhen local LaTeX tooling succeeds;
+    :Write diff/latexdiff.tex,\ndiff/latexdiff.pdf when available,\n100_latexdiff_changes.csv,\n100_latexdiff_extraction.md,\nand 100_latexdiff_extraction.tex;
     :Stage 18 - latexdiff-change-auditor;
     :Read latexdiff outputs,\nrevision plan, ledger,\nrevision verification,\nand numbered reports;
     :Write 101_change_rationale_audit.md\nand 101_change_rationale_audit.tex\nwith what changed, why,\nand whether recheck is needed;

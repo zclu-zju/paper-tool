@@ -24,7 +24,7 @@ For computer-science manuscripts, formula-symbol usage is convention-calibrated.
 
 Figure and table changes are gated. Existing tables, figures, algorithms, proofs, appendix evidence, and other evidence carriers cannot be deleted, merged, moved, or replaced unless the retention gate says the proof chain and paper structure remain sufficient. New or redesigned tables/figures must be supported by downloaded-paper convention evidence or escalated for user decision.
 
-After the core workflow writes `99_ultimate_summary.md`, Stage 18 can compare the original accepted TeX source and the revised TeX source with latexdiff according to the confirmed Stage 0 policy. The installed `latexdiff_revision_audit.py` tool writes `workspace/draft_paper_review/diff/latexdiff.tex`, `100_latexdiff_changes.csv`, and `100_latexdiff_extraction.md/.tex`; then `latexdiff-change-auditor` writes `101_change_rationale_audit.md/.tex` explaining what changed, why, and which earlier stage should recheck weakly justified edits.
+After the core workflow writes `99_ultimate_summary.md`, Stage 18 can compare the original accepted TeX source and the revised TeX source with latexdiff according to the confirmed Stage 0 policy. The installed `latexdiff_revision_audit.py` tool writes `workspace/draft_paper_review/diff/latexdiff.tex`, tries to compile `workspace/draft_paper_review/diff/latexdiff.pdf` for visual inspection, writes `100_latexdiff_changes.csv` and `100_latexdiff_extraction.md/.tex`; then `latexdiff-change-auditor` writes `101_change_rationale_audit.md/.tex` explaining what changed, why, and which earlier stage should recheck weakly justified edits.
 
 ## Install Agents
 
@@ -167,6 +167,7 @@ workspace/draft_paper_review/reports/100_latexdiff_extraction.tex
 workspace/draft_paper_review/reports/101_change_rationale_audit.md
 workspace/draft_paper_review/reports/101_change_rationale_audit.tex
 workspace/draft_paper_review/diff/latexdiff.tex
+workspace/draft_paper_review/diff/latexdiff.pdf
 workspace/draft_paper_review/revision/
 workspace/draft_paper_review/literature/papers/
 ```

@@ -400,12 +400,13 @@ python3 .codex/tools/draft-paper-reviewer/latexdiff_revision_audit.py \
   --out-root workspace/draft_paper_review
 ```
 
-Use the original accepted TeX source from Stage 0/1 as `--old-root`. Use `workspace/draft_paper_review/revision/tex/` or the Stage 0/user-provided revised TeX source as `--new-root`. The tool calls system `latexdiff --flatten` when available and writes a fallback unified diff when `latexdiff` is unavailable. The structured change CSV is built from flattened TeX input/include content so multi-file manuscripts are audited, not only the root file.
+Use the original accepted TeX source from Stage 0/1 as `--old-root`. Use `workspace/draft_paper_review/revision/tex/` or the Stage 0/user-provided revised TeX source as `--new-root`. The tool calls system `latexdiff --flatten` when available and writes a fallback unified diff when `latexdiff` is unavailable. It then tries to compile the diff into `workspace/draft_paper_review/diff/latexdiff.pdf` with local LaTeX tooling. PDF compile failure must be reported in `100_latexdiff_extraction.md` but must not erase the TeX diff or stop the rationale audit. The structured change CSV is built from flattened TeX input/include content so multi-file manuscripts are audited, not only the root file.
 
 Tool outputs:
 
 ```text
 workspace/draft_paper_review/diff/latexdiff.tex
+workspace/draft_paper_review/diff/latexdiff.pdf
 workspace/draft_paper_review/reports/100_latexdiff_changes.csv
 workspace/draft_paper_review/reports/100_latexdiff_extraction.md
 workspace/draft_paper_review/reports/100_latexdiff_extraction.tex

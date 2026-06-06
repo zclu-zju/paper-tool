@@ -264,7 +264,17 @@ def latex_escape(value: str) -> str:
     return "".join(replacements.get(char, char) for char in value)
 
 
-def write_markdown(rows: list[dict[str, str]], path: Path, status: str, old_root: Path, new_root: Path, diff_path: Path) -> None:
+def write_markdown(
+    rows: list[dict[str, str]],
+    path: Path,
+    status: str,
+    old_root: Path,
+    new_root: Path,
+    diff_path: Path,
+    pdf_path: Path,
+    pdf_status: str,
+    pdf_notes: str,
+) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     counts: dict[str, int] = {}
     for row in rows:
@@ -279,18 +289,26 @@ def write_markdown(rows: list[dict[str, str]], path: Path, status: str, old_root
         f"- Old TeX Root: `{old_root}`",
         f"- New TeX Root: `{new_root}`",
         f"- Latexdiff TeX: `{diff_path}`",
+        f"- Latexdiff PDF: `{pdf_path}`",
+        f"- PDF Compile Status: `{pdf_status}`",
         "- Structured line numbers refer to the flattened TeX stream; source-location columns identify the original TeX file spans.",
-        "",
-        "## Change Counts",
-        f"- ADD: {counts.get('ADD', 0)}",
-        f"- DELETE: {counts.get('DELETE', 0)}",
-        f"- REPLACE: {counts.get('REPLACE', 0)}",
-        f"- Total: {len(rows)}",
-        "",
-        "## Change Index",
-        "| Change ID | Type | Old Lines | New Lines | Source Location | Scope Guess |",
-        "|---|---|---:|---:|---|---|",
     ]
+    if pdf_notes:
+        lines.extend(["", "## PDF Compile Notes", "```text", pdf_notes, "```"])
+    lines.extend(
+        [
+            "",
+            "## Change Counts",
+            f"- ADD: {counts.get('ADD', 0)}",
+            f"- DELETE: {counts.get('DELETE', 0)}",
+            f"- REPLACE: {counts.get('REPLACE', 0)}",
+            f"- Total: {len(rows)}",
+            "",
+            "## Change Index",
+            "| Change ID | Type | Old Lines | New Lines | Source Location | Scope Guess |",
+            "|---|---|---:|---:|---|---|",
+        ]
+    )
     for row in rows:
         old_lines = line_range(row["old_start_line"], row["old_end_line"])
         new_lines = line_range(row["new_start_line"], row["new_end_line"])
@@ -302,7 +320,17 @@ def write_markdown(rows: list[dict[str, str]], path: Path, status: str, old_root
     path.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
-def write_tex_summary(rows: list[dict[str, str]], path: Path, status: str, old_root: Path, new_root: Path, diff_path: Path) -> None:
+def write_tex_summary(
+    rows: list[dict[str, str]],
+    path: Path,
+    status: str,
+    old_root: Path,
+    new_root: Path,
+    diff_path: Path,
+    pdf_path: Path,
+    pdf_status: str,
+    pdf_notes: str,
+) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     body = [
         r"\documentclass{article}",
@@ -314,12 +342,27 @@ def write_tex_summary(rows: list[dict[str, str]], path: Path, status: str, old_r
         rf"\textbf{{STATUS:}} {latex_escape(status)}\\",
         rf"\textbf{{Old TeX Root:}} \texttt{{{latex_escape(str(old_root))}}}\\",
         rf"\textbf{{New TeX Root:}} \texttt{{{latex_escape(str(new_root))}}}\\",
-        rf"\textbf{{Latexdiff TeX:}} \texttt{{{latex_escape(str(diff_path))}}}",
+        rf"\textbf{{Latexdiff TeX:}} \texttt{{{latex_escape(str(diff_path))}}}\\",
+        rf"\textbf{{Latexdiff PDF:}} \texttt{{{latex_escape(str(pdf_path))}}}\\",
+        rf"\textbf{{PDF Compile Status:}} {latex_escape(pdf_status)}",
         r"\par Structured line numbers refer to the flattened TeX stream; source locations identify original TeX file spans.",
-        r"\begin{longtable}{llllp{0.42\linewidth}}",
-        r"Change ID & Type & Old Lines & New Lines & Source Location \\",
-        r"\hline",
     ]
+    if pdf_notes:
+        body.extend(
+            [
+                r"\subsection*{PDF Compile Notes}",
+                r"\begin{verbatim}",
+                pdf_notes[:3000],
+                r"\end{verbatim}",
+            ]
+        )
+    body.extend(
+        [
+            r"\begin{longtable}{llllp{0.42\linewidth}}",
+            r"Change ID & Type & Old Lines & New Lines & Source Location \\",
+            r"\hline",
+        ]
+    )
     for row in rows:
         source_location = row["new_source_location"] or row["old_source_location"]
         body.append(
@@ -346,6 +389,27 @@ def line_range(start: str, end: str) -> str:
     return f"{start}-{end}"
 
 
+def wrap_unified_diff_as_latex(diff_text: str, old_root: Path, new_root: Path) -> str:
+    return "\n".join(
+        [
+            r"\documentclass{article}",
+            r"\usepackage[margin=0.7in]{geometry}",
+            r"\usepackage[T1]{fontenc}",
+            r"\usepackage[utf8]{inputenc}",
+            r"\begin{document}",
+            r"\section*{Latexdiff Unavailable: Unified Diff Fallback}",
+            rf"\textbf{{Old TeX Root:}} \texttt{{{latex_escape(str(old_root))}}}\\",
+            rf"\textbf{{New TeX Root:}} \texttt{{{latex_escape(str(new_root))}}}",
+            r"\par This PDF is a unified-diff fallback because the system latexdiff command was unavailable.",
+            r"\small",
+            r"\begin{verbatim}",
+            diff_text,
+            r"\end{verbatim}",
+            r"\end{document}",
+        ]
+    )
+
+
 def run_latexdiff(old_root: Path, new_root: Path, diff_path: Path) -> tuple[str, str]:
     latexdiff = shutil.which("latexdiff")
     if not latexdiff:
@@ -359,7 +423,7 @@ def run_latexdiff(old_root: Path, new_root: Path, diff_path: Path) -> tuple[str,
             )
         )
         diff_path.parent.mkdir(parents=True, exist_ok=True)
-        diff_path.write_text(fallback + "\n", encoding="utf-8")
+        diff_path.write_text(wrap_unified_diff_as_latex(fallback, old_root, new_root) + "\n", encoding="utf-8")
         return "LATEXDIFF_UNAVAILABLE_FALLBACK_WRITTEN", "latexdiff executable not found"
     command = [latexdiff, "--flatten", str(old_root), str(new_root)]
     result = subprocess.run(command, cwd=str(new_root.parent), text=True, capture_output=True, check=False)
@@ -373,6 +437,91 @@ def run_latexdiff(old_root: Path, new_root: Path, diff_path: Path) -> tuple[str,
     return "LATEXDIFF_READY", ""
 
 
+def output_tail(result: subprocess.CompletedProcess[str]) -> str:
+    output = "\n".join(part for part in [result.stdout, result.stderr] if part).strip()
+    if len(output) > 3000:
+        return output[-3000:]
+    return output
+
+
+def run_compile_command(command: list[str], cwd: Path) -> tuple[int, str]:
+    try:
+        result = subprocess.run(command, cwd=str(cwd), text=True, capture_output=True, check=False, timeout=120)
+    except subprocess.TimeoutExpired as exc:
+        output = "\n".join(part for part in [exc.stdout or "", exc.stderr or ""] if part).strip()
+        return 124, f"Command timed out after 120 seconds.\n{output}"
+    return result.returncode, output_tail(result)
+
+
+def clean_latex_aux_files(diff_path: Path) -> None:
+    for suffix in [".aux", ".fls", ".fdb_latexmk", ".log", ".out", ".toc", ".synctex.gz"]:
+        aux_path = diff_path.with_suffix(suffix)
+        if aux_path.exists():
+            aux_path.unlink()
+
+
+def compile_latexdiff_pdf(diff_path: Path, new_root: Path, status: str) -> tuple[Path, str, str]:
+    pdf_path = diff_path.with_suffix(".pdf")
+    if status not in {"LATEXDIFF_READY", "LATEXDIFF_UNAVAILABLE_FALLBACK_WRITTEN"}:
+        return pdf_path, "PDF_SKIPPED_DIFF_NOT_COMPILABLE", f"latexdiff status was {status}"
+
+    diff_dir = diff_path.parent.resolve()
+    cwd = new_root.parent.resolve()
+    attempts: list[tuple[str, list[str]]] = []
+
+    latexmk = shutil.which("latexmk")
+    if latexmk:
+        attempts.append(
+            (
+                "latexmk",
+                [
+                    latexmk,
+                    "-pdf",
+                    "-interaction=nonstopmode",
+                    "-halt-on-error",
+                    "-file-line-error",
+                    f"-outdir={diff_dir}",
+                    str(diff_path.resolve()),
+                ],
+            )
+        )
+
+    for engine_name in ["pdflatex", "xelatex", "lualatex"]:
+        engine = shutil.which(engine_name)
+        if not engine:
+            continue
+        attempts.append(
+            (
+                engine_name,
+                [
+                    engine,
+                    "-interaction=nonstopmode",
+                    "-halt-on-error",
+                    "-file-line-error",
+                    "-output-directory",
+                    str(diff_dir),
+                    str(diff_path.resolve()),
+                ],
+            )
+        )
+
+    if not attempts:
+        return pdf_path, "PDF_COMPILER_UNAVAILABLE", "No LaTeX PDF compiler found: latexmk, pdflatex, xelatex, or lualatex."
+
+    failure_notes = []
+    for label, command in attempts:
+        returncode, output = run_compile_command(command, cwd)
+        if returncode == 0 and pdf_path.exists():
+            clean_latex_aux_files(diff_path)
+            return pdf_path, "PDF_READY", f"Compiled with {label}."
+        failure_notes.append(f"[{label}] exit={returncode}\n{output}")
+
+    notes = "\n\n".join(failure_notes)
+    if len(notes) > 5000:
+        notes = notes[-5000:]
+    return pdf_path, "PDF_COMPILE_FAILED", notes
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--old-root", required=True, type=Path, help="Original TeX root file or source directory.")
@@ -384,20 +533,24 @@ def main() -> int:
     new_root = find_tex_root(args.new_root)
     out_root = args.out_root
     diff_path = out_root / "diff" / "latexdiff.tex"
+    pdf_path = out_root / "diff" / "latexdiff.pdf"
     csv_path = out_root / "reports" / "100_latexdiff_changes.csv"
     md_path = out_root / "reports" / "100_latexdiff_extraction.md"
     tex_summary_path = out_root / "reports" / "100_latexdiff_extraction.tex"
 
     status, notes = run_latexdiff(old_root, new_root, diff_path)
+    pdf_path, pdf_status, pdf_notes = compile_latexdiff_pdf(diff_path, new_root, status)
     rows = build_changes(flatten_tex_units(old_root), flatten_tex_units(new_root))
     if notes:
         for row in rows:
             row["notes"] = notes
     write_csv(rows, csv_path)
-    write_markdown(rows, md_path, status, old_root, new_root, diff_path)
-    write_tex_summary(rows, tex_summary_path, status, old_root, new_root, diff_path)
+    write_markdown(rows, md_path, status, old_root, new_root, diff_path, pdf_path, pdf_status, pdf_notes)
+    write_tex_summary(rows, tex_summary_path, status, old_root, new_root, diff_path, pdf_path, pdf_status, pdf_notes)
     print(f"Latexdiff status: {status}")
     print(f"Wrote diff TeX: {diff_path}")
+    print(f"PDF compile status: {pdf_status}")
+    print(f"Wrote diff PDF: {pdf_path}")
     print(f"Wrote change CSV: {csv_path}")
     print(f"Wrote extraction report: {md_path}")
     return 0 if status in {"LATEXDIFF_READY", "LATEXDIFF_UNAVAILABLE_FALLBACK_WRITTEN"} else 2
