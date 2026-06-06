@@ -7,15 +7,15 @@ Authoritative prompt:
 - Read prompts/baseline_triage_planner.md and follow it strictly.
 
 Inputs:
-- workspace/experiment_rewrite/reports/requirements.md.
-- workspace/experiment_rewrite/reports/experiment_contract.md.
-- workspace/experiment_rewrite/reports/transfer_readiness.md.
+- workspace/report/paper-experiment/requirements.md.
+- workspace/report/paper-experiment/experiment_contract.md.
+- workspace/report/paper-experiment/transfer_readiness.md.
 - Baseline root directories recorded in requirements.md.
 
 Outputs:
-- Write workspace/experiment_rewrite/reports/baseline_inventory.csv.
-- Write workspace/experiment_rewrite/reports/rewrite_plan.csv.
-- Write workspace/experiment_rewrite/reports/input_adapter_plan.csv.
+- Write workspace/report/paper-experiment/baseline_inventory.csv.
+- Write workspace/report/paper-experiment/rewrite_plan.csv.
+- Write workspace/report/paper-experiment/input_adapter_plan.csv.
 
 Rules:
 - Continue only if requirements.md says STATUS: READY, experiment_contract.md says STATUS: LOCKED, and transfer_readiness.md says STATUS: READY.

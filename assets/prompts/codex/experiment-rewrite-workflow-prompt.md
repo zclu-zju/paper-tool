@@ -3,10 +3,10 @@ Use the experiment-rewrite-orchestrator custom agent and execute the staged expe
 Repository constraints:
 - Use the project custom agents in `.codex/agents/`.
 - Read authoritative stage prompts from `prompts/`.
-- Write all generated workflow outputs under `workspace/experiment_rewrite/`.
+- Write generated reports under `workspace/report/paper-experiment/` and non-report working files under `workspace/work/paper-experiment/`.
 - Do not write generated reports into `workspace/reports/`, `workspace/baselines/`, or unrelated project folders.
 - Do not modify the original experiment repo unless Stage 0 explicitly locks `Rewrite Target: IN_PLACE`.
-- Prefer `workspace/experiment_rewrite/rewritten_repo/` when the rewrite target is not explicitly in-place.
+- Prefer `workspace/work/paper-experiment/rewritten_repo/` when the rewrite target is not explicitly in-place.
 - Do not execute third-party baseline scripts.
 - Do not install dependencies unless Stage 0 explicitly allows it.
 - Do not ask the user to paste tokens, passwords, SSH keys, private keys, or other secrets into prompts or reports.
@@ -14,13 +14,13 @@ Repository constraints:
 Required behavior:
 1. Run Stage 0 requirement collection first with `experiment-requirement-collector`.
 2. Stage 0 hard required parameters are only original repo root, original launch script or command, and baseline root directories. If any are missing, ask the user the listed questions and stop. Do not inspect baselines, lock contracts, or rewrite code.
-3. Continue only after `workspace/experiment_rewrite/reports/requirements.md` contains `STATUS: READY`.
+3. Continue only after `workspace/report/paper-experiment/requirements.md` contains `STATUS: READY`.
 4. Run Stage 1 experiment contract locking with `experiment-scope-contract-locker`.
 5. If the original launch, dataset, split, metric, shape, runtime, or input contract is ambiguous, ask the user to clarify and stop. Do not inspect baselines or rewrite code.
-6. Continue only after `workspace/experiment_rewrite/reports/experiment_contract.md` contains `STATUS: LOCKED`.
+6. Continue only after `workspace/report/paper-experiment/experiment_contract.md` contains `STATUS: LOCKED`.
 7. Run Stage 2 transfer readiness checking with `baseline-transfer-readiness-checker`.
 8. Stage 2 must decide whether the locked original task contract is sufficient to migrate baseline model architectures. It must not require baseline original training loops, dataloaders, metrics, launch commands, or reported paper metrics.
-9. Continue only after `workspace/experiment_rewrite/reports/transfer_readiness.md` contains `STATUS: READY`. If it says `NEEDS_CONTRACT_FIX`, loop back to Stage 1. If it says `NEEDS_USER_INPUT`, ask the listed questions and stop.
+9. Continue only after `workspace/report/paper-experiment/transfer_readiness.md` contains `STATUS: READY`. If it says `NEEDS_CONTRACT_FIX`, loop back to Stage 1. If it says `NEEDS_USER_INPUT`, ask the listed questions and stop.
 10. Run Stage 3 baseline triage and rewrite planning with `baseline-triage-planner`.
 11. Stage 3 must classify every baseline directory and write `baseline_inventory.csv`, `rewrite_plan.csv`, and `input_adapter_plan.csv`.
 12. Ignore empty, non-Python, non-PyTorch, and incompatible baselines only with explicit recorded reasons.
@@ -37,19 +37,19 @@ Required behavior:
 23. If review rejects any stage, loop back to the specified stage and retry automatically unless user input is required.
 
 Required workflow artifacts:
-- `workspace/experiment_rewrite/reports/requirements.md`
-- `workspace/experiment_rewrite/reports/experiment_contract.md`
-- `workspace/experiment_rewrite/reports/transfer_readiness.md`
-- `workspace/experiment_rewrite/reports/baseline_inventory.csv`
-- `workspace/experiment_rewrite/reports/rewrite_plan.csv`
-- `workspace/experiment_rewrite/reports/input_adapter_plan.csv`
-- `workspace/experiment_rewrite/reports/implementation_manifest.csv`
-- `workspace/experiment_rewrite/reports/validation_results.csv`
-- `workspace/experiment_rewrite/reports/model_profile.csv`
-- `workspace/experiment_rewrite/reports/final_model_summary.csv`
-- `workspace/experiment_rewrite/reports/final_summary.md`
-- `workspace/experiment_rewrite/reports/integrity_report.md`
-- `workspace/experiment_rewrite/reports/iteration_log.md` when any loopback occurs.
+- `workspace/report/paper-experiment/requirements.md`
+- `workspace/report/paper-experiment/experiment_contract.md`
+- `workspace/report/paper-experiment/transfer_readiness.md`
+- `workspace/report/paper-experiment/baseline_inventory.csv`
+- `workspace/report/paper-experiment/rewrite_plan.csv`
+- `workspace/report/paper-experiment/input_adapter_plan.csv`
+- `workspace/report/paper-experiment/implementation_manifest.csv`
+- `workspace/report/paper-experiment/validation_results.csv`
+- `workspace/report/paper-experiment/model_profile.csv`
+- `workspace/report/paper-experiment/final_model_summary.csv`
+- `workspace/report/paper-experiment/final_summary.md`
+- `workspace/report/paper-experiment/integrity_report.md`
+- `workspace/report/paper-experiment/iteration_log.md` when any loopback occurs.
 
 The final CSV must include at least:
 
@@ -72,7 +72,7 @@ Allowed final model statuses:
 
 Loopback rules:
 - If Stage 7 outputs `VERDICT: GO`, finalize and list generated report paths.
-- If Stage 7 outputs `VERDICT: REJECT`, read the exact target stage, append a row to `workspace/experiment_rewrite/reports/iteration_log.md`, rerun that stage with the reviewer critique as a high-priority constraint, rerun all downstream affected stages, and return to Stage 7.
+- If Stage 7 outputs `VERDICT: REJECT`, read the exact target stage, append a row to `workspace/report/paper-experiment/iteration_log.md`, rerun that stage with the reviewer critique as a high-priority constraint, rerun all downstream affected stages, and return to Stage 7.
 - If the rejected target stage requires user input, ask no more than 3 concise questions and stop.
 
 Do not finalize unless the integrity reviewer returns `VERDICT: GO`.

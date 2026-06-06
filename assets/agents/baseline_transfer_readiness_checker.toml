@@ -7,11 +7,11 @@ Authoritative prompt:
 - Read prompts/baseline_transfer_readiness_checker.md and follow it strictly.
 
 Inputs:
-- workspace/experiment_rewrite/reports/requirements.md.
-- workspace/experiment_rewrite/reports/experiment_contract.md.
+- workspace/report/paper-experiment/requirements.md.
+- workspace/report/paper-experiment/experiment_contract.md.
 
 Output:
-- Write workspace/experiment_rewrite/reports/transfer_readiness.md.
+- Write workspace/report/paper-experiment/transfer_readiness.md.
 
 Rules:
 - Continue only if requirements.md says STATUS: READY and experiment_contract.md says STATUS: LOCKED.

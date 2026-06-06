@@ -1,4 +1,4 @@
-# Baseline Experiment
+# Paper Experiment
 
 Codex plugin and project-local multi-agent workflow for rewriting paper experiment baselines into a unified PyTorch experiment framework.
 
@@ -23,22 +23,50 @@ Stage 0 hard required inputs are only:
 
 Baselines are treated as model architectures to migrate into the user's original task. The workflow does not require baseline original training loops, dataloaders, metrics, launch commands, or reported paper metrics.
 
-## Install From Git
-
-Clone this repository:
+## Install From GitHub
 
 ```bash
-git clone git@github.com:zcluu/baseline-experiment.git
-cd baseline-experiment
+codex plugin marketplace add git@github.com:zcluu/paper-experiment.git --ref main
+codex plugin add paper-experiment@paper-experiment
 ```
 
-Install the workflow agents into a target experiment repo:
+Start a new Codex session after installation.
+
+## Development Source
+
+This repository is the source of truth for the `paper-experiment` plugin package. Develop prompts, agents, installer behavior, and the skill under:
+
+```text
+plugins/paper-experiment/
+```
+
+For compatibility with the original repo layout, root-level `.codex-plugin/`, `assets/`, `scripts/`, and `skills/` are kept synchronized with the plugin package. The `paper-tool` repository is only the aggregate marketplace and integration-test target.
+
+## Install Agents Into A Target Repo
+
+For a local clone:
 
 ```bash
-python3 scripts/install_project_agents.py --repo /path/to/target-experiment-repo
+python3 plugins/paper-experiment/scripts/install_project_agents.py --repo /path/to/target-experiment-repo --clean-obsolete
 ```
 
-Then run the workflow from the target experiment repo:
+Or with the root-level compatibility installer:
+
+```bash
+python3 scripts/install_project_agents.py --repo /path/to/target-experiment-repo --clean-obsolete
+```
+
+If installed through Codex, ask Codex in the target repo:
+
+```text
+Use paper-experiment.
+
+Install the paper experiment workflow agents into this repository.
+```
+
+## Run The Workflow
+
+After installing agents:
 
 ```bash
 cd /path/to/target-experiment-repo
@@ -48,62 +76,36 @@ codex exec --sandbox workspace-write --ask-for-approval never - < .codex/experim
 Or in an interactive Codex session:
 
 ```text
-Use the experiment-rewrite-orchestrator custom agent and execute the staged experiment rewrite workflow.
+Use paper-experiment.
+
+Rewrite my paper experiment baselines after collecting requirements. Use workspace/report/paper-experiment for reports and workspace/work/paper-experiment for non-report working files.
 ```
-
-## Install As A Codex Git Marketplace
-
-Add this repository as a Codex marketplace:
-
-```bash
-codex plugin marketplace add git@github.com:zcluu/baseline-experiment.git
-```
-
-Install the plugin from that marketplace:
-
-```bash
-codex plugin add experiment-rewrite-workflows@baseline-experiment
-```
-
-Start a new Codex thread after installing the plugin. In the target experiment repo, ask Codex:
-
-```text
-Install experiment rewrite workflow agents.
-```
-
-Then launch the installed repo-local workflow:
-
-```bash
-codex exec --sandbox workspace-write --ask-for-approval never - < .codex/experiment-rewrite-workflow-prompt.md
-```
-
-## Development Install Into Current Repo
-
-When developing this plugin locally, install its templates into the current directory:
-
-```bash
-python3 scripts/install_project_agents.py --repo .
-```
-
-The installer is conservative:
-
-- missing files are copied;
-- identical files are left unchanged;
-- conflicting files are skipped unless `--force` is used;
-- obsolete files are removed only with `--clean-obsolete`.
 
 ## Main Outputs
 
-The workflow writes reports under:
+Reports are plugin-scoped:
 
 ```text
-workspace/experiment_rewrite/
+workspace/report/paper-experiment/requirements.md
+workspace/report/paper-experiment/experiment_contract.md
+workspace/report/paper-experiment/transfer_readiness.md
+workspace/report/paper-experiment/baseline_inventory.csv
+workspace/report/paper-experiment/rewrite_plan.csv
+workspace/report/paper-experiment/input_adapter_plan.csv
+workspace/report/paper-experiment/implementation_manifest.csv
+workspace/report/paper-experiment/validation_results.csv
+workspace/report/paper-experiment/model_profile.csv
+workspace/report/paper-experiment/final_model_summary.csv
+workspace/report/paper-experiment/final_summary.md
+workspace/report/paper-experiment/integrity_report.md
+workspace/report/paper-experiment/iteration_log.md
 ```
 
-The main final artifact is:
+Non-report execution artifacts are plugin-scoped:
 
 ```text
-workspace/experiment_rewrite/reports/final_model_summary.csv
+workspace/work/paper-experiment/
+workspace/work/paper-experiment/rewritten_repo/
 ```
 
 Required final CSV columns:
@@ -115,12 +117,10 @@ model,source_dir,final_status,drop_reason,rewrite_file,registry_entry,config_fil
 ## Plugin Layout
 
 ```text
-.codex-plugin/plugin.json
-assets/agents/
-assets/prompts/codex/
-assets/prompts/project/
-scripts/install_project_agents.py
-skills/experiment-rewrite/SKILL.md
+plugins/paper-experiment/.codex-plugin/plugin.json
+plugins/paper-experiment/assets/agents/
+plugins/paper-experiment/assets/prompts/codex/
+plugins/paper-experiment/assets/prompts/project/
+plugins/paper-experiment/scripts/install_project_agents.py
+plugins/paper-experiment/skills/paper-experiment/SKILL.md
 ```
-
-The `.codex/` and `prompts/` directories in this repo are the installed project-local copies used for local testing.

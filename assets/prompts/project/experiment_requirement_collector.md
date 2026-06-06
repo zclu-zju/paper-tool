@@ -12,10 +12,10 @@ You must not inspect baseline code deeply, lock the experiment contract, rewrite
 Write:
 
 ```text
-workspace/experiment_rewrite/reports/requirements.md
+workspace/report/paper-experiment/requirements.md
 ```
 
-Create `workspace/experiment_rewrite/reports/` if missing.
+Create `workspace/report/paper-experiment/` if missing.
 
 ## Hard Required Parameters
 
@@ -38,7 +38,7 @@ Ask no more than 3 concise questions and stop.
 Unless the user explicitly says otherwise, lock these defaults without asking:
 
 ```text
-Output Workspace: workspace/experiment_rewrite/
+Output Workspace: workspace/work/paper-experiment/
 Rewrite Target: COPY_TO_REWRITTEN_REPO
 Target Task Type: INFER_FROM_REPO
 Data Policy: PRESERVE_ORIGINAL_DATALOADER

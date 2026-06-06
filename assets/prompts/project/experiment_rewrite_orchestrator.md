@@ -11,7 +11,7 @@ Run `experiment-requirement-collector`.
 Output:
 
 ```text
-workspace/experiment_rewrite/reports/requirements.md
+workspace/report/paper-experiment/requirements.md
 ```
 
 Continue only if the file contains:
@@ -43,7 +43,7 @@ Run `experiment-scope-contract-locker`.
 Output:
 
 ```text
-workspace/experiment_rewrite/reports/experiment_contract.md
+workspace/report/paper-experiment/experiment_contract.md
 ```
 
 Continue only if the file contains:
@@ -77,7 +77,7 @@ Run `baseline-transfer-readiness-checker`.
 Output:
 
 ```text
-workspace/experiment_rewrite/reports/transfer_readiness.md
+workspace/report/paper-experiment/transfer_readiness.md
 ```
 
 Stage 2 must continue only after requirements are `READY` and the experiment contract is `LOCKED`.
@@ -113,10 +113,10 @@ Run `baseline-triage-planner`.
 Outputs:
 
 ```text
-workspace/experiment_rewrite/reports/baseline_inventory.csv
-workspace/experiment_rewrite/reports/rewrite_plan.csv
-workspace/experiment_rewrite/reports/input_adapter_plan.csv
-workspace/experiment_rewrite/reports/baseline_triage_notes.md
+workspace/report/paper-experiment/baseline_inventory.csv
+workspace/report/paper-experiment/rewrite_plan.csv
+workspace/report/paper-experiment/input_adapter_plan.csv
+workspace/report/paper-experiment/baseline_triage_notes.md
 ```
 
 Stage 3 must continue only after requirements are `READY`, the experiment contract is `LOCKED`, and transfer readiness is `READY`.
@@ -146,8 +146,8 @@ Run `experiment-rewrite-executor`.
 Output:
 
 ```text
-workspace/experiment_rewrite/reports/implementation_manifest.csv
-workspace/experiment_rewrite/reports/implementation_notes.md
+workspace/report/paper-experiment/implementation_manifest.csv
+workspace/report/paper-experiment/implementation_notes.md
 ```
 
 Stage 4 must continue only after Stage 3 writes all plan files.
@@ -169,9 +169,9 @@ Run `minimal-validation-profiler`.
 Outputs:
 
 ```text
-workspace/experiment_rewrite/reports/validation_results.csv
-workspace/experiment_rewrite/reports/model_profile.csv
-workspace/experiment_rewrite/reports/validation_notes.md
+workspace/report/paper-experiment/validation_results.csv
+workspace/report/paper-experiment/model_profile.csv
+workspace/report/paper-experiment/validation_notes.md
 ```
 
 Stage 5 must run only minimal validation. It must not run full paper-scale experiments.
@@ -203,8 +203,8 @@ Run `experiment-report-writer`.
 Outputs:
 
 ```text
-workspace/experiment_rewrite/reports/final_model_summary.csv
-workspace/experiment_rewrite/reports/final_summary.md
+workspace/report/paper-experiment/final_model_summary.csv
+workspace/report/paper-experiment/final_summary.md
 ```
 
 The final CSV must include at least:
@@ -236,7 +236,7 @@ Run `experiment-integrity-reviewer`.
 Output:
 
 ```text
-workspace/experiment_rewrite/reports/integrity_report.md
+workspace/report/paper-experiment/integrity_report.md
 ```
 
 If:
@@ -264,7 +264,7 @@ When Stage 7 rejects:
 3. Log the retry in:
 
 ```text
-workspace/experiment_rewrite/reports/iteration_log.md
+workspace/report/paper-experiment/iteration_log.md
 ```
 
 using:
@@ -303,7 +303,7 @@ If a stage output is missing, malformed, uses the wrong header, omits required s
 - Do not modify dataset splits unless Stage 0 explicitly permits it.
 - Do not allow baseline-specific dataloaders, training loops, or metrics in the final unified path.
 - Do not finalize without `VERDICT: GO`.
-- Keep generated workflow outputs under `workspace/experiment_rewrite/`.
+- Keep generated workflow outputs under `workspace/work/paper-experiment/`.
 
 ## Final Response
 
@@ -314,16 +314,16 @@ When integrity review passes, respond with:
 Workflow completed.
 
 ## Key Artifacts
-- Requirements: workspace/experiment_rewrite/reports/requirements.md
-- Contract: workspace/experiment_rewrite/reports/experiment_contract.md
-- Transfer Readiness: workspace/experiment_rewrite/reports/transfer_readiness.md
-- Baseline Inventory: workspace/experiment_rewrite/reports/baseline_inventory.csv
-- Rewrite Plan: workspace/experiment_rewrite/reports/rewrite_plan.csv
-- Adapter Plan: workspace/experiment_rewrite/reports/input_adapter_plan.csv
-- Implementation Manifest: workspace/experiment_rewrite/reports/implementation_manifest.csv
-- Validation Results: workspace/experiment_rewrite/reports/validation_results.csv
-- Model Profile: workspace/experiment_rewrite/reports/model_profile.csv
-- Final CSV: workspace/experiment_rewrite/reports/final_model_summary.csv
-- Summary: workspace/experiment_rewrite/reports/final_summary.md
-- Integrity Review: workspace/experiment_rewrite/reports/integrity_report.md
+- Requirements: workspace/report/paper-experiment/requirements.md
+- Contract: workspace/report/paper-experiment/experiment_contract.md
+- Transfer Readiness: workspace/report/paper-experiment/transfer_readiness.md
+- Baseline Inventory: workspace/report/paper-experiment/baseline_inventory.csv
+- Rewrite Plan: workspace/report/paper-experiment/rewrite_plan.csv
+- Adapter Plan: workspace/report/paper-experiment/input_adapter_plan.csv
+- Implementation Manifest: workspace/report/paper-experiment/implementation_manifest.csv
+- Validation Results: workspace/report/paper-experiment/validation_results.csv
+- Model Profile: workspace/report/paper-experiment/model_profile.csv
+- Final CSV: workspace/report/paper-experiment/final_model_summary.csv
+- Summary: workspace/report/paper-experiment/final_summary.md
+- Integrity Review: workspace/report/paper-experiment/integrity_report.md
 ```

@@ -1,7 +1,7 @@
 # Experiment Scope Contract Locker Prompt
 
 **Role**: Stage 1 experiment scope and repository contract locker.
-**Input Expected**: `workspace/experiment_rewrite/reports/requirements.md`, the original repository, and the original launch script or command.
+**Input Expected**: `workspace/report/paper-experiment/requirements.md`, the original repository, and the original launch script or command.
 
 Your job is to lock the original experiment contract before baseline triage or code rewrite begins. The locked contract is the downstream source of truth for data loading, splits, input/output shapes, metrics, runtime behavior, and minimal validation.
 
@@ -10,7 +10,7 @@ Your job is to lock the original experiment contract before baseline triage or c
 Write:
 
 ```text
-workspace/experiment_rewrite/reports/experiment_contract.md
+workspace/report/paper-experiment/experiment_contract.md
 ```
 
 ## Workflow

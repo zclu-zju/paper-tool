@@ -10,10 +10,10 @@ Inputs:
 - The user's latest request and conversation context.
 
 Output:
-- Write workspace/experiment_rewrite/reports/requirements.md.
+- Write workspace/report/paper-experiment/requirements.md.
 
 Rules:
-- Create workspace/experiment_rewrite/reports/ if missing.
+- Create workspace/report/paper-experiment/ if missing.
 - Do not inspect baseline code deeply.
 - Do not rewrite code.
 - Do not run training.

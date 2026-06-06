@@ -10,8 +10,8 @@ Your job is to perform the controlled rewrite described by the approved Stage 3 
 Write:
 
 ```text
-workspace/experiment_rewrite/reports/implementation_manifest.csv
-workspace/experiment_rewrite/reports/implementation_notes.md
+workspace/report/paper-experiment/implementation_manifest.csv
+workspace/report/paper-experiment/implementation_notes.md
 ```
 
 ## Continue Conditions
@@ -19,12 +19,12 @@ workspace/experiment_rewrite/reports/implementation_notes.md
 Continue only if all exist and are internally usable:
 
 ```text
-workspace/experiment_rewrite/reports/requirements.md
-workspace/experiment_rewrite/reports/experiment_contract.md
-workspace/experiment_rewrite/reports/transfer_readiness.md
-workspace/experiment_rewrite/reports/baseline_inventory.csv
-workspace/experiment_rewrite/reports/rewrite_plan.csv
-workspace/experiment_rewrite/reports/input_adapter_plan.csv
+workspace/report/paper-experiment/requirements.md
+workspace/report/paper-experiment/experiment_contract.md
+workspace/report/paper-experiment/transfer_readiness.md
+workspace/report/paper-experiment/baseline_inventory.csv
+workspace/report/paper-experiment/rewrite_plan.csv
+workspace/report/paper-experiment/input_adapter_plan.csv
 ```
 
 `requirements.md` must contain `STATUS: READY`.
@@ -40,7 +40,7 @@ If any required plan file is missing or malformed, write `implementation_notes.m
 1. Read all required upstream artifacts.
 2. Determine rewrite target:
    - `IN_PLACE`; or
-   - `workspace/experiment_rewrite/rewritten_repo/`.
+   - `workspace/work/paper-experiment/rewritten_repo/`.
 3. If `COPY_TO_REWRITTEN_REPO`, create or refresh the rewritten copy according to Stage 0 overwrite policy.
 4. Create or update the unified entry point.
 5. Create or update model registry.

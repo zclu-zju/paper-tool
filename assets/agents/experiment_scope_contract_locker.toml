@@ -7,12 +7,12 @@ Authoritative prompt:
 - Read prompts/experiment_scope_contract_locker.md and follow it strictly.
 
 Inputs:
-- workspace/experiment_rewrite/reports/requirements.md.
+- workspace/report/paper-experiment/requirements.md.
 - The original repository files.
 - The original launch script or launch command recorded in requirements.md.
 
 Output:
-- Write workspace/experiment_rewrite/reports/experiment_contract.md.
+- Write workspace/report/paper-experiment/experiment_contract.md.
 
 Rules:
 - Continue only if requirements.md says STATUS: READY.

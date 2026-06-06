@@ -7,15 +7,15 @@ Authoritative prompt:
 - Read prompts/minimal_validation_profiler.md and follow it strictly.
 
 Inputs:
-- workspace/experiment_rewrite/reports/requirements.md.
-- workspace/experiment_rewrite/reports/experiment_contract.md.
-- workspace/experiment_rewrite/reports/transfer_readiness.md.
-- workspace/experiment_rewrite/reports/implementation_manifest.csv.
+- workspace/report/paper-experiment/requirements.md.
+- workspace/report/paper-experiment/experiment_contract.md.
+- workspace/report/paper-experiment/transfer_readiness.md.
+- workspace/report/paper-experiment/implementation_manifest.csv.
 - The rewritten repo or in-place rewritten project.
 
 Outputs:
-- Write workspace/experiment_rewrite/reports/validation_results.csv.
-- Write workspace/experiment_rewrite/reports/model_profile.csv.
+- Write workspace/report/paper-experiment/validation_results.csv.
+- Write workspace/report/paper-experiment/model_profile.csv.
 
 Rules:
 - Continue only after requirements.md is READY, experiment_contract.md is LOCKED, transfer_readiness.md is READY, and implementation_manifest.csv exists.

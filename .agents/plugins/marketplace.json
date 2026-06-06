@@ -1,14 +1,14 @@
 {
-  "name": "baseline-experiment",
+  "name": "paper-experiment",
   "interface": {
-    "displayName": "Baseline Experiment"
+    "displayName": "Paper Experiment"
   },
   "plugins": [
     {
-      "name": "experiment-rewrite-workflows",
+      "name": "paper-experiment",
       "source": {
         "source": "local",
-        "path": "./plugins/experiment-rewrite-workflows"
+        "path": "./plugins/paper-experiment"
       },
       "policy": {
         "installation": "AVAILABLE",

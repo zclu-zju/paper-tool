@@ -12,7 +12,7 @@ This stage must not inspect baseline directories deeply, classify baselines, rew
 Write:
 
 ```text
-workspace/experiment_rewrite/reports/transfer_readiness.md
+workspace/report/paper-experiment/transfer_readiness.md
 ```
 
 ## Continue Conditions
@@ -20,7 +20,7 @@ workspace/experiment_rewrite/reports/transfer_readiness.md
 Continue only if:
 
 ```text
-workspace/experiment_rewrite/reports/requirements.md
+workspace/report/paper-experiment/requirements.md
 ```
 
 contains:
@@ -32,7 +32,7 @@ STATUS: READY
 and:
 
 ```text
-workspace/experiment_rewrite/reports/experiment_contract.md
+workspace/report/paper-experiment/experiment_contract.md
 ```
 
 contains:

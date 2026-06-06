@@ -10,23 +10,23 @@ Your job is to merge all stage outputs into a final model summary CSV and concis
 Read all of:
 
 ```text
-workspace/experiment_rewrite/reports/requirements.md
-workspace/experiment_rewrite/reports/experiment_contract.md
-workspace/experiment_rewrite/reports/transfer_readiness.md
-workspace/experiment_rewrite/reports/baseline_inventory.csv
-workspace/experiment_rewrite/reports/rewrite_plan.csv
-workspace/experiment_rewrite/reports/input_adapter_plan.csv
-workspace/experiment_rewrite/reports/implementation_manifest.csv
-workspace/experiment_rewrite/reports/validation_results.csv
-workspace/experiment_rewrite/reports/model_profile.csv
+workspace/report/paper-experiment/requirements.md
+workspace/report/paper-experiment/experiment_contract.md
+workspace/report/paper-experiment/transfer_readiness.md
+workspace/report/paper-experiment/baseline_inventory.csv
+workspace/report/paper-experiment/rewrite_plan.csv
+workspace/report/paper-experiment/input_adapter_plan.csv
+workspace/report/paper-experiment/implementation_manifest.csv
+workspace/report/paper-experiment/validation_results.csv
+workspace/report/paper-experiment/model_profile.csv
 ```
 
 Optional but useful:
 
 ```text
-workspace/experiment_rewrite/reports/baseline_triage_notes.md
-workspace/experiment_rewrite/reports/implementation_notes.md
-workspace/experiment_rewrite/reports/validation_notes.md
+workspace/report/paper-experiment/baseline_triage_notes.md
+workspace/report/paper-experiment/implementation_notes.md
+workspace/report/paper-experiment/validation_notes.md
 ```
 
 ## Outputs
@@ -34,8 +34,8 @@ workspace/experiment_rewrite/reports/validation_notes.md
 Write:
 
 ```text
-workspace/experiment_rewrite/reports/final_model_summary.csv
-workspace/experiment_rewrite/reports/final_summary.md
+workspace/report/paper-experiment/final_model_summary.csv
+workspace/report/paper-experiment/final_summary.md
 ```
 
 ## Workflow

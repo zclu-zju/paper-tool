@@ -22,8 +22,8 @@ Core principle:
 - Do not rewrite code before requirements are READY and the experiment contract is LOCKED.
 
 Workflow:
-0. Create workspace/experiment_rewrite/reports/ if missing.
-1. Run Stage 0 with experiment-requirement-collector. Wait for workspace/experiment_rewrite/reports/requirements.md.
+0. Create workspace/report/paper-experiment/ if missing.
+1. Run Stage 0 with experiment-requirement-collector. Wait for workspace/report/paper-experiment/requirements.md.
 2. If requirements.md says STATUS: NEEDS_USER_INPUT, ask the user the listed questions and stop. Do not run Stage 1.
 3. Run Stage 1 with experiment-scope-contract-locker only after requirements.md says STATUS: READY.
 4. If experiment_contract.md says STATUS: NEEDS_USER_CLARIFICATION, ask the user the listed questions and stop. Do not run Stage 2.
@@ -36,10 +36,10 @@ Workflow:
 11. Run Stage 6 with experiment-report-writer. It must write final_model_summary.csv and final_summary.md.
 12. Run Stage 7 with experiment-integrity-reviewer. It must write integrity_report.md.
 13. If Stage 7 returns VERDICT: GO, finalize with a concise summary and list generated paths.
-14. If Stage 7 returns VERDICT: REJECT, follow Loopback Mode in prompts/experiment_rewrite_orchestrator.md. Log every retry in workspace/experiment_rewrite/reports/iteration_log.md and continue automatically unless the target stage requires user input.
+14. If Stage 7 returns VERDICT: REJECT, follow Loopback Mode in prompts/experiment_rewrite_orchestrator.md. Log every retry in workspace/report/paper-experiment/iteration_log.md and continue automatically unless the target stage requires user input.
 
 Coordination rules:
-- Keep all generated workflow outputs under workspace/experiment_rewrite/.
+- Keep all generated workflow outputs under workspace/work/paper-experiment/.
 - Do not execute third-party baseline code.
 - Do not install dependencies unless Stage 0 explicitly allowed it.
 - Do not ask the user to paste secrets into prompts or reports.

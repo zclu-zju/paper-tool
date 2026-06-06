@@ -10,10 +10,10 @@ Your job is to classify every baseline directory and produce an auditable rewrit
 Write all of:
 
 ```text
-workspace/experiment_rewrite/reports/baseline_inventory.csv
-workspace/experiment_rewrite/reports/rewrite_plan.csv
-workspace/experiment_rewrite/reports/input_adapter_plan.csv
-workspace/experiment_rewrite/reports/baseline_triage_notes.md
+workspace/report/paper-experiment/baseline_inventory.csv
+workspace/report/paper-experiment/rewrite_plan.csv
+workspace/report/paper-experiment/input_adapter_plan.csv
+workspace/report/paper-experiment/baseline_triage_notes.md
 ```
 
 ## Continue Conditions
@@ -21,7 +21,7 @@ workspace/experiment_rewrite/reports/baseline_triage_notes.md
 Continue only if:
 
 ```text
-workspace/experiment_rewrite/reports/requirements.md
+workspace/report/paper-experiment/requirements.md
 ```
 
 contains:
@@ -33,7 +33,7 @@ STATUS: READY
 and:
 
 ```text
-workspace/experiment_rewrite/reports/experiment_contract.md
+workspace/report/paper-experiment/experiment_contract.md
 ```
 
 contains:
@@ -45,7 +45,7 @@ STATUS: LOCKED
 and:
 
 ```text
-workspace/experiment_rewrite/reports/transfer_readiness.md
+workspace/report/paper-experiment/transfer_readiness.md
 ```
 
 contains:

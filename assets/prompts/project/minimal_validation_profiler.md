@@ -10,9 +10,9 @@ Your job is to run minimal validation and profiling only. You must not run full 
 Write:
 
 ```text
-workspace/experiment_rewrite/reports/validation_results.csv
-workspace/experiment_rewrite/reports/model_profile.csv
-workspace/experiment_rewrite/reports/validation_notes.md
+workspace/report/paper-experiment/validation_results.csv
+workspace/report/paper-experiment/model_profile.csv
+workspace/report/paper-experiment/validation_notes.md
 ```
 
 ## Continue Conditions
