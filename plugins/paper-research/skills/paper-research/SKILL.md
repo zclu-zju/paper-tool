@@ -1,9 +1,9 @@
 ---
-name: baseline-research
+name: paper-research
 description: Use for interactive literature research in a Codex repo. Installs repo-local custom agents from this plugin, then runs a loopback workflow that collects required parameters, locks scope from a user direction or seed paper, discovers papers with abstracts and citation counts, verifies code availability while prioritizing high-citation in-scope papers for GitHub searches, optionally clones verified repositories, optionally downloads paper PDFs/TeX sources, writes a CSV, and sends failed stages back for revision.
 ---
 
-# Baseline Research
+# Paper Research
 
 This skill installs and launches a single interactive literature research workflow.
 
@@ -20,7 +20,7 @@ The plugin carries custom agent templates in `assets/agents/`, but those agents 
 From a local clone:
 
 ```bash
-python3 plugins/baseline-research-workflows/scripts/install_project_agents.py --repo .
+python3 plugins/paper-research/scripts/install_project_agents.py --repo .
 ```
 
 From an installed plugin cache, resolve the installer relative to this skill directory:
@@ -78,13 +78,13 @@ Only after requirements are `READY` and scope is `LOCKED` can the workflow searc
 All generated outputs go under:
 
 ```text
-workspace/literature_research/
+workspace/work/paper-research/
 ```
 
 The main final output is:
 
 ```text
-workspace/literature_research/reports/final_papers.csv
+workspace/report/paper-research/final_papers.csv
 ```
 
 Required CSV columns:
@@ -104,7 +104,7 @@ Repository cloning is opt-in. The workflow must ask whether local repository ret
 When cloning is requested, Stage 4 clones verified repositories under:
 
 ```text
-workspace/literature_research/code/
+workspace/work/paper-research/code/
 ```
 
 If SSH keys, API tokens, private repository access, Git credential helper setup, GitHub CLI auth, Git LFS, or submodules are needed, the workflow stops and asks the user to configure the required local access mechanism before retrying Stage 4. Do not ask the user to paste secrets into prompts or reports.
@@ -116,7 +116,7 @@ Paper artifact retrieval is opt-in. The workflow must ask whether PDF/TeX retrie
 When requested, Stage 5 downloads public PDFs or public TeX/source archives under:
 
 ```text
-workspace/literature_research/papers/
+workspace/paper/summary/
 ```
 
 If TeX compilation is requested, Stage 5 compiles only when a local TeX toolchain is available. If no TeX environment exists and the policy is `COMPILE_IF_ENV_AVAILABLE`, it records `SKIPPED_NO_TEX_ENV` and continues. If compilation is attempted, the workflow verifies that the compiled PDF exists.

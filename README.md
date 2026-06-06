@@ -1,92 +1,52 @@
-# Baseline Research Workflows
+# Paper Research
 
 Codex plugin and repo-local custom agents for interactive, loopback-capable literature research.
 
-This repository provides one unified workflow. The user may start from either:
-
-- a **research direction** such as "CSI feedback for FDD massive MIMO"; or
-- a **seed paper**, which Codex uses to infer the research direction, evaluation context, and comparison boundary.
-
-The workflow does not immediately search. It first collects the parameters needed by the agents, then locks the scope, then searches papers with abstracts and citation counts, verifies open-source code availability while prioritizing high-citation in-scope papers for GitHub searches, optionally clones verified repositories, optionally downloads paper PDFs or TeX sources, compiles TeX when requested and possible, writes a CSV, and runs an integrity review. If a later stage fails, the orchestrator loops back to the failed stage and retries.
-
-## Workflow
-
-The main entry agent is:
-
-```text
-literature-research-orchestrator
-```
-
-Stages:
-
-```text
-Stage 0  research-requirement-collector   collect required user parameters
-Stage 1  research-scope-locker            lock direction or seed-paper scope
-Stage 2  paper-discovery-scout            search and shortlist papers
-Stage 3  code-availability-verifier       verify code links when required
-Stage 4  repository-cloner                clone verified repositories when requested
-Stage 5  paper-artifact-collector         download PDFs/TeX and compile TeX when requested
-Stage 6  research-csv-writer              write final_papers.csv
-Stage 7  research-integrity-reviewer      review and loop back on failures
-```
-
-The core behavior is iterative:
-
-```text
-stage output -> integrity review -> GO or REJECT -> loop back to target stage
-```
-
-Stage 0 and Stage 1 may stop for user input. Stage 2 through Stage 6 can be rejected and redone automatically when no new user input is required.
+The workflow can start from either a research direction or a seed paper. It collects required parameters, locks the scope, searches papers with abstracts and citation counts, verifies public code links when requested, optionally clones verified repositories, optionally downloads paper PDFs or TeX sources, writes CSV reports, and runs an integrity review with loopback.
 
 ## Install From GitHub
 
-With Codex CLI installed and authenticated:
-
 ```bash
-codex plugin marketplace add git@github.com:zcluu/baseline-research.git --ref main
-codex plugin add baseline-research-workflows@baseline-research
+codex plugin marketplace add git@github.com:zcluu/paper-research.git --ref main
+codex plugin add paper-research@paper-research
 ```
 
 If SSH access is not configured:
 
 ```bash
-codex plugin marketplace add https://github.com/zcluu/baseline-research.git --ref main
-codex plugin add baseline-research-workflows@baseline-research
+codex plugin marketplace add https://github.com/zcluu/paper-research.git --ref main
+codex plugin add paper-research@paper-research
 ```
 
 Start a new Codex session after installation.
 
-## Install Agents Into A Target Repo
+## Development Source
 
-The plugin carries `.toml` custom agent templates as assets. They become active only after being installed into the target repository's `.codex/agents/` directory.
-
-If you cloned this repository locally:
-
-```bash
-python3 /path/to/baseline-research/plugins/baseline-research-workflows/scripts/install_project_agents.py --repo /path/to/target-repo
-```
-
-If you installed the plugin through Codex, ask Codex in the target repo:
+This repository is the source of truth for the `paper-research` plugin package. Develop prompts, agents, installer behavior, and the skill under:
 
 ```text
-Use baseline-research.
-
-Install the literature research workflow agents into this repository.
-If this repository has files from an older baseline-research workflow release, clean obsolete files first.
+plugins/paper-research/
 ```
 
-For a local clone, the clean upgrade command is:
+The `paper-tool` repository is only the aggregate marketplace and integration-test target. After changing this repository, run the sync script from `paper-tool` to copy the plugin package into the aggregate marketplace.
+
+## Install Agents Into A Target Repo
+
+For a local clone:
 
 ```bash
-python3 plugins/baseline-research-workflows/scripts/install_project_agents.py --repo . --clean-obsolete
+python3 plugins/paper-research/scripts/install_project_agents.py --repo /path/to/target-repo --clean-obsolete
 ```
 
-The installer is conservative:
+If installed through Codex, ask Codex in the target repo:
 
-- missing files are copied;
-- identical files are left unchanged;
-- existing files with different content are reported as conflicts and are not overwritten;
-- obsolete files from older releases are removed only when `--clean-obsolete` is passed.
+```text
+Use paper-research.
+
+Install the paper research workflow agents into this repository.
+```
+
+The installer is conservative: it copies missing files, leaves identical files unchanged, reports conflicts without overwriting, and removes known obsolete files only when `--clean-obsolete` is passed.
 
 ## Run The Workflow
 
@@ -100,42 +60,25 @@ codex --search --sandbox workspace-write --ask-for-approval never
 Then say:
 
 ```text
-Use baseline-research.
+Use paper-research.
 
-Research papers for this direction: <your direction>.
-Before searching, collect the required parameters from me, including minimum paper count, minimum open-source/code paper count, target years, code verification level, whether verified repositories should be cloned locally, whether paper PDFs or TeX sources should be downloaded locally, inclusion criteria, exclusion criteria, and final CSV requirements. The final CSV must include abstracts and citation counts.
-```
-
-Or, if using a seed paper:
-
-```text
-Use baseline-research.
-
-Use the paper in paper/main.tex as the seed. First infer the research direction and experimental context, then ask me for any missing parameters before searching papers.
+Research papers about <your direction>. Collect the required parameters first, including paper count, year range, code verification needs, whether verified repositories should be cloned, whether PDFs or TeX sources should be downloaded, inclusion/exclusion criteria, and final CSV requirements. Include abstracts and citation counts.
 ```
 
 To request local repository cloning:
 
 ```text
-Use baseline-research.
+Use paper-research.
 
-Research papers about <your direction>.
-I need at least 30 papers from 2022-2026, including at least 10 with verified public code.
-Clone the verified repositories for the selected papers into workspace/literature_research/code/.
-If SSH, tokens, private repository access, Git LFS, or submodules are needed, stop and tell me what local access I need to configure before cloning.
-Output the final CSV with local clone paths and commit hashes.
+Research papers about <your direction>. I need at least 30 papers from 2022-2026, including at least 10 with verified public code. Clone verified repositories under workspace/work/paper-research/code/. Output the final CSV with local clone paths and commit hashes.
 ```
 
-To request paper PDF/TeX retrieval:
+To request paper artifact retrieval:
 
 ```text
-Use baseline-research.
+Use paper-research.
 
-Research papers about <your direction>.
-I need at least 30 papers from 2022-2026, including at least 10 with verified public code.
-Download PDFs and TeX sources for the selected final papers into workspace/literature_research/papers/.
-If a TeX source is available, compile it only if this machine already has a TeX toolchain. If not, skip compilation and record that no TeX environment was available.
-Output the final CSV with local PDF paths, local TeX source paths, TeX compile status, and compiled PDF paths.
+Research papers about <your direction>. Download available PDFs under workspace/paper/pdf/{title}/paper.pdf and TeX sources under workspace/paper/tex/{title}/. Put extracted text, metadata, summaries, compile logs, and compiled PDFs under workspace/paper/summary/{title}/. Output the final CSV with local artifact paths.
 ```
 
 You can also invoke the custom agent directly:
@@ -150,57 +93,48 @@ Or with the launcher file after installing agents:
 codex exec --search --sandbox workspace-write --ask-for-approval never - < .codex/literature-research-workflow-prompt.md
 ```
 
-## Required Interaction
-
-Stage 0 must collect:
-
-- input type or seed source;
-- research direction or seed paper;
-- minimum total paper count;
-- minimum open-source/code paper count;
-- target year range or recency window;
-- whether code links must be verified;
-- whether verified repositories should be cloned locally;
-- if cloning is requested: clone scope, target directory, public/private access expectations, auth setup, Git LFS policy, and submodule policy;
-- whether paper PDFs or TeX sources should be downloaded locally;
-- if paper artifact retrieval is requested: artifact scope, artifact types, target directory, TeX compile policy, and missing dependency handling;
-- output format, CSV by default;
-- inclusion and exclusion constraints when available.
-
-If required parameters are missing, Codex asks concise questions and stops. It must not search.
-
-Stage 1 locks the scope. If the direction or seed-paper interpretation is ambiguous, Codex asks clarification questions and stops. It must not search.
-
-Only after:
+## Workflow
 
 ```text
-requirements.md: STATUS: READY
-scope_report.md: STATUS: LOCKED
+Stage 0  research-requirement-collector   collect required user parameters
+Stage 1  research-scope-locker            lock direction or seed-paper scope
+Stage 2  paper-discovery-scout            search and shortlist papers
+Stage 3  code-availability-verifier       verify code links when required
+Stage 4  repository-cloner                clone verified repositories when requested
+Stage 5  paper-artifact-collector         download PDFs/TeX and compile TeX when requested
+Stage 6  research-csv-writer              write final_papers.csv
+Stage 7  research-integrity-reviewer      review and loop back on failures
 ```
 
-may Stage 2 search papers.
+## Workspace Contract
 
-## Outputs
-
-All generated outputs go under:
+Reports are plugin-scoped:
 
 ```text
-workspace/literature_research/
+workspace/report/paper-research/requirements.md
+workspace/report/paper-research/scope_report.md
+workspace/report/paper-research/paper_candidates.csv
+workspace/report/paper-research/code_verification.csv
+workspace/report/paper-research/repository_clones.csv
+workspace/report/paper-research/paper_artifacts.csv
+workspace/report/paper-research/final_papers.csv
+workspace/report/paper-research/research_summary.md
+workspace/report/paper-research/integrity_report.md
+workspace/report/paper-research/iteration_log.md
 ```
 
-Main files:
+Shared researched-paper artifacts are stored outside the plugin report folder:
 
 ```text
-workspace/literature_research/reports/requirements.md
-workspace/literature_research/reports/scope_report.md
-workspace/literature_research/reports/paper_candidates.csv
-workspace/literature_research/reports/code_verification.csv
-workspace/literature_research/reports/repository_clones.csv
-workspace/literature_research/reports/paper_artifacts.csv
-workspace/literature_research/reports/final_papers.csv
-workspace/literature_research/reports/research_summary.md
-workspace/literature_research/reports/integrity_report.md
-workspace/literature_research/reports/iteration_log.md
+workspace/paper/pdf/{title}/paper.pdf
+workspace/paper/tex/{title}/
+workspace/paper/summary/{title}/
+```
+
+Non-report execution artifacts are plugin-scoped:
+
+```text
+workspace/work/paper-research/code/
 ```
 
 The final CSV contains at least:
@@ -211,19 +145,7 @@ title,year,venue,publication_type,paper_url,abstract,citation_count,citation_sou
 
 ## Safe Code Policy
 
-The code verifier checks public code evidence. It does not execute third-party code.
-
-By default, it verifies links and repository evidence only. It does not clone repositories unless the user explicitly asks for local repository retrieval.
-
-When searching GitHub or other repository hosts for code, the verifier prioritizes in-scope papers with higher `citation_count` first. Citation count never overrides the locked scope.
-
-When cloning is requested, repositories are cloned under:
-
-```text
-workspace/literature_research/code/
-```
-
-If authentication or access setup is needed, the workflow stops before cloning and asks the user to configure local access, such as SSH keys, Git credential helper, GitHub CLI auth, or an environment variable such as `GITHUB_TOKEN`. Tokens, passwords, and private keys must not be pasted into workflow reports or prompts.
+The code verifier checks public code evidence. It does not execute third-party code. Cloning is opt-in and stops for local authentication, Git LFS, submodule, or private-access setup when required.
 
 Not allowed by default:
 
@@ -234,69 +156,4 @@ submodule initialization
 Git LFS downloads
 training or inference runs
 TeX shell escape
-```
-
-## Paper Artifact Policy
-
-Paper artifact retrieval is opt-in. The workflow must ask whether local PDF/TeX retrieval is required before searching if the user has not already specified it.
-
-When requested, paper artifacts are stored under:
-
-```text
-workspace/literature_research/papers/pdf/
-workspace/literature_research/papers/tex/
-workspace/literature_research/papers/compiled_pdf/
-```
-
-TeX compilation is attempted only when requested and when a local TeX toolchain such as `latexmk`, `tectonic`, `pdflatex`, or `xelatex` is available. If no TeX environment is available and the policy is `COMPILE_IF_ENV_AVAILABLE`, the workflow records `SKIPPED_NO_TEX_ENV` and continues. If compilation is attempted, the workflow verifies that the compiled PDF was actually output.
-
-## Repository Contents
-
-```text
-.codex/agents/                         repo-local custom agent definitions
-.codex/literature-research-workflow-prompt.md
-prompts/                               stage prompts used by the agents
-plugins/baseline-research-workflows/   GitHub-installable Codex plugin package
-.agents/plugins/marketplace.json       Codex marketplace manifest
-marketplace.json                       compatibility copy of the marketplace manifest
-docs/literature-research-workflow.md    detailed workflow documentation
-```
-
-This repository intentionally excludes private manuscript material and runtime artifacts:
-
-```text
-paper/
-workspace/
-.env
-backups/
-```
-
-## Development Checks
-
-Parse TOML and JSON:
-
-```bash
-python3 - <<'PY'
-import json, pathlib, tomllib
-for p in pathlib.Path('.codex/agents').glob('*.toml'):
-    tomllib.loads(p.read_text())
-for p in pathlib.Path('plugins/baseline-research-workflows/assets/agents').glob('*.toml'):
-    tomllib.loads(p.read_text())
-json.loads(pathlib.Path('plugins/baseline-research-workflows/.codex-plugin/plugin.json').read_text())
-json.loads(pathlib.Path('.agents/plugins/marketplace.json').read_text())
-json.loads(pathlib.Path('marketplace.json').read_text())
-print('TOML and JSON parse checks passed')
-PY
-```
-
-Check installer behavior in this repository:
-
-```bash
-python3 plugins/baseline-research-workflows/scripts/install_project_agents.py --repo .
-```
-
-Expected synchronized result:
-
-```text
-Conflicts: 0
 ```

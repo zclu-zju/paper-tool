@@ -7,20 +7,20 @@ Authoritative prompt:
 - Read prompts/research_integrity_reviewer.md and follow it strictly.
 
 Inputs:
-- workspace/literature_research/reports/requirements.md.
-- workspace/literature_research/reports/scope_report.md.
-- workspace/literature_research/reports/paper_candidates.csv.
-- workspace/literature_research/reports/paper_candidates.md.
-- workspace/literature_research/reports/code_verification.csv if present.
-- workspace/literature_research/reports/repository_clones.csv if clone retrieval was requested.
-- workspace/literature_research/reports/repository_clones.md if clone retrieval was requested.
-- workspace/literature_research/reports/paper_artifacts.csv if paper artifact retrieval was requested.
-- workspace/literature_research/reports/paper_artifacts.md if paper artifact retrieval was requested.
-- workspace/literature_research/reports/final_papers.csv.
-- workspace/literature_research/reports/research_summary.md.
+- workspace/report/paper-research/requirements.md.
+- workspace/report/paper-research/scope_report.md.
+- workspace/report/paper-research/paper_candidates.csv.
+- workspace/report/paper-research/paper_candidates.md.
+- workspace/report/paper-research/code_verification.csv if present.
+- workspace/report/paper-research/repository_clones.csv if clone retrieval was requested.
+- workspace/report/paper-research/repository_clones.md if clone retrieval was requested.
+- workspace/report/paper-research/paper_artifacts.csv if paper artifact retrieval was requested.
+- workspace/report/paper-research/paper_artifacts.md if paper artifact retrieval was requested.
+- workspace/report/paper-research/final_papers.csv.
+- workspace/report/paper-research/research_summary.md.
 
 Output:
-- Write workspace/literature_research/reports/integrity_report.md.
+- Write workspace/report/paper-research/integrity_report.md.
 
 Rules:
 - Be strict. If any required check is No, output VERDICT: REJECT.

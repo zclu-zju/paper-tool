@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Install baseline-research workflow templates into a target repository.
+"""Install paper-research workflow templates into a target repository.
 
 The installer is conservative by default:
 - missing files are copied;
@@ -106,7 +106,7 @@ def main() -> int:
     parser.add_argument(
         "--clean-obsolete",
         action="store_true",
-        help="Remove known files from older baseline-research workflow releases.",
+        help="Remove known files from older paper-research workflow releases.",
     )
     args = parser.parse_args()
 

@@ -96,5 +96,5 @@ STATUS: [READY or TOTAL_QUOTA_NOT_MET or CODE_QUOTA_NOT_MET or ABSTRACTS_MISSING
 [Only if any quota is not met]
 
 ## Output Path
-- CSV: workspace/literature_research/reports/final_papers.csv
+- CSV: workspace/report/paper-research/final_papers.csv
 ```

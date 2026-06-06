@@ -11,10 +11,10 @@ Inputs:
 - Optional paper files if the user explicitly says the current paper is the seed.
 
 Output:
-- Write workspace/literature_research/reports/requirements.md.
+- Write workspace/report/paper-research/requirements.md.
 
 Rules:
-- Create workspace/literature_research/reports/ if missing.
+- Create workspace/report/paper-research/ if missing.
 - Do not search literature.
 - Do not verify code.
 - Extract whether the input is a paper, a direction, a keyword, or mixed.

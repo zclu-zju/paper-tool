@@ -1,7 +1,7 @@
 # Research Scope Locker Prompt
 
 **Role**: Stage 1 scope locker.
-**Input Expected**: `workspace/literature_research/reports/requirements.md` and, when applicable, the seed paper files.
+**Input Expected**: `workspace/report/paper-research/requirements.md` and, when applicable, the seed paper files.
 
 Your job is to lock the research direction before any literature search begins.
 

@@ -7,14 +7,14 @@ Authoritative prompt:
 - Read prompts/repository_cloner.md and follow it strictly.
 
 Inputs:
-- workspace/literature_research/reports/requirements.md.
-- workspace/literature_research/reports/scope_report.md.
-- workspace/literature_research/reports/code_verification.csv.
+- workspace/report/paper-research/requirements.md.
+- workspace/report/paper-research/scope_report.md.
+- workspace/report/paper-research/code_verification.csv.
 
 Outputs:
-- Write workspace/literature_research/reports/repository_clones.csv.
-- Write workspace/literature_research/reports/repository_clones.md.
-- Clone repositories only under the target directory recorded in requirements.md, normally workspace/literature_research/code/.
+- Write workspace/report/paper-research/repository_clones.csv.
+- Write workspace/report/paper-research/repository_clones.md.
+- Clone repositories only under the target directory recorded in requirements.md, normally workspace/work/paper-research/code/.
 
 Rules:
 - Do nothing unless requirements.md explicitly records clone_requested: YES or an equivalent locked requirement.

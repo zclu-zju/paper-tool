@@ -19,9 +19,9 @@ Your job is to download paper PDFs or TeX/source artifacts only when the user ex
    - PDF from `pdf_url`, arXiv PDF URL, publisher PDF URL, or official paper URL when a direct PDF is available;
    - TeX/source from `tex_source_url`, arXiv e-print/source archive, author project page, or official source archive when available.
 6. Use deterministic local paths:
-   - PDFs: `workspace/literature_research/papers/pdf/<safe-paper-id>/paper.pdf`;
-   - TeX/source: `workspace/literature_research/papers/tex/<safe-paper-id>/`;
-   - compiled PDFs: `workspace/literature_research/papers/compiled_pdf/<safe-paper-id>.pdf`.
+   - PDFs: `workspace/paper/pdf/{title}/paper.pdf`;
+   - TeX/source: `workspace/paper/tex/{title}/`;
+   - derived text, metadata, summaries, compile logs, and compiled PDFs: `workspace/paper/summary/{title}/`.
 7. If a target artifact already exists, reuse it and record `EXISTS_REUSED`.
 8. If TeX/source retrieval succeeds and TeX compilation is requested, detect the available local compiler in this order: `latexmk`, `tectonic`, `pdflatex`, `xelatex`.
 9. If no TeX toolchain is available:
@@ -39,7 +39,7 @@ Your job is to download paper PDFs or TeX/source artifacts only when the user ex
 - Do not use TeX shell escape.
 - Do not treat a missing TeX environment as failure when compile policy is `COMPILE_IF_ENV_AVAILABLE`.
 - Do not invent local paths, URLs, or compile results.
-- Keep all outputs under `workspace/literature_research/`.
+- Keep reports under `workspace/report/paper-research/`; keep paper artifacts under `workspace/paper/pdf/`, `workspace/paper/tex/`, and `workspace/paper/summary/{title}/`.
 
 ## Artifact CSV Columns
 
@@ -106,8 +106,8 @@ STATUS: [READY or PARTIAL or NOT_REQUIRED or FAILED]
 [State that no third-party scripts were executed, no dependencies were installed, and shell escape was not used]
 
 ## Output Paths
-- CSV: workspace/literature_research/reports/paper_artifacts.csv
-- PDF Root: workspace/literature_research/papers/pdf/
-- TeX Root: workspace/literature_research/papers/tex/
-- Compiled PDF Root: workspace/literature_research/papers/compiled_pdf/
+- CSV: workspace/report/paper-research/paper_artifacts.csv
+- PDF Root: workspace/paper/pdf/
+- TeX Root: workspace/paper/tex/
+- Summary Root: workspace/paper/summary/
 ```

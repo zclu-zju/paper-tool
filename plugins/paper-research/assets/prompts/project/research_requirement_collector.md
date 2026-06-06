@@ -20,14 +20,14 @@ Collect all of the following:
 7. Whether verified repositories should be cloned to local storage: `CLONE_REPOS` or `DO_NOT_CLONE`.
 8. If cloning is requested:
    - clone scope: all verified-code papers, only papers selected for the final CSV, or a user-specified count;
-   - target directory, with `workspace/literature_research/code/` as the normal default only after stating it;
+   - target directory, with `workspace/work/paper-research/code/` as the normal default only after stating it;
    - public-only vs private repository access expectations;
    - whether SSH keys, API tokens, Git credential helper, GitHub CLI auth, Git LFS, or submodules may be needed.
 9. Whether paper artifacts should be downloaded locally: `DOWNLOAD_PAPER_ARTIFACTS` or `DO_NOT_DOWNLOAD_PAPER_ARTIFACTS`.
 10. If paper artifact retrieval is requested:
    - artifact scope: selected final papers, all discovered in-scope papers, papers with verified code, or a user-specified count;
    - artifact types: PDF, TeX/source, or both;
-   - target directory, with `workspace/literature_research/papers/` as the normal default only after stating it;
+   - target directory, with `workspace/paper/pdf/{title}/`, `workspace/paper/tex/{title}/`, and `workspace/paper/summary/{title}/` as the normal defaults only after stating them;
    - TeX compile policy: `COMPILE_IF_ENV_AVAILABLE`, `DOWNLOAD_ONLY`, or `REQUIRE_COMPILE_SUCCESS`;
    - whether the user allows compilation to continue when TeX dependencies are missing.
 11. Desired output format. Default is CSV, but only use the default after stating it.

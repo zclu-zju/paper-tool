@@ -15,10 +15,10 @@ Your job is to clone verified implementation repositories to local storage only 
    - `ALL_VERIFIED`: clone all verified-code repositories;
    - `USER_SPECIFIED_COUNT`: clone up to the requested count, preferring stronger scope match and stronger code evidence.
 5. Clone only rows with concrete code evidence and a usable `clone_url`, unless the user explicitly requested broader retrieval.
-6. Use the clone target directory from `requirements.md`; the normal default is `workspace/literature_research/code/`.
+6. Use the clone target directory from `requirements.md`; the normal default is `workspace/work/paper-research/code/`.
 7. Prefer deterministic local paths:
-   - GitHub: `workspace/literature_research/code/github.com/<owner>/<repo>/`;
-   - other hosts: `workspace/literature_research/code/<host>/<namespace>/<repo>/`.
+   - GitHub: `workspace/work/paper-research/code/github.com/<owner>/<repo>/`;
+   - other hosts: `workspace/work/paper-research/code/<host>/<namespace>/<repo>/`.
 8. If a target path already exists and is a Git repository with the same remote, reuse it and record `EXISTS_REUSED`.
 9. If a target path exists but is not the same repository, do not overwrite it. Record `SKIPPED_PATH_EXISTS`.
 10. After each successful clone or reuse, record the current commit hash with `git -C <path> rev-parse HEAD`.
@@ -49,7 +49,7 @@ Acceptable user-facing instructions include:
 - Do not initialize submodules unless the user explicitly requested submodule retrieval.
 - Do not download Git LFS objects unless the user explicitly requested Git LFS retrieval.
 - Do not clone into `paper/`.
-- Keep cloned repositories under `workspace/literature_research/code/` unless the user locked another target directory.
+- Keep cloned repositories under `workspace/work/paper-research/code/` unless the user locked another target directory.
 - Never overwrite an existing local directory.
 
 ## Clone CSV Columns
@@ -97,6 +97,6 @@ STATUS: [READY or PARTIAL or NEEDS_USER_AUTH or NOT_REQUIRED or FAILED]
 [State that no third-party code was executed, no dependencies were installed, and submodules/LFS were not used unless explicitly requested]
 
 ## Output Paths
-- CSV: workspace/literature_research/reports/repository_clones.csv
-- Code Root: workspace/literature_research/code/
+- CSV: workspace/report/paper-research/repository_clones.csv
+- Code Root: workspace/work/paper-research/code/
 ```

@@ -11,7 +11,7 @@ Run `research-requirement-collector`.
 Output:
 
 ```text
-workspace/literature_research/reports/requirements.md
+workspace/report/paper-research/requirements.md
 ```
 
 Continue only if the file contains:
@@ -50,7 +50,7 @@ Run `research-scope-locker`.
 Output:
 
 ```text
-workspace/literature_research/reports/scope_report.md
+workspace/report/paper-research/scope_report.md
 ```
 
 Continue only if the file contains:
@@ -76,8 +76,8 @@ Run `paper-discovery-scout`.
 Outputs:
 
 ```text
-workspace/literature_research/reports/paper_candidates.csv
-workspace/literature_research/reports/paper_candidates.md
+workspace/report/paper-research/paper_candidates.csv
+workspace/report/paper-research/paper_candidates.md
 ```
 
 The scout should search with a buffer above the requested total and code quota. If the target is 30 papers with at least 10 code papers, the scout should collect more than 30 candidates when possible, because Stage 3 may reject code claims.
@@ -99,8 +99,8 @@ Run `code-availability-verifier` when the requested open-source/code count is gr
 Outputs:
 
 ```text
-workspace/literature_research/reports/code_verification.csv
-workspace/literature_research/reports/code_verification.md
+workspace/report/paper-research/code_verification.csv
+workspace/report/paper-research/code_verification.md
 ```
 
 Default behavior is link/evidence verification only. Stage 3 must not clone repositories. It must preserve cloneable repository URLs and authentication signals for Stage 4 when local cloning is requested.
@@ -120,14 +120,14 @@ Run `repository-cloner` only when Stage 0 locked requirements explicitly request
 Outputs:
 
 ```text
-workspace/literature_research/reports/repository_clones.csv
-workspace/literature_research/reports/repository_clones.md
+workspace/report/paper-research/repository_clones.csv
+workspace/report/paper-research/repository_clones.md
 ```
 
 Default target directory:
 
 ```text
-workspace/literature_research/code/
+workspace/work/paper-research/code/
 ```
 
 Stage 4 may clone verified repositories, but it must not execute third-party code, install dependencies, initialize submodules, or download Git LFS content unless the user explicitly requested those actions.
@@ -147,16 +147,16 @@ Run `paper-artifact-collector` only when Stage 0 locked requirements explicitly 
 Outputs:
 
 ```text
-workspace/literature_research/reports/paper_artifacts.csv
-workspace/literature_research/reports/paper_artifacts.md
+workspace/report/paper-research/paper_artifacts.csv
+workspace/report/paper-research/paper_artifacts.md
 ```
 
 Default storage roots:
 
 ```text
-workspace/literature_research/papers/pdf/
-workspace/literature_research/papers/tex/
-workspace/literature_research/papers/compiled_pdf/
+workspace/paper/pdf/
+workspace/paper/tex/
+workspace/paper/summary/
 ```
 
 Stage 5 may download public PDFs and public TeX/source archives for in-scope papers. It must not modify `paper/`.
@@ -172,8 +172,8 @@ Run `research-csv-writer`.
 Outputs:
 
 ```text
-workspace/literature_research/reports/final_papers.csv
-workspace/literature_research/reports/research_summary.md
+workspace/report/paper-research/final_papers.csv
+workspace/report/paper-research/research_summary.md
 ```
 
 The final CSV must contain at least:
@@ -191,7 +191,7 @@ Run `research-integrity-reviewer`.
 Output:
 
 ```text
-workspace/literature_research/reports/integrity_report.md
+workspace/report/paper-research/integrity_report.md
 ```
 
 If:
@@ -219,7 +219,7 @@ When Stage 7 rejects:
 3. Log the retry in:
 
 ```text
-workspace/literature_research/reports/iteration_log.md
+workspace/report/paper-research/iteration_log.md
 ```
 
 using:
@@ -243,7 +243,7 @@ If the target stage requires user input, ask the user and stop. Otherwise contin
 - Do not count a paper toward the open-source quota unless code evidence is concrete.
 - When searching or verifying GitHub code, prioritize in-scope high-citation papers before lower-citation papers.
 - Preserve exact search queries, source URLs, arXiv IDs, venue/source names, and code evidence.
-- Keep all generated outputs under `workspace/literature_research/`.
+- Keep all generated outputs under `workspace/work/paper-research/`.
 - Do not execute third-party code.
 - Do not clone repositories unless Stage 0 explicitly records local clone retrieval as requested.
 - If clone retrieval requires authentication, ask the user to configure local credentials and stop before retrying Stage 4.

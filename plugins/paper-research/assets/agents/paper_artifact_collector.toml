@@ -7,18 +7,18 @@ Authoritative prompt:
 - Read prompts/paper_artifact_collector.md and follow it strictly.
 
 Inputs:
-- workspace/literature_research/reports/requirements.md.
-- workspace/literature_research/reports/scope_report.md.
-- workspace/literature_research/reports/paper_candidates.csv.
-- workspace/literature_research/reports/code_verification.csv when present.
-- workspace/literature_research/reports/repository_clones.csv when present.
+- workspace/report/paper-research/requirements.md.
+- workspace/report/paper-research/scope_report.md.
+- workspace/report/paper-research/paper_candidates.csv.
+- workspace/report/paper-research/code_verification.csv when present.
+- workspace/report/paper-research/repository_clones.csv when present.
 
 Outputs:
-- Write workspace/literature_research/reports/paper_artifacts.csv.
-- Write workspace/literature_research/reports/paper_artifacts.md.
-- Store downloaded PDFs under the target directory recorded in requirements.md, normally workspace/literature_research/papers/pdf/.
-- Store downloaded TeX/source archives under the target directory recorded in requirements.md, normally workspace/literature_research/papers/tex/.
-- Store compiled PDFs under workspace/literature_research/papers/compiled_pdf/.
+- Write workspace/report/paper-research/paper_artifacts.csv.
+- Write workspace/report/paper-research/paper_artifacts.md.
+- Store downloaded PDFs under the target directory recorded in requirements.md, normally workspace/paper/pdf/.
+- Store downloaded TeX/source archives under the target directory recorded in requirements.md, normally workspace/paper/tex/.
+- Store compiled PDFs and other derived paper artifacts under workspace/paper/summary/{title}/.
 
 Rules:
 - Do nothing unless requirements.md explicitly records paper artifact retrieval as requested.

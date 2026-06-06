@@ -21,25 +21,25 @@ Core principle:
 - Stage 0 and Stage 1 may stop for user clarification. Do not search before required parameters and scope are locked.
 
 Workflow:
-0. Create workspace/literature_research/reports/ if missing.
-1. Run Stage 0 with research-requirement-collector. Wait for workspace/literature_research/reports/requirements.md.
+0. Create workspace/report/paper-research/ if missing.
+1. Run Stage 0 with research-requirement-collector. Wait for workspace/report/paper-research/requirements.md.
 2. If requirements.md says STATUS: NEEDS_USER_INPUT, ask the user the listed questions and stop. Do not run Stage 1.
 3. Run Stage 1 with research-scope-locker only after requirements.md says STATUS: READY.
 4. If scope_report.md says STATUS: NEEDS_USER_CLARIFICATION, ask the user the listed questions and stop. Do not run Stage 2.
-5. Run Stage 2 with paper-discovery-scout only after scope_report.md says STATUS: LOCKED. The scout must produce workspace/literature_research/reports/paper_candidates.csv and paper_candidates.md.
-6. Run Stage 3 with code-availability-verifier if requirements.md requires any open-source/code quota, code links, or repository cloning. Write workspace/literature_research/reports/code_verification.csv and code_verification.md.
+5. Run Stage 2 with paper-discovery-scout only after scope_report.md says STATUS: LOCKED. The scout must produce workspace/report/paper-research/paper_candidates.csv and paper_candidates.md.
+6. Run Stage 3 with code-availability-verifier if requirements.md requires any open-source/code quota, code links, or repository cloning. Write workspace/report/paper-research/code_verification.csv and code_verification.md.
 7. If no code quota, code links, or clone request is required, Stage 3 may mark all code verification as NOT_REQUIRED, but code signals should still be preserved when found.
-8. Run Stage 4 with repository-cloner only if requirements.md explicitly requests local repository cloning. Write workspace/literature_research/reports/repository_clones.csv and repository_clones.md. If credentials, SSH keys, Git LFS, submodules, or private repository access are needed, ask the user to configure the required local access mechanism and stop before retrying Stage 4.
-9. Run Stage 5 with paper-artifact-collector if requirements.md explicitly requests paper PDF/TeX artifact retrieval. Write workspace/literature_research/reports/paper_artifacts.csv and paper_artifacts.md. If TeX sources are retrieved and compilation is requested, compile only when a local TeX toolchain is available, then verify whether the output PDF exists and record the result. If no TeX environment is available and compile policy is COMPILE_IF_ENV_AVAILABLE, record SKIPPED_NO_TEX_ENV and continue.
-10. Run Stage 6 with research-csv-writer. Write workspace/literature_research/reports/final_papers.csv and workspace/literature_research/reports/research_summary.md.
-11. Run Stage 7 with research-integrity-reviewer. Write workspace/literature_research/reports/integrity_report.md.
+8. Run Stage 4 with repository-cloner only if requirements.md explicitly requests local repository cloning. Write workspace/report/paper-research/repository_clones.csv and repository_clones.md. If credentials, SSH keys, Git LFS, submodules, or private repository access are needed, ask the user to configure the required local access mechanism and stop before retrying Stage 4.
+9. Run Stage 5 with paper-artifact-collector if requirements.md explicitly requests paper PDF/TeX artifact retrieval. Write workspace/report/paper-research/paper_artifacts.csv and paper_artifacts.md. If TeX sources are retrieved and compilation is requested, compile only when a local TeX toolchain is available, then verify whether the output PDF exists and record the result. If no TeX environment is available and compile policy is COMPILE_IF_ENV_AVAILABLE, record SKIPPED_NO_TEX_ENV and continue.
+10. Run Stage 6 with research-csv-writer. Write workspace/report/paper-research/final_papers.csv and workspace/report/paper-research/research_summary.md.
+11. Run Stage 7 with research-integrity-reviewer. Write workspace/report/paper-research/integrity_report.md.
 12. If Stage 7 returns VERDICT: GO, finalize with a short summary and list generated paths.
-13. If Stage 7 returns VERDICT: REJECT, follow Loopback Mode in prompts/literature_research_orchestrator.md. Log every retry in workspace/literature_research/reports/iteration_log.md and continue automatically unless the target stage requires user input.
+13. If Stage 7 returns VERDICT: REJECT, follow Loopback Mode in prompts/literature_research_orchestrator.md. Log every retry in workspace/report/paper-research/iteration_log.md and continue automatically unless the target stage requires user input.
 
 Coordination rules:
 - Do not modify paper/ unless the user explicitly asks.
 - Do not write into workspace/reports/ or workspace/baselines/.
-- Keep all outputs for this workflow under workspace/literature_research/.
+- Keep all outputs for this workflow under workspace/work/paper-research/.
 - The final CSV must include at least: title, year, venue, publication_type, paper_url, abstract, citation_count, citation_source, arxiv_id, code_available, code_url, code_evidence, source_query, relevance_rationale, clone_requested, clone_status, local_clone_path, commit_hash, artifact_requested, pdf_download_status, local_pdf_path, tex_download_status, local_tex_source_path, tex_compile_status, compiled_pdf_path, status.
 - If the user provides a paper, use it as a seed to determine the research direction and experimental comparison context. Do not treat paper-based and direction-based requests as separate workflows.
 - If the user provides only a direction, use Stage 0 and Stage 1 to collect missing parameters and lock the direction.

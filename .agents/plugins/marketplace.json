@@ -1,14 +1,14 @@
 {
-  "name": "baseline-research",
+  "name": "paper-research",
   "interface": {
-    "displayName": "Baseline Research"
+    "displayName": "Paper Research"
   },
   "plugins": [
     {
-      "name": "baseline-research-workflows",
+      "name": "paper-research",
       "source": {
         "source": "local",
-        "path": "./plugins/baseline-research-workflows"
+        "path": "./plugins/paper-research"
       },
       "policy": {
         "installation": "AVAILABLE",
@@ -18,4 +18,3 @@
     }
   ]
 }
-

@@ -7,12 +7,12 @@ Authoritative prompt:
 - Read prompts/paper_discovery_scout.md and follow it strictly.
 
 Inputs:
-- workspace/literature_research/reports/requirements.md.
-- workspace/literature_research/reports/scope_report.md.
+- workspace/report/paper-research/requirements.md.
+- workspace/report/paper-research/scope_report.md.
 
 Outputs:
-- Write workspace/literature_research/reports/paper_candidates.csv.
-- Write workspace/literature_research/reports/paper_candidates.md.
+- Write workspace/report/paper-research/paper_candidates.csv.
+- Write workspace/report/paper-research/paper_candidates.md.
 
 Rules:
 - Continue only if requirements.md says STATUS: READY and scope_report.md says STATUS: LOCKED.
