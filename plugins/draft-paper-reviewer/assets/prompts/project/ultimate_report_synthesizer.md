@@ -46,7 +46,8 @@ Priority inputs:
 8. Summarize figure/table retention decisions: what must not be deleted, what can be moved/merged/deleted, and what needs user input.
 9. Summarize term/proper-noun consistency findings.
 10. List changed files and where the revision package is located.
-11. Provide a numbered reading guide with only material reports that exist. Do not mention absent report numbers.
+11. If revision was performed, tell the user that a post-core latexdiff rationale audit can be read after this summary when `100_...` and `101_...` reports exist.
+12. Provide a numbered reading guide with only material reports that exist. Do not mention absent report numbers.
 
 ## Output
 
@@ -100,14 +101,16 @@ Write `workspace/draft_paper_review/reports/99_ultimate_summary.md`:
 - Accepted Scopes:
 - Scopes Needing User Input Or More Evidence:
 - Ledger XLSX:
+- Latexdiff Rationale Audit:
 
 ## Recommended Reading Path
 1. `99_ultimate_summary.md`
 2. `25_editorial_decision.md`
 3. `26_revision_plan.md`
 4. `27_paired_revision_summary.md` and `28_revision_changes.md` when revision was performed
-5. `31_integrity_report.md`
-6. Material reviewer and specialist reports only for the issues listed above
+5. `100_latexdiff_extraction.md` and `101_change_rationale_audit.md` when latexdiff audit was run
+6. `31_integrity_report.md`
+7. Material reviewer and specialist reports only for the issues listed above
 
 ## Next Actions
 | Priority | Action | Owner | Blocking Evidence Or User Input |

@@ -48,8 +48,10 @@ Collect all of the following:
 28. Missing score policy: whether unassessable dimensions caused by objective missing evidence should be `MARK_NA_AND_REWEIGHT`, `MARK_NA_NO_REWEIGHT`, or `BLOCK`.
 29. Related-paper style-control policy: whether the workflow should use related papers as style, terminology, dataset-setting, experiment-protocol, and table-format exemplars.
 30. Figure/table deletion policy: whether any deletion, merge, or replacement of a figure/table must pass the figure/table retention gate before revision.
-31. Inclusion and exclusion constraints for related literature, if provided.
-32. Any private/sensitive data handling constraints.
+31. Post-core latexdiff audit policy: `RUN_WHEN_REVISION_AVAILABLE`, `RUN_ONLY_IF_USER_PROVIDES_REVISED_TEX`, or `DO_NOT_RUN`.
+32. Revised TeX source path for latexdiff comparison, if the user is asking to compare an already revised article rather than a workflow-generated revision.
+33. Inclusion and exclusion constraints for related literature, if provided.
+34. Any private/sensitive data handling constraints.
 
 ## TeX-Only Source Scan
 
@@ -92,6 +94,8 @@ Recommended defaults for the user's own manuscript-development workflow:
 - Missing Score Policy: `MARK_NA_AND_REWEIGHT`.
 - Style-Control Policy: `USE_RELATED_PAPERS_AS_STYLE_AND_EXPERIMENT_EXEMPLARS`.
 - Figure/Table Deletion Policy: `REQUIRE_RETENTION_GATE_APPROVAL_BEFORE_DELETE_MERGE_OR_REPLACE`.
+- Post-Core Latexdiff Audit Policy: `RUN_WHEN_REVISION_AVAILABLE`. This runs after `99_ultimate_summary.md` when the workflow produced revised TeX or the user provides revised TeX. The user may choose `RUN_ONLY_IF_USER_PROVIDES_REVISED_TEX` or `DO_NOT_RUN`.
+- Revised TeX Source Path: `NOT_PROVIDED` unless the user supplies an explicit revised `.tex` root or revised TeX source directory for comparison.
 
 ## Decision Rules
 
@@ -107,6 +111,11 @@ Recommended defaults for the user's own manuscript-development workflow:
 - Do not allow downstream writing, table/figure convention, field-style, terminology, or major novelty conclusions to depend on non-downloaded papers unless the requirements explicitly allow weaker metadata-only reasoning.
 - If the user chooses `DO_NOT_DOWNLOAD`, mark style/table/figure/term-norm revision as evidence-limited unless the user provided local related-paper artifacts.
 - Do not allow figure/table deletion, merging, or replacement unless the figure/table deletion policy is confirmed.
+- Do not run post-core latexdiff auditing unless the latexdiff audit policy is confirmed and an original TeX source plus revised TeX source are available.
+- If the user provides a revised source path for latexdiff comparison, scan it with the same TeX-only rules. If it is not a TeX root file or TeX source directory, output `STATUS: UNSUPPORTED_INPUT` for the revised comparison input and stop.
+- If the latexdiff policy is `RUN_WHEN_REVISION_AVAILABLE`, Stage 18 uses the Stage 0/1 accepted original TeX source as old input and the workflow-generated revised TeX source, or explicit revised TeX source path, as new input.
+- If the latexdiff policy is `RUN_ONLY_IF_USER_PROVIDES_REVISED_TEX`, Stage 18 runs only when the user supplies a revised TeX source path; otherwise it is skipped without writing omission explanations.
+- If the latexdiff policy is `DO_NOT_RUN`, Stage 18 is skipped even if revision artifacts exist.
 - Do not write every possible diagnostic report by default. The materiality policy must be confirmed and passed downstream so only author-relevant, principle-level, comparison/verification, or high-impact writing reports are expanded into standalone reports.
 - Report numbering is fixed. If a report is left unwritten by materiality, do not renumber later reports and do not move another report into that number. Do not write placeholders, omission logs, or user-facing explanations for unwritten reports.
 - Do not assume the manuscript is complete. Ask the user to classify the manuscript maturity when it is unknown.
@@ -181,6 +190,8 @@ STATUS: [READY or NEEDS_USER_CONFIRMATION or NEEDS_USER_INPUT or UNSUPPORTED_INP
 - Style-Control Policy:
 - Figure/Table Deletion Policy:
 - Report Materiality Policy:
+- Post-Core Latexdiff Audit Policy: [RUN_WHEN_REVISION_AVAILABLE / RUN_ONLY_IF_USER_PROVIDES_REVISED_TEX / DO_NOT_RUN]
+- Revised TeX Source Path:
 - Sensitive Data Constraints:
 
 ## Draft-Aware Review Strategy
@@ -204,4 +215,5 @@ STATUS: [READY or NEEDS_USER_CONFIRMATION or NEEDS_USER_INPUT or UNSUPPORTED_INP
 - Paired Revision Loop:
 - Revision:
 - Integrity Review:
+- Latexdiff Change Audit:
 ```

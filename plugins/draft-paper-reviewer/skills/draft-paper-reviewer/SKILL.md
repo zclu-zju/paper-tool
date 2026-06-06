@@ -1,6 +1,6 @@
 ---
 name: draft-paper-reviewer
-description: Use for TeX-only academic draft review and revision in a Codex repo. Installs repo-local custom agents from this plugin, rejects non-TeX submitted manuscripts, confirms all workflow parameters with defaults, infers and asks the user to confirm the paper topic, discovers related papers by topic and citation rank, downloads public artifacts according to all/top-X/required-only policy, mines downloaded papers for writing/table/figure/term conventions, gates figure/table deletion, builds a local evidence map, runs material reviewer and specialist audits, synthesizes scores and decisions, revises copied TeX files through one-to-one reviewer/reviser loops, records every round in an XLSX ledger, verifies revisions, writes a numbered 99 ultimate summary, and loops back until quality gates pass or objective limitations are deferred.
+description: Use for TeX-only academic draft review and revision in a Codex repo. Installs repo-local custom agents from this plugin, rejects non-TeX submitted manuscripts, confirms all workflow parameters with defaults, infers and asks the user to confirm the paper topic, discovers related papers by topic and citation rank, downloads public artifacts according to all/top-X/required-only policy, mines downloaded papers for writing/table/figure/term conventions, gates figure/table deletion, builds a local evidence map, runs material reviewer and specialist audits, synthesizes scores and decisions, revises copied TeX files through one-to-one reviewer/reviser loops, records every round in an XLSX ledger, verifies revisions, writes a numbered 99 ultimate summary, can run post-core latexdiff change-rationale auditing, and loops back until quality gates pass or objective limitations are deferred.
 ---
 
 # Draft Paper Reviewer
@@ -23,6 +23,8 @@ Related literature is used both as review evidence and as writing evidence. Disc
 For computer-science manuscripts, formula-symbol usage is convention-calibrated. Stage 1 extracts `01_formula_symbol_inventory.csv`. Stage 6 mines downloaded papers for notation practices, including symbols that are normally explained and symbols that are commonly left unexplained because they are conventional or used only once. Downstream reviewers, auditors, planners, paired revisers, and verifiers must fix duplicate/conflicting definitions and require explanations only when local paper conventions or manuscript clarity call for them.
 
 Figure and table changes are gated. Existing tables, figures, algorithms, proofs, appendix evidence, and other evidence carriers cannot be deleted, merged, moved, or replaced unless the retention gate says the proof chain and paper structure remain sufficient. New or redesigned tables/figures must be supported by downloaded-paper convention evidence or escalated for user decision.
+
+After the core workflow writes `99_ultimate_summary.md`, Stage 18 can compare the original accepted TeX source and the revised TeX source with latexdiff according to the confirmed Stage 0 policy. The installed `latexdiff_revision_audit.py` tool writes `workspace/draft_paper_review/diff/latexdiff.tex`, `100_latexdiff_changes.csv`, and `100_latexdiff_extraction.md/.tex`; then `latexdiff-change-auditor` writes `101_change_rationale_audit.md/.tex` explaining what changed, why, and which earlier stage should recheck weakly justified edits.
 
 ## Install Agents
 
@@ -83,6 +85,8 @@ Stage 0 must collect required parameters before any paper search or review:
 - formula-symbol convention policy: duplicate/conflicting definitions must be fixed, and unexplained symbols are judged against downloaded-paper notation conventions;
 - report materiality policy with fixed numbering and no user-facing records for unwritten reports;
 - figure/table deletion policy requiring retention-gate approval;
+- post-core latexdiff audit policy: run when revised TeX exists, run only when the user provides revised TeX, or do not run;
+- revised TeX source path when the user is asking to compare an already revised article;
 - whether manuscript revision is requested or review-only mode is desired;
 - paired revision granularity, active scopes, pair acceptance threshold, and maximum rounds per pair;
 - final quality threshold, with 3.5/5 as the default only after stating it;
@@ -109,7 +113,7 @@ After the integrity gate passes, Stage 17 must run the final summary agent and w
 workspace/draft_paper_review/reports/99_ultimate_summary.md
 ```
 
-That report is the first report the user should read.
+That report is the first report the user should read. Stage 18 runs after it only when the confirmed latexdiff policy allows comparison and a revised TeX source exists.
 
 ## Evidence Rule
 
@@ -157,6 +161,12 @@ workspace/draft_paper_review/reports/32_iteration_log.md
 workspace/draft_paper_review/reports/33_deferred_issues.md
 workspace/draft_paper_review/reports/34_report_materiality_index.md
 workspace/draft_paper_review/reports/99_ultimate_summary.md
+workspace/draft_paper_review/reports/100_latexdiff_changes.csv
+workspace/draft_paper_review/reports/100_latexdiff_extraction.md
+workspace/draft_paper_review/reports/100_latexdiff_extraction.tex
+workspace/draft_paper_review/reports/101_change_rationale_audit.md
+workspace/draft_paper_review/reports/101_change_rationale_audit.tex
+workspace/draft_paper_review/diff/latexdiff.tex
 workspace/draft_paper_review/revision/
 workspace/draft_paper_review/literature/papers/
 ```

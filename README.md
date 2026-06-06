@@ -29,17 +29,18 @@ Stage 14 paired-revision-coordinator
 Stage 15 revision-verifier
 Stage 16 evidence-review-integrity-reviewer
 Stage 17 ultimate-report-synthesizer
+Stage 18 latexdiff-change-auditor
 ```
 
 Stage 0 accepts only a TeX source folder or explicit `.tex` root file. If the submitted manuscript is PDF, Word, Markdown, plain text, image-only, or has no `.tex` source, the workflow writes `STATUS: UNSUPPORTED_INPUT` and stops.
 
-The workflow must confirm all parameters with defaults in Stage 0, then confirm the inferred topic scope with the user before searching related literature. Stage 4 groups literature by topic and citation rank. Stage 5 downloads public related-paper artifacts according to the confirmed policy: all discovered public artifacts, top X by citation per topic, top X overall, required evidence only, or no new downloads.
+The workflow must confirm all parameters with defaults in Stage 0, including whether post-core latexdiff auditing should run when revised TeX exists. It then confirms the inferred topic scope with the user before searching related literature. Stage 4 groups literature by topic and citation rank. Stage 5 downloads public related-paper artifacts according to the confirmed policy: all discovered public artifacts, top X by citation per topic, top X overall, required evidence only, or no new downloads.
 
 Downloaded papers are the durable local context for later agents. Writing style, terminology, table/figure conventions, section structure, and figure/table deletion or creation decisions must use downloaded/local papers through `05_downloaded_paper_conventions.*`, not transient memory from search.
 
 For computer-science manuscripts, formulas and notation are checked explicitly. Stage 1 writes `01_formula_symbol_inventory.csv`; Stage 6 learns notation practices from downloaded papers. Downstream review, audit, revision, and verification fix duplicate/conflicting symbol definitions and judge unexplained symbols against local downloaded-paper conventions, so conventional or one-off symbols may remain unexplained when comparable papers do the same.
 
-Reports are numbered in fixed reading order from `00_` onward. Low-value human-facing diagnostic reports may be omitted by `report-materiality-gatekeeper`, but later report numbers are not compacted or reused. The workflow does not explain omitted reports. The final report is `workspace/draft_paper_review/reports/99_ultimate_summary.md`, which is intended to be read first after a run completes.
+Reports are numbered in fixed reading order from `00_` onward. Low-value human-facing diagnostic reports may be omitted by `report-materiality-gatekeeper`, but later report numbers are not compacted or reused. The workflow does not explain omitted reports. The core final report is `workspace/draft_paper_review/reports/99_ultimate_summary.md`, which is intended to be read first after a run completes.
 
 ## Iteration Policy
 
@@ -93,6 +94,30 @@ The revision prompts incorporate ML paper writing guidance:
 Stage 7 includes a figure/table retention gate. It decides whether each figure, table, algorithm, appendix evidence artifact, or proof carrier must be kept, revised, moved, merged, or may be deleted. High-risk artifacts such as primary comparison tables, ablations, dataset/protocol tables, method overview figures, qualitative evidence, and proof/appendix artifacts cannot be deleted casually.
 
 Stage 11 includes a dedicated term-usage consistency auditor. It extracts technical terms, formula symbols, notation tokens, acronyms, dataset names, method names, metric names, proper nouns, and related variants, checks contextual consistency across the manuscript, compares usage against downloaded-paper conventions where relevant, and writes `workspace/draft_paper_review/reports/specialist_audits/17_term_usage_consistency_audit.md` when material.
+
+## Latexdiff Change Audit
+
+After the core workflow finishes, Stage 18 can compare the original accepted TeX source with the revised TeX source when the Stage 0 policy allows it. It uses `latexdiff --flatten` when the command is installed; if `latexdiff` is unavailable, the tool still writes a unified-diff fallback and marks the status. The structured change extraction expands `\input{}` and `\include{}` files so multi-file TeX manuscripts are audited beyond the root file.
+
+```bash
+python3 .codex/tools/draft-paper-reviewer/latexdiff_revision_audit.py \
+  --old-root <original TeX root or source directory> \
+  --new-root <revised TeX root or source directory> \
+  --out-root workspace/draft_paper_review
+```
+
+Then run `latexdiff-change-auditor`. It reads the diff, revision plan, ledger, verifier, and reviewer/audit reports, then writes author-facing rationale reports:
+
+```text
+workspace/draft_paper_review/diff/latexdiff.tex
+workspace/draft_paper_review/reports/100_latexdiff_changes.csv
+workspace/draft_paper_review/reports/100_latexdiff_extraction.md
+workspace/draft_paper_review/reports/100_latexdiff_extraction.tex
+workspace/draft_paper_review/reports/101_change_rationale_audit.md
+workspace/draft_paper_review/reports/101_change_rationale_audit.tex
+```
+
+The `101` report explains what was added, deleted, or replaced, why each edit happened, which review task or ledger row supports it, and which earlier stage should recheck weak or questionable edits.
 
 ## Install Agents Into A Target Repo
 
@@ -171,4 +196,10 @@ workspace/draft_paper_review/reports/32_iteration_log.md
 workspace/draft_paper_review/reports/33_deferred_issues.md
 workspace/draft_paper_review/reports/34_report_materiality_index.md
 workspace/draft_paper_review/reports/99_ultimate_summary.md
+workspace/draft_paper_review/reports/100_latexdiff_changes.csv
+workspace/draft_paper_review/reports/100_latexdiff_extraction.md
+workspace/draft_paper_review/reports/100_latexdiff_extraction.tex
+workspace/draft_paper_review/reports/101_change_rationale_audit.md
+workspace/draft_paper_review/reports/101_change_rationale_audit.tex
+workspace/draft_paper_review/diff/latexdiff.tex
 ```

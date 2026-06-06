@@ -6,7 +6,7 @@ start
 :Stage 0 - review-requirement-collector;
 :Scan submitted manuscript path for TeX source;
 if (Submitted manuscript is TeX source?) then (yes)
-  :Show complete parameter table with defaults\nincluding download policy, top-X,\nfigure/table deletion policy,\nand report materiality policy;
+  :Show complete parameter table with defaults\nincluding download policy, top-X,\nfigure/table deletion policy,\nreport materiality policy,\nand post-core latexdiff audit policy;
   if (All parameters confirmed?) then (yes)
     :Write 00_requirements.md\nSTATUS: READY;
   else (no)
@@ -184,7 +184,23 @@ if (VERDICT: GO?) then (yes)
   :Stage 17 - ultimate-report-synthesizer;
   :Read numbered material reports\nand traceability artifacts;
   :Write 99_ultimate_summary.md\nwith agent conclusions, actions,\ndownloaded-paper lessons, figure/table decisions,\nvalidated strengths, risks,\nand recommended reading path;
-  stop
+  if (Confirmed latexdiff policy allows audit\nand revised TeX exists?) then (yes)
+    :Run latexdiff_revision_audit.py\non original and revised TeX roots;
+    :Flatten TeX input/include content\nfor structured change extraction;
+    :Write diff/latexdiff.tex,\n100_latexdiff_changes.csv,\n100_latexdiff_extraction.md,\nand 100_latexdiff_extraction.tex;
+    :Stage 18 - latexdiff-change-auditor;
+    :Read latexdiff outputs,\nrevision plan, ledger,\nrevision verification,\nand numbered reports;
+    :Write 101_change_rationale_audit.md\nand 101_change_rationale_audit.tex\nwith what changed, why,\nand whether recheck is needed;
+    if (Questionable change needs recheck?) then (yes)
+      :Route change IDs to the target stage\nor prior agent named by Stage 18;
+      :Enter Loopback Mode when policy allows;
+      detach
+    else (no)
+      stop
+    endif
+  else (no)
+    stop
+  endif
 else (VERDICT: REJECT)
   :Read exactly one target stage and rejection reason;
   :Compute issue_signature;
