@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Sync plugin packages from repository branches into the tool branch."""
+"""Sync plugin packages from source branches into the main branch."""
 
 from __future__ import annotations
 
@@ -44,10 +44,18 @@ def run(cmd: list[str], cwd: Path | None = None, stdout=None) -> None:
 
 
 def fetch_branches() -> None:
-    try:
-        run(["git", "fetch", "origin", "tool", "research", "reviewer", "experiment"])
-    except subprocess.CalledProcessError:
-        print("Warning: could not fetch origin branches; falling back to local refs")
+    for branch in ["main", "research", "reviewer", "experiment"]:
+        try:
+            run(
+                [
+                    "git",
+                    "fetch",
+                    "origin",
+                    f"+refs/heads/{branch}:refs/remotes/origin/{branch}",
+                ]
+            )
+        except subprocess.CalledProcessError:
+            print(f"Warning: could not fetch origin/{branch}; falling back to local refs")
 
 
 def branch_ref(branch: str) -> str:

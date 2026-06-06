@@ -1,4 +1,4 @@
-name: Sync Tool Branch
+name: Sync Main Branch
 
 on:
   push:
@@ -6,29 +6,76 @@ on:
       - research
       - reviewer
       - experiment
+  repository_dispatch:
+    types:
+      - sync-plugin
   workflow_dispatch:
 
 permissions:
   contents: write
 
 concurrency:
-  group: sync-tool-branch
+  group: sync-main-branch
   cancel-in-progress: false
 
 jobs:
   sync:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout tool branch
+      - name: Checkout main branch
         uses: actions/checkout@v4
         with:
-          ref: tool
+          ref: main
           fetch-depth: 0
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.x"
+
+      - name: Update source branch from dispatch
+        if: github.event_name == 'repository_dispatch'
+        env:
+          SOURCE_REPO: ${{ github.event.client_payload.source_repo }}
+          SOURCE_BRANCH: ${{ github.event.client_payload.source_branch }}
+          PAPER_TOOL_SOURCE_TOKEN: ${{ secrets.PAPER_TOOL_SOURCE_TOKEN }}
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          if [ "$SOURCE_REPO" = "${{ github.repository }}" ]; then
+            case "$SOURCE_BRANCH" in
+              research|reviewer|experiment)
+                git fetch origin "+refs/heads/${SOURCE_BRANCH}:refs/remotes/origin/${SOURCE_BRANCH}"
+                ;;
+              *)
+                echo "::error::Unsupported same-repo source_branch: $SOURCE_BRANCH"
+                exit 1
+                ;;
+            esac
+          else
+            case "$SOURCE_REPO" in
+              zcluu/paper-research)
+                SOURCE_BRANCH=research
+                ;;
+              zcluu/paper-reviewer)
+                SOURCE_BRANCH=reviewer
+                ;;
+              zcluu/paper-experiment)
+                SOURCE_BRANCH=experiment
+                ;;
+              *)
+                echo "::error::Unsupported source_repo: $SOURCE_REPO"
+                exit 1
+                ;;
+            esac
+
+            TOKEN="${PAPER_TOOL_SOURCE_TOKEN:-$GITHUB_TOKEN}"
+            git fetch origin "+refs/heads/${SOURCE_BRANCH}:refs/remotes/origin/${SOURCE_BRANCH}"
+            git fetch \
+              "https://x-access-token:${TOKEN}@github.com/${SOURCE_REPO}.git" \
+              main:refs/remotes/source/${SOURCE_BRANCH}
+            git branch -f "$SOURCE_BRANCH" "refs/remotes/source/${SOURCE_BRANCH}"
+            git push origin "$SOURCE_BRANCH" --force-with-lease
+          fi
 
       - name: Sync plugin packages from branches
         run: python3 scripts/sync_plugins_from_branches.py
@@ -65,7 +112,7 @@ jobs:
                   if token in text:
                       raise SystemExit(f"{path} contains forbidden path {token}")
 
-          print("Tool branch validation passed")
+          print("Main branch validation passed")
           PY
 
       - name: Check plugin changes
@@ -84,4 +131,4 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add plugins
           git commit -m "Sync plugins from source branches"
-          git push origin tool
+          git push origin main
