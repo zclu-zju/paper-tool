@@ -9,6 +9,7 @@ main        aggregate marketplace branch
 research    source branch for plugins/paper-research
 reviewer    source branch for plugins/paper-reviewer
 experiment  source branch for plugins/paper-experiment
+paper-deep-research  source branch for plugins/deep-paper-search
 ```
 
 Develop plugin behavior on the matching plugin branch. The `main` branch is the installable marketplace branch and should normally be updated by automation.
@@ -20,6 +21,7 @@ codex plugin marketplace add git@github.com:zclu-zju/paper-tool.git --ref main
 codex plugin add paper-research@paper-tool
 codex plugin add paper-reviewer@paper-tool
 codex plugin add paper-experiment@paper-tool
+codex plugin add deep-paper-search@paper-tool
 ```
 
 Install only the plugins needed for the target workflow.
@@ -46,6 +48,12 @@ git checkout experiment
 git push origin experiment
 ```
 
+```bash
+git checkout paper-deep-research
+# edit plugins/deep-paper-search
+git push origin paper-deep-research
+```
+
 When one of those branches is pushed, GitHub Actions syncs the matching plugin package into the `main` branch. You can also run the sync manually:
 
 ```bash
@@ -61,6 +69,7 @@ Reports remain plugin-scoped:
 workspace/report/paper-research/
 workspace/report/paper-reviewer/
 workspace/report/paper-experiment/
+workspace/report/deep-paper-search/
 ```
 
 Shared researched-paper artifacts are stored under:

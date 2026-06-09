@@ -10,6 +10,7 @@ Reports are plugin-scoped and must not be mixed:
 workspace/report/paper-research/
 workspace/report/paper-experiment/
 workspace/report/paper-reviewer/
+workspace/report/deep-paper-search/
 ```
 
 ## Shared Researched Paper Artifacts
@@ -34,6 +35,7 @@ Non-report execution artifacts go under plugin-scoped work directories:
 workspace/work/paper-research/
 workspace/work/paper-experiment/
 workspace/work/paper-reviewer/
+workspace/work/deep-paper-search/
 ```
 
 Examples:
@@ -42,6 +44,7 @@ Examples:
 - rewritten experiment repo: `workspace/work/paper-experiment/rewritten_repo/`
 - copied manuscript revisions: `workspace/work/paper-reviewer/revision/`
 - paper-review latexdiff files: `workspace/work/paper-reviewer/diff/`
+- deep paper search outputs: `workspace/work/deep-paper-search/`
 
 ## Deprecated Paths
 

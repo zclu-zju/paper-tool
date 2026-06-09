@@ -27,6 +27,7 @@ BRANCH_PLUGINS = [
     BranchPlugin("research", "paper-research"),
     BranchPlugin("reviewer", "paper-reviewer"),
     BranchPlugin("experiment", "paper-experiment"),
+    BranchPlugin("paper-deep-research", "deep-paper-search"),
 ]
 
 FORBIDDEN_PATHS = [
@@ -44,7 +45,8 @@ def run(cmd: list[str], cwd: Path | None = None, stdout=None) -> None:
 
 
 def fetch_branches() -> None:
-    for branch in ["main", "research", "reviewer", "experiment"]:
+    branches = ["main", *(item.branch for item in BRANCH_PLUGINS)]
+    for branch in branches:
         try:
             run(
                 [

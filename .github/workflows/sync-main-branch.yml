@@ -6,6 +6,7 @@ on:
       - research
       - reviewer
       - experiment
+      - paper-deep-research
   repository_dispatch:
     types:
       - sync-plugin
@@ -43,7 +44,7 @@ jobs:
         run: |
           if [ "$SOURCE_REPO" = "${{ github.repository }}" ]; then
             case "$SOURCE_BRANCH" in
-              research|reviewer|experiment)
+              research|reviewer|experiment|paper-deep-research)
                 git fetch origin "+refs/heads/${SOURCE_BRANCH}:refs/remotes/origin/${SOURCE_BRANCH}"
                 ;;
               *)
@@ -88,7 +89,7 @@ jobs:
           import json
           from pathlib import Path
 
-          expected = ["paper-research", "paper-reviewer", "paper-experiment"]
+          expected = ["paper-research", "paper-reviewer", "paper-experiment", "deep-paper-search"]
           forbidden = [
               "workspace/literature_research",
               "workspace/experiment_rewrite",

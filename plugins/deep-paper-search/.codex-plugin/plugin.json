@@ -1,0 +1,34 @@
+{
+  "name": "deep-paper-search",
+  "version": "0.1.0",
+  "description": "Evidence-driven multi-agent deep paper search workflow with query expansion, citation snowballing, author and venue exploration, coverage audit, and adversarial loopback.",
+  "author": {
+    "name": "Deep Paper Search"
+  },
+  "repository": "https://github.com/zclu-zju/paper-deep-research",
+  "keywords": [
+    "codex",
+    "research",
+    "literature-review",
+    "paper-search",
+    "subagents",
+    "coverage-audit"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Deep Paper Search",
+    "shortDescription": "Iterative multi-agent paper discovery.",
+    "longDescription": "Installs custom agents and prompts for a deep paper search workflow that expands from user intent into terms, citations, authors, venues, datasets, code, standards, evidence graphs, coverage audit, and adversarial loopback.",
+    "developerName": "Deep Paper Search",
+    "category": "Productivity",
+    "capabilities": [
+      "Interactive",
+      "Write"
+    ],
+    "defaultPrompt": [
+      "Run the deep-paper-search workflow for my research direction.",
+      "Use the Deep Paper Search agents to discover papers beyond initial keywords.",
+      "Install Deep Paper Search workflow agents."
+    ]
+  }
+}

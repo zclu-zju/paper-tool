@@ -1,0 +1,1189 @@
+[
+  {
+    "id": 1,
+    "agent": "run_orchestrator_agent",
+    "custom_agent_name": "run-orchestrator-agent",
+    "phase": "4.1 Orchestration, State, and Reproducibility",
+    "phase_slug": "orchestration_state_reproducibility",
+    "responsibility": "Execute the global workflow DAG, launch parallel tasks, advance loop decisions, and keep stage execution coherent.",
+    "output": "run plan and stage status",
+    "failure_mode": "Parallel discovery branches may be skipped, duplicated, or integrated in the wrong order.",
+    "prompt": "prompts/run_orchestrator_agent.md",
+    "toml": ".codex/agents/run_orchestrator_agent.toml",
+    "stages": [
+      1
+    ]
+  },
+  {
+    "id": 2,
+    "agent": "state_reducer_agent",
+    "custom_agent_name": "state-reducer-agent",
+    "phase": "4.1 Orchestration, State, and Reproducibility",
+    "phase_slug": "orchestration_state_reproducibility",
+    "responsibility": "Reduce append-only agent events into the current canonical Research State and expose state diffs between iterations.",
+    "output": "state snapshot and state diff",
+    "failure_mode": "Parallel agents may mutate conflicting state or hide the history behind a decision.",
+    "prompt": "prompts/state_reducer_agent.md",
+    "toml": ".codex/agents/state_reducer_agent.toml",
+    "stages": [
+      1,
+      27
+    ]
+  },
+  {
+    "id": 3,
+    "agent": "provenance_trace_agent",
+    "custom_agent_name": "provenance-trace-agent",
+    "phase": "4.1 Orchestration, State, and Reproducibility",
+    "phase_slug": "orchestration_state_reproducibility",
+    "responsibility": "Record the source chain for papers, terms, scores, exclusions, frontier decisions, and final claims.",
+    "output": "provenance graph",
+    "failure_mode": "The workflow may produce claims that cannot be reproduced or audited.",
+    "prompt": "prompts/provenance_trace_agent.md",
+    "toml": ".codex/agents/provenance_trace_agent.toml",
+    "stages": []
+  },
+  {
+    "id": 4,
+    "agent": "frontier_budget_allocator_agent",
+    "custom_agent_name": "frontier-budget-allocator-agent",
+    "phase": "4.1 Orchestration, State, and Reproducibility",
+    "phase_slug": "orchestration_state_reproducibility",
+    "responsibility": "Allocate time, API, download, and model budgets across keyword, citation, author, venue, dataset, code, and standards frontiers.",
+    "output": "frontier budget plan",
+    "failure_mode": "One attractive frontier may consume the budget while more valuable discovery paths remain unexplored.",
+    "prompt": "prompts/frontier_budget_allocator_agent.md",
+    "toml": ".codex/agents/frontier_budget_allocator_agent.toml",
+    "stages": [
+      21
+    ]
+  },
+  {
+    "id": 5,
+    "agent": "failure_triage_agent",
+    "custom_agent_name": "failure-triage-agent",
+    "phase": "4.1 Orchestration, State, and Reproducibility",
+    "phase_slug": "orchestration_state_reproducibility",
+    "responsibility": "Classify API failures, malformed queries, access denials, empty results, parse failures, and low-yield searches into actionable recovery states.",
+    "output": "recovery action",
+    "failure_mode": "Tool or access failures may be mistaken for evidence that no relevant literature exists.",
+    "prompt": "prompts/failure_triage_agent.md",
+    "toml": ".codex/agents/failure_triage_agent.toml",
+    "stages": []
+  },
+  {
+    "id": 6,
+    "agent": "intent_decomposition_agent",
+    "custom_agent_name": "intent-decomposition-agent",
+    "phase": "4.2 Intent, Definition, and Boundaries",
+    "phase_slug": "intent_definition_boundaries",
+    "responsibility": "Decompose the user request into domain, task, object, method, setting, metric, constraints, and requested depth.",
+    "output": "intent frame",
+    "failure_mode": "The initial request may be treated as a single keyword instead of a structured research intent.",
+    "prompt": "prompts/intent_decomposition_agent.md",
+    "toml": ".codex/agents/intent_decomposition_agent.toml",
+    "stages": [
+      2
+    ]
+  },
+  {
+    "id": 7,
+    "agent": "domain_disambiguation_agent",
+    "custom_agent_name": "domain-disambiguation-agent",
+    "phase": "4.2 Intent, Definition, and Boundaries",
+    "phase_slug": "intent_definition_boundaries",
+    "responsibility": "Disambiguate terms whose meaning changes across fields and select the domain interpretation supported by the request and evidence.",
+    "output": "domain decision",
+    "failure_mode": "The search may drift into a different discipline with similar vocabulary.",
+    "prompt": "prompts/domain_disambiguation_agent.md",
+    "toml": ".codex/agents/domain_disambiguation_agent.toml",
+    "stages": [
+      3
+    ]
+  },
+  {
+    "id": 8,
+    "agent": "concept_definition_agent",
+    "custom_agent_name": "concept-definition-agent",
+    "phase": "4.2 Intent, Definition, and Boundaries",
+    "phase_slug": "intent_definition_boundaries",
+    "responsibility": "Create operational definitions for core concepts and specify what evidence makes a paper relevant to each concept.",
+    "output": "concept definition table",
+    "failure_mode": "Screening agents may have no stable standard for relevance decisions.",
+    "prompt": "prompts/concept_definition_agent.md",
+    "toml": ".codex/agents/concept_definition_agent.toml",
+    "stages": [
+      4
+    ]
+  },
+  {
+    "id": 9,
+    "agent": "scope_boundary_agent",
+    "custom_agent_name": "scope-boundary-agent",
+    "phase": "4.2 Intent, Definition, and Boundaries",
+    "phase_slug": "intent_definition_boundaries",
+    "responsibility": "Define in-scope, near-scope, out-of-scope, and unresolved boundary cases for the research task.",
+    "output": "scope contract",
+    "failure_mode": "Expansion agents may drift indefinitely or exclude useful bridge papers without explanation.",
+    "prompt": "prompts/scope_boundary_agent.md",
+    "toml": ".codex/agents/scope_boundary_agent.toml",
+    "stages": [
+      5
+    ]
+  },
+  {
+    "id": 10,
+    "agent": "depth_contract_agent",
+    "custom_agent_name": "depth-contract-agent",
+    "phase": "4.2 Intent, Definition, and Boundaries",
+    "phase_slug": "intent_definition_boundaries",
+    "responsibility": "Translate the user's need into search depth, coverage thresholds, stopping gates, and acceptable residual risk.",
+    "output": "depth contract",
+    "failure_mode": "A quick exploratory task and a near-exhaustive survey may be run with the same stopping criteria.",
+    "prompt": "prompts/depth_contract_agent.md",
+    "toml": ".codex/agents/depth_contract_agent.toml",
+    "stages": [
+      5
+    ]
+  },
+  {
+    "id": 11,
+    "agent": "assumption_registry_agent",
+    "custom_agent_name": "assumption-registry-agent",
+    "phase": "4.2 Intent, Definition, and Boundaries",
+    "phase_slug": "intent_definition_boundaries",
+    "responsibility": "Record provisional assumptions, their evidence status, and the condition that would confirm, revise, or invalidate them.",
+    "output": "assumption ledger",
+    "failure_mode": "Early guesses may silently control the workflow as if they were verified facts.",
+    "prompt": "prompts/assumption_registry_agent.md",
+    "toml": ".codex/agents/assumption_registry_agent.toml",
+    "stages": [
+      3
+    ]
+  },
+  {
+    "id": 12,
+    "agent": "seed_keyword_agent",
+    "custom_agent_name": "seed-keyword-agent",
+    "phase": "4.3 Terminology, Keywords, and Queries",
+    "phase_slug": "terminology_keywords_queries",
+    "responsibility": "Generate the first search entry terms from the intent frame without treating them as final boundaries.",
+    "output": "seed term set",
+    "failure_mode": "The workflow may lack an initial retrieval path into the literature.",
+    "prompt": "prompts/seed_keyword_agent.md",
+    "toml": ".codex/agents/seed_keyword_agent.toml",
+    "stages": [
+      6
+    ]
+  },
+  {
+    "id": 13,
+    "agent": "translation_alias_agent",
+    "custom_agent_name": "translation-alias-agent",
+    "phase": "4.3 Terminology, Keywords, and Queries",
+    "phase_slug": "terminology_keywords_queries",
+    "responsibility": "Map multilingual terms, abbreviations, expansions, aliases, and common mistranslations into searchable variants.",
+    "output": "alias map",
+    "failure_mode": "Literal translation from the user language may miss the vocabulary used by the target community.",
+    "prompt": "prompts/translation_alias_agent.md",
+    "toml": ".codex/agents/translation_alias_agent.toml",
+    "stages": [
+      6
+    ]
+  },
+  {
+    "id": 14,
+    "agent": "controlled_vocabulary_agent",
+    "custom_agent_name": "controlled-vocabulary-agent",
+    "phase": "4.3 Terminology, Keywords, and Queries",
+    "phase_slug": "terminology_keywords_queries",
+    "responsibility": "Compare the task with controlled vocabularies, taxonomies, and database indexing terms relevant to the domain.",
+    "output": "controlled term candidates",
+    "failure_mode": "The workflow may ignore terms used by scholarly databases to index the target topic.",
+    "prompt": "prompts/controlled_vocabulary_agent.md",
+    "toml": ".codex/agents/controlled_vocabulary_agent.toml",
+    "stages": [
+      6
+    ]
+  },
+  {
+    "id": 15,
+    "agent": "paper_term_extractor_agent",
+    "custom_agent_name": "paper-term-extractor-agent",
+    "phase": "4.3 Terminology, Keywords, and Queries",
+    "phase_slug": "terminology_keywords_queries",
+    "responsibility": "Extract observed terminology from real paper titles, abstracts, keywords, introductions, captions, and parsed sections.",
+    "output": "observed term set",
+    "failure_mode": "The system may rely on invented or user-supplied terms rather than field vocabulary.",
+    "prompt": "prompts/paper_term_extractor_agent.md",
+    "toml": ".codex/agents/paper_term_extractor_agent.toml",
+    "stages": [
+      18
+    ]
+  },
+  {
+    "id": 16,
+    "agent": "term_canonicalization_agent",
+    "custom_agent_name": "term-canonicalization-agent",
+    "phase": "4.3 Terminology, Keywords, and Queries",
+    "phase_slug": "terminology_keywords_queries",
+    "responsibility": "Merge aliases, abbreviations, spelling variants, inflections, and capitalization variants into canonical term records.",
+    "output": "canonical term table",
+    "failure_mode": "The same concept may be counted as multiple unrelated research directions.",
+    "prompt": "prompts/term_canonicalization_agent.md",
+    "toml": ".codex/agents/term_canonicalization_agent.toml",
+    "stages": [
+      18
+    ]
+  },
+  {
+    "id": 17,
+    "agent": "term_cooccurrence_graph_agent",
+    "custom_agent_name": "term-cooccurrence-graph-agent",
+    "phase": "4.3 Terminology, Keywords, and Queries",
+    "phase_slug": "terminology_keywords_queries",
+    "responsibility": "Build a term co-occurrence graph to identify bridge terms, hidden connections, and community-specific neighborhoods.",
+    "output": "term graph",
+    "failure_mode": "The workflow may miss bridge vocabulary connecting two relevant paper communities.",
+    "prompt": "prompts/term_cooccurrence_graph_agent.md",
+    "toml": ".codex/agents/term_cooccurrence_graph_agent.toml",
+    "stages": [
+      19
+    ]
+  },
+  {
+    "id": 18,
+    "agent": "terminology_drift_agent",
+    "custom_agent_name": "terminology-drift-agent",
+    "phase": "4.3 Terminology, Keywords, and Queries",
+    "phase_slug": "terminology_keywords_queries",
+    "responsibility": "Analyze how terminology varies across years, venues, and communities and identify old and new names for the same idea.",
+    "output": "terminology drift report",
+    "failure_mode": "The workflow may cover only one time period because it searches only contemporary or legacy terms.",
+    "prompt": "prompts/terminology_drift_agent.md",
+    "toml": ".codex/agents/terminology_drift_agent.toml",
+    "stages": [
+      19
+    ]
+  },
+  {
+    "id": 19,
+    "agent": "negative_query_agent",
+    "custom_agent_name": "negative-query-agent",
+    "phase": "4.3 Terminology, Keywords, and Queries",
+    "phase_slug": "terminology_keywords_queries",
+    "responsibility": "Generate exclusion terms and noise patterns that reduce off-topic results without blocking valid near-scope bridges.",
+    "output": "negative query rules",
+    "failure_mode": "Search results may be overwhelmed by adjacent disciplines or unrelated senses of shared terms.",
+    "prompt": "prompts/negative_query_agent.md",
+    "toml": ".codex/agents/negative_query_agent.toml",
+    "stages": [
+      7
+    ]
+  },
+  {
+    "id": 20,
+    "agent": "query_mutation_agent",
+    "custom_agent_name": "query-mutation-agent",
+    "phase": "4.3 Terminology, Keywords, and Queries",
+    "phase_slug": "terminology_keywords_queries",
+    "responsibility": "Create query variants from aliases, term graph evidence, failed probes, near-miss signals, and audit feedback.",
+    "output": "mutated query set",
+    "failure_mode": "The search may stall after the first query set fails or returns biased results.",
+    "prompt": "prompts/query_mutation_agent.md",
+    "toml": ".codex/agents/query_mutation_agent.toml",
+    "stages": [
+      9
+    ]
+  },
+  {
+    "id": 21,
+    "agent": "boolean_query_compiler_agent",
+    "custom_agent_name": "boolean-query-compiler-agent",
+    "phase": "4.3 Terminology, Keywords, and Queries",
+    "phase_slug": "terminology_keywords_queries",
+    "responsibility": "Compile source-specific Boolean queries with correct operators, field selectors, nesting, and exclusions.",
+    "output": "source-specific Boolean queries",
+    "failure_mode": "Valid concepts may fail because the query syntax is illegal or poorly adapted to a database.",
+    "prompt": "prompts/boolean_query_compiler_agent.md",
+    "toml": ".codex/agents/boolean_query_compiler_agent.toml",
+    "stages": [
+      7
+    ]
+  },
+  {
+    "id": 22,
+    "agent": "semantic_query_compiler_agent",
+    "custom_agent_name": "semantic-query-compiler-agent",
+    "phase": "4.3 Terminology, Keywords, and Queries",
+    "phase_slug": "terminology_keywords_queries",
+    "responsibility": "Compile natural-language semantic search prompts that express the concept without depending on exact keyword matches.",
+    "output": "semantic query set",
+    "failure_mode": "Papers using different wording may be missed by keyword-only retrieval.",
+    "prompt": "prompts/semantic_query_compiler_agent.md",
+    "toml": ".codex/agents/semantic_query_compiler_agent.toml",
+    "stages": [
+      7
+    ]
+  },
+  {
+    "id": 23,
+    "agent": "query_probe_agent",
+    "custom_agent_name": "query-probe-agent",
+    "phase": "4.3 Terminology, Keywords, and Queries",
+    "phase_slug": "terminology_keywords_queries",
+    "responsibility": "Run or evaluate small probe result sets to estimate query precision, drift, missing terms, and expected yield.",
+    "output": "query probe report",
+    "failure_mode": "Large retrieval budgets may be spent on noisy or misdirected queries.",
+    "prompt": "prompts/query_probe_agent.md",
+    "toml": ".codex/agents/query_probe_agent.toml",
+    "stages": [
+      8
+    ]
+  },
+  {
+    "id": 24,
+    "agent": "keyword_gap_auditor_agent",
+    "custom_agent_name": "keyword-gap-auditor-agent",
+    "phase": "4.3 Terminology, Keywords, and Queries",
+    "phase_slug": "terminology_keywords_queries",
+    "responsibility": "Audit whether query terms cover tasks, methods, datasets, metrics, settings, applications, and community language.",
+    "output": "keyword gap report",
+    "failure_mode": "Keyword coverage may appear broad while important dimensions remain absent.",
+    "prompt": "prompts/keyword_gap_auditor_agent.md",
+    "toml": ".codex/agents/keyword_gap_auditor_agent.toml",
+    "stages": [
+      8
+    ]
+  },
+  {
+    "id": 25,
+    "agent": "semantic_scholar_search_agent",
+    "custom_agent_name": "semantic-scholar-search-agent",
+    "phase": "4.4 Data Source Retrieval",
+    "phase_slug": "data_source_retrieval",
+    "responsibility": "Retrieve candidates, citation links, and similar papers from Semantic Scholar using the assigned queries.",
+    "output": "Semantic Scholar result batch",
+    "failure_mode": "The workflow may lack an accessible citation-aware and semantic retrieval source.",
+    "prompt": "prompts/semantic_scholar_search_agent.md",
+    "toml": ".codex/agents/semantic_scholar_search_agent.toml",
+    "stages": [
+      10
+    ]
+  },
+  {
+    "id": 26,
+    "agent": "openalex_search_agent",
+    "custom_agent_name": "openalex-search-agent",
+    "phase": "4.4 Data Source Retrieval",
+    "phase_slug": "data_source_retrieval",
+    "responsibility": "Retrieve works, concepts, institutions, venues, and citation metadata from OpenAlex.",
+    "output": "OpenAlex result batch",
+    "failure_mode": "The workflow may overdepend on a single commercial or closed scholarly index.",
+    "prompt": "prompts/openalex_search_agent.md",
+    "toml": ".codex/agents/openalex_search_agent.toml",
+    "stages": [
+      10
+    ]
+  },
+  {
+    "id": 27,
+    "agent": "crossref_metadata_agent",
+    "custom_agent_name": "crossref-metadata-agent",
+    "phase": "4.4 Data Source Retrieval",
+    "phase_slug": "data_source_retrieval",
+    "responsibility": "Retrieve DOI, publisher, journal, issue, and publication version metadata from Crossref.",
+    "output": "Crossref metadata batch",
+    "failure_mode": "Canonical publication metadata and DOI relationships may remain incomplete.",
+    "prompt": "prompts/crossref_metadata_agent.md",
+    "toml": ".codex/agents/crossref_metadata_agent.toml",
+    "stages": [
+      10
+    ]
+  },
+  {
+    "id": 28,
+    "agent": "arxiv_search_agent",
+    "custom_agent_name": "arxiv-search-agent",
+    "phase": "4.4 Data Source Retrieval",
+    "phase_slug": "data_source_retrieval",
+    "responsibility": "Retrieve preprints and recent unpublished or not-yet-indexed work from arXiv.",
+    "output": "arXiv result batch",
+    "failure_mode": "Recent work may be missed before it appears in formal publication databases.",
+    "prompt": "prompts/arxiv_search_agent.md",
+    "toml": ".codex/agents/arxiv_search_agent.toml",
+    "stages": [
+      10
+    ]
+  },
+  {
+    "id": 29,
+    "agent": "dblp_search_agent",
+    "custom_agent_name": "dblp-search-agent",
+    "phase": "4.4 Data Source Retrieval",
+    "phase_slug": "data_source_retrieval",
+    "responsibility": "Retrieve computer science conference, journal, venue, and author records from DBLP.",
+    "output": "DBLP result batch",
+    "failure_mode": "Computer science venue metadata and author publication histories may be incomplete.",
+    "prompt": "prompts/dblp_search_agent.md",
+    "toml": ".codex/agents/dblp_search_agent.toml",
+    "stages": [
+      10
+    ]
+  },
+  {
+    "id": 30,
+    "agent": "ieee_xplore_search_agent",
+    "custom_agent_name": "ieee-xplore-search-agent",
+    "phase": "4.4 Data Source Retrieval",
+    "phase_slug": "data_source_retrieval",
+    "responsibility": "Retrieve communications, signal processing, hardware, and engineering papers from IEEE Xplore when access allows.",
+    "output": "IEEE Xplore result batch",
+    "failure_mode": "Engineering-heavy topics may miss papers published in the dominant IEEE venues.",
+    "prompt": "prompts/ieee_xplore_search_agent.md",
+    "toml": ".codex/agents/ieee_xplore_search_agent.toml",
+    "stages": [
+      10
+    ]
+  },
+  {
+    "id": 31,
+    "agent": "acm_dl_search_agent",
+    "custom_agent_name": "acm-dl-search-agent",
+    "phase": "4.4 Data Source Retrieval",
+    "phase_slug": "data_source_retrieval",
+    "responsibility": "Retrieve computing systems, networks, databases, HCI, and software papers from the ACM Digital Library when access allows.",
+    "output": "ACM Digital Library result batch",
+    "failure_mode": "ACM community papers may be underrepresented or absent.",
+    "prompt": "prompts/acm_dl_search_agent.md",
+    "toml": ".codex/agents/acm_dl_search_agent.toml",
+    "stages": [
+      10
+    ]
+  },
+  {
+    "id": 32,
+    "agent": "domain_specific_database_agent",
+    "custom_agent_name": "domain-specific-database-agent",
+    "phase": "4.4 Data Source Retrieval",
+    "phase_slug": "data_source_retrieval",
+    "responsibility": "Select and query domain-specific databases such as PubMed, ACL Anthology, INSPIRE, SSRN, or other field repositories.",
+    "output": "domain database result batch",
+    "failure_mode": "General-purpose indexes may fail to cover the target discipline's primary archive.",
+    "prompt": "prompts/domain_specific_database_agent.md",
+    "toml": ".codex/agents/domain_specific_database_agent.toml",
+    "stages": [
+      10
+    ]
+  },
+  {
+    "id": 33,
+    "agent": "scholarly_web_fallback_agent",
+    "custom_agent_name": "scholarly-web-fallback-agent",
+    "phase": "4.4 Data Source Retrieval",
+    "phase_slug": "data_source_retrieval",
+    "responsibility": "Search scholarly web pages, project pages, lab pages, and course bibliographies when APIs or indexes are insufficient.",
+    "output": "scholarly web result batch",
+    "failure_mode": "Relevant work not well indexed by APIs may remain invisible.",
+    "prompt": "prompts/scholarly_web_fallback_agent.md",
+    "toml": ".codex/agents/scholarly_web_fallback_agent.toml",
+    "stages": [
+      10
+    ]
+  },
+  {
+    "id": 34,
+    "agent": "full_text_locator_agent",
+    "custom_agent_name": "full-text-locator-agent",
+    "phase": "4.5 Full Text and Content Acquisition",
+    "phase_slug": "full_text_content",
+    "responsibility": "Locate legally accessible PDF, HTML, open-access, preprint, and author-hosted versions of candidate papers.",
+    "output": "full text link set",
+    "failure_mode": "The workflow may be limited to titles and abstracts and fail to mine deeper terminology or references.",
+    "prompt": "prompts/full_text_locator_agent.md",
+    "toml": ".codex/agents/full_text_locator_agent.toml",
+    "stages": [
+      11
+    ]
+  },
+  {
+    "id": 35,
+    "agent": "pdf_parse_agent",
+    "custom_agent_name": "pdf-parse-agent",
+    "phase": "4.5 Full Text and Content Acquisition",
+    "phase_slug": "full_text_content",
+    "responsibility": "Parse accessible PDF or full-text files into sections, metadata, references, tables, figures, and text spans with confidence notes.",
+    "output": "parsed paper text",
+    "failure_mode": "Full-text information may be unavailable to downstream term, citation, and experiment extractors.",
+    "prompt": "prompts/pdf_parse_agent.md",
+    "toml": ".codex/agents/pdf_parse_agent.toml",
+    "stages": [
+      12
+    ]
+  },
+  {
+    "id": 36,
+    "agent": "reference_section_parser_agent",
+    "custom_agent_name": "reference-section-parser-agent",
+    "phase": "4.5 Full Text and Content Acquisition",
+    "phase_slug": "full_text_content",
+    "responsibility": "Parse reference lists from full text and recover cited works not exposed through APIs.",
+    "output": "parsed reference records",
+    "failure_mode": "Key older or poorly indexed cited works may be absent from the citation frontier.",
+    "prompt": "prompts/reference_section_parser_agent.md",
+    "toml": ".codex/agents/reference_section_parser_agent.toml",
+    "stages": [
+      12
+    ]
+  },
+  {
+    "id": 37,
+    "agent": "figure_table_signal_agent",
+    "custom_agent_name": "figure-table-signal-agent",
+    "phase": "4.5 Full Text and Content Acquisition",
+    "phase_slug": "full_text_content",
+    "responsibility": "Extract method, dataset, metric, baseline, and experimental clues from figure captions, table captions, and table headers.",
+    "output": "figure and table signal records",
+    "failure_mode": "Important experimental terminology may be missed because it appears only in figures or tables.",
+    "prompt": "prompts/figure_table_signal_agent.md",
+    "toml": ".codex/agents/figure_table_signal_agent.toml",
+    "stages": [
+      12
+    ]
+  },
+  {
+    "id": 38,
+    "agent": "backward_citation_agent",
+    "custom_agent_name": "backward-citation-agent",
+    "phase": "4.6 Expansion Frontiers",
+    "phase_slug": "expansion_frontiers",
+    "responsibility": "Expand from seed papers to their references to recover foundational and prerequisite work.",
+    "output": "backward citation frontier",
+    "failure_mode": "The corpus may omit early foundations behind the visible seed papers.",
+    "prompt": "prompts/backward_citation_agent.md",
+    "toml": ".codex/agents/backward_citation_agent.toml",
+    "stages": [
+      22
+    ]
+  },
+  {
+    "id": 39,
+    "agent": "forward_citation_agent",
+    "custom_agent_name": "forward-citation-agent",
+    "phase": "4.6 Expansion Frontiers",
+    "phase_slug": "expansion_frontiers",
+    "responsibility": "Expand from seed papers to later works that cite them.",
+    "output": "forward citation frontier",
+    "failure_mode": "The corpus may omit later improvements, replications, and recent branches.",
+    "prompt": "prompts/forward_citation_agent.md",
+    "toml": ".codex/agents/forward_citation_agent.toml",
+    "stages": [
+      22
+    ]
+  },
+  {
+    "id": 40,
+    "agent": "co_citation_agent",
+    "custom_agent_name": "co-citation-agent",
+    "phase": "4.6 Expansion Frontiers",
+    "phase_slug": "expansion_frontiers",
+    "responsibility": "Find papers that are frequently co-cited with seed papers to reveal the same knowledge cluster.",
+    "output": "co-citation frontier",
+    "failure_mode": "Relevant papers in the same intellectual cluster may be missed if they do not directly cite the seed.",
+    "prompt": "prompts/co_citation_agent.md",
+    "toml": ".codex/agents/co_citation_agent.toml",
+    "stages": [
+      22
+    ]
+  },
+  {
+    "id": 41,
+    "agent": "bibliographic_coupling_agent",
+    "custom_agent_name": "bibliographic-coupling-agent",
+    "phase": "4.6 Expansion Frontiers",
+    "phase_slug": "expansion_frontiers",
+    "responsibility": "Find papers that cite many of the same references as the seed papers.",
+    "output": "bibliographic coupling frontier",
+    "failure_mode": "Parallel work with shared foundations but no direct citation edge may be missed.",
+    "prompt": "prompts/bibliographic_coupling_agent.md",
+    "toml": ".codex/agents/bibliographic_coupling_agent.toml",
+    "stages": [
+      22
+    ]
+  },
+  {
+    "id": 42,
+    "agent": "author_profile_agent",
+    "custom_agent_name": "author-profile-agent",
+    "phase": "4.6 Expansion Frontiers",
+    "phase_slug": "expansion_frontiers",
+    "responsibility": "Resolve core authors and retrieve their topic-relevant papers across aliases, profiles, and publication records.",
+    "output": "author frontier",
+    "failure_mode": "Papers by the same researchers using different terminology or venues may be missed.",
+    "prompt": "prompts/author_profile_agent.md",
+    "toml": ".codex/agents/author_profile_agent.toml",
+    "stages": [
+      23
+    ]
+  },
+  {
+    "id": 43,
+    "agent": "lab_institution_agent",
+    "custom_agent_name": "lab-institution-agent",
+    "phase": "4.6 Expansion Frontiers",
+    "phase_slug": "expansion_frontiers",
+    "responsibility": "Search laboratory, group, institution, and project pages for related papers and project lines.",
+    "output": "lab and institution frontier",
+    "failure_mode": "Series work not fully indexed by scholarly databases may remain undiscovered.",
+    "prompt": "prompts/lab_institution_agent.md",
+    "toml": ".codex/agents/lab_institution_agent.toml",
+    "stages": [
+      23
+    ]
+  },
+  {
+    "id": 44,
+    "agent": "venue_track_agent",
+    "custom_agent_name": "venue-track-agent",
+    "phase": "4.6 Expansion Frontiers",
+    "phase_slug": "expansion_frontiers",
+    "responsibility": "Expand through core venues, tracks, sessions, and journal issue structures related to the topic.",
+    "output": "venue frontier",
+    "failure_mode": "Community papers using different wording may be missed by term-based search.",
+    "prompt": "prompts/venue_track_agent.md",
+    "toml": ".codex/agents/venue_track_agent.toml",
+    "stages": [
+      24
+    ]
+  },
+  {
+    "id": 45,
+    "agent": "workshop_special_issue_agent",
+    "custom_agent_name": "workshop-special-issue-agent",
+    "phase": "4.6 Expansion Frontiers",
+    "phase_slug": "expansion_frontiers",
+    "responsibility": "Search workshops, special issues, challenges, and early community gatherings connected to the topic.",
+    "output": "workshop and special issue frontier",
+    "failure_mode": "Emerging subfields may be missed because they first appear in workshops or special issues.",
+    "prompt": "prompts/workshop_special_issue_agent.md",
+    "toml": ".codex/agents/workshop_special_issue_agent.toml",
+    "stages": [
+      24
+    ]
+  },
+  {
+    "id": 46,
+    "agent": "dataset_benchmark_agent",
+    "custom_agent_name": "dataset-benchmark-agent",
+    "phase": "4.6 Expansion Frontiers",
+    "phase_slug": "expansion_frontiers",
+    "responsibility": "Expand through datasets, simulation platforms, benchmarks, and experimental resources used by seed papers.",
+    "output": "dataset and benchmark frontier",
+    "failure_mode": "Papers solving the same task with different terminology may be missed.",
+    "prompt": "prompts/dataset_benchmark_agent.md",
+    "toml": ".codex/agents/dataset_benchmark_agent.toml",
+    "stages": [
+      25
+    ]
+  },
+  {
+    "id": 47,
+    "agent": "code_repository_agent",
+    "custom_agent_name": "code-repository-agent",
+    "phase": "4.6 Expansion Frontiers",
+    "phase_slug": "expansion_frontiers",
+    "responsibility": "Mine code repositories, README files, releases, model zoos, and paper-code indexes for paper links and related work.",
+    "output": "code repository frontier",
+    "failure_mode": "Implementation-centric papers may be missed when repository ecosystems expose them before indexes do.",
+    "prompt": "prompts/code_repository_agent.md",
+    "toml": ".codex/agents/code_repository_agent.toml",
+    "stages": [
+      25
+    ]
+  },
+  {
+    "id": 48,
+    "agent": "leaderboard_challenge_agent",
+    "custom_agent_name": "leaderboard-challenge-agent",
+    "phase": "4.6 Expansion Frontiers",
+    "phase_slug": "expansion_frontiers",
+    "responsibility": "Search leaderboards, competitions, and challenge pages for papers tied to shared evaluation tasks.",
+    "output": "leaderboard and challenge frontier",
+    "failure_mode": "Benchmark community papers may be missed even when they share the same evaluation target.",
+    "prompt": "prompts/leaderboard_challenge_agent.md",
+    "toml": ".codex/agents/leaderboard_challenge_agent.toml",
+    "stages": [
+      25
+    ]
+  },
+  {
+    "id": 49,
+    "agent": "standard_patent_agent",
+    "custom_agent_name": "standard-patent-agent",
+    "phase": "4.6 Expansion Frontiers",
+    "phase_slug": "expansion_frontiers",
+    "responsibility": "Search standards, patents, white papers, and engineering documents for aliases, application terms, and system vocabulary.",
+    "output": "standards and patents frontier",
+    "failure_mode": "Engineering terminology may remain disconnected from scholarly terminology.",
+    "prompt": "prompts/standard_patent_agent.md",
+    "toml": ".codex/agents/standard_patent_agent.toml",
+    "stages": [
+      26
+    ]
+  },
+  {
+    "id": 50,
+    "agent": "metadata_canonicalization_agent",
+    "custom_agent_name": "metadata-canonicalization-agent",
+    "phase": "4.7 Normalization, Deduplication, and Identity Resolution",
+    "phase_slug": "normalization_dedup_identity",
+    "responsibility": "Normalize titles, authors, years, venues, identifiers, URLs, and source-specific metadata into canonical record candidates.",
+    "output": "canonical record candidates",
+    "failure_mode": "Noisy multi-source metadata may prevent reliable merging, screening, and graph construction.",
+    "prompt": "prompts/metadata_canonicalization_agent.md",
+    "toml": ".codex/agents/metadata_canonicalization_agent.toml",
+    "stages": [
+      13,
+      27
+    ]
+  },
+  {
+    "id": 51,
+    "agent": "author_identity_resolution_agent",
+    "custom_agent_name": "author-identity-resolution-agent",
+    "phase": "4.7 Normalization, Deduplication, and Identity Resolution",
+    "phase_slug": "normalization_dedup_identity",
+    "responsibility": "Merge aliases for the same author and distinguish same-name authors using ORCID, DBLP, OpenAlex, affiliations, and coauthors.",
+    "output": "author identity map",
+    "failure_mode": "Author expansion may include unrelated papers by a different person with the same name.",
+    "prompt": "prompts/author_identity_resolution_agent.md",
+    "toml": ".codex/agents/author_identity_resolution_agent.toml",
+    "stages": [
+      14
+    ]
+  },
+  {
+    "id": 52,
+    "agent": "venue_identity_resolution_agent",
+    "custom_agent_name": "venue-identity-resolution-agent",
+    "phase": "4.7 Normalization, Deduplication, and Identity Resolution",
+    "phase_slug": "normalization_dedup_identity",
+    "responsibility": "Normalize venue abbreviations, full names, subvenues, workshops, tracks, and issue naming variants.",
+    "output": "venue identity map",
+    "failure_mode": "Venue expansion may miss relevant papers or merge distinct venues incorrectly.",
+    "prompt": "prompts/venue_identity_resolution_agent.md",
+    "toml": ".codex/agents/venue_identity_resolution_agent.toml",
+    "stages": [
+      14
+    ]
+  },
+  {
+    "id": 53,
+    "agent": "version_linking_agent",
+    "custom_agent_name": "version-linking-agent",
+    "phase": "4.7 Normalization, Deduplication, and Identity Resolution",
+    "phase_slug": "normalization_dedup_identity",
+    "responsibility": "Link arXiv, workshop, conference, journal extension, technical report, and revised versions of the same work.",
+    "output": "version graph",
+    "failure_mode": "The workflow may duplicate the same paper or discard meaningful extended versions.",
+    "prompt": "prompts/version_linking_agent.md",
+    "toml": ".codex/agents/version_linking_agent.toml",
+    "stages": [
+      15
+    ]
+  },
+  {
+    "id": 54,
+    "agent": "deduplication_agent",
+    "custom_agent_name": "deduplication-agent",
+    "phase": "4.7 Normalization, Deduplication, and Identity Resolution",
+    "phase_slug": "normalization_dedup_identity",
+    "responsibility": "Merge duplicate records using identifiers, normalized titles, author overlap, year proximity, venues, and embedding similarity.",
+    "output": "deduplicated corpus",
+    "failure_mode": "The same paper may be counted multiple times or fragmented across sources.",
+    "prompt": "prompts/deduplication_agent.md",
+    "toml": ".codex/agents/deduplication_agent.toml",
+    "stages": [
+      15,
+      27
+    ]
+  },
+  {
+    "id": 55,
+    "agent": "metadata_conflict_resolver_agent",
+    "custom_agent_name": "metadata-conflict-resolver-agent",
+    "phase": "4.7 Normalization, Deduplication, and Identity Resolution",
+    "phase_slug": "normalization_dedup_identity",
+    "responsibility": "Resolve conflicts in year, venue, author order, title variants, identifiers, and publication status using ranked evidence.",
+    "output": "metadata conflict resolution log",
+    "failure_mode": "Incorrect metadata may contaminate citation graphs, exports, and coverage analysis.",
+    "prompt": "prompts/metadata_conflict_resolver_agent.md",
+    "toml": ".codex/agents/metadata_conflict_resolver_agent.toml",
+    "stages": [
+      13
+    ]
+  },
+  {
+    "id": 56,
+    "agent": "retraction_errata_agent",
+    "custom_agent_name": "retraction-errata-agent",
+    "phase": "4.7 Normalization, Deduplication, and Identity Resolution",
+    "phase_slug": "normalization_dedup_identity",
+    "responsibility": "Check for retractions, errata, expressions of concern, version warnings, and other validity flags.",
+    "output": "validity flags",
+    "failure_mode": "Invalid or corrected papers may be treated as reliable core evidence.",
+    "prompt": "prompts/retraction_errata_agent.md",
+    "toml": ".codex/agents/retraction_errata_agent.toml",
+    "stages": [
+      28
+    ]
+  },
+  {
+    "id": 57,
+    "agent": "relevance_screening_agent",
+    "custom_agent_name": "relevance-screening-agent",
+    "phase": "4.8 Screening, Taxonomy, and Evidence Modeling",
+    "phase_slug": "screening_taxonomy_evidence",
+    "responsibility": "Classify canonical papers as in scope, near scope, out of scope, unknown, or not applicable using the scope contract.",
+    "output": "relevance decisions",
+    "failure_mode": "Noise papers may enter the core corpus or valid papers may be excluded without a standard.",
+    "prompt": "prompts/relevance_screening_agent.md",
+    "toml": ".codex/agents/relevance_screening_agent.toml",
+    "stages": [
+      16,
+      28
+    ]
+  },
+  {
+    "id": 58,
+    "agent": "near_miss_mining_agent",
+    "custom_agent_name": "near-miss-mining-agent",
+    "phase": "4.8 Screening, Taxonomy, and Evidence Modeling",
+    "phase_slug": "screening_taxonomy_evidence",
+    "responsibility": "Extract useful terms, references, datasets, authors, and venues from near-scope papers while keeping them outside the core corpus.",
+    "output": "near-miss signals",
+    "failure_mode": "Boundary papers may be discarded even though they reveal hidden search paths.",
+    "prompt": "prompts/near_miss_mining_agent.md",
+    "toml": ".codex/agents/near_miss_mining_agent.toml",
+    "stages": [
+      17
+    ]
+  },
+  {
+    "id": 59,
+    "agent": "exclusion_reason_agent",
+    "custom_agent_name": "exclusion-reason-agent",
+    "phase": "4.8 Screening, Taxonomy, and Evidence Modeling",
+    "phase_slug": "screening_taxonomy_evidence",
+    "responsibility": "Write structured, auditable exclusion reasons for out-of-scope papers and rejected records.",
+    "output": "exclusion ledger",
+    "failure_mode": "Exclusions may be impossible to review, reproduce, or challenge.",
+    "prompt": "prompts/exclusion_reason_agent.md",
+    "toml": ".codex/agents/exclusion_reason_agent.toml",
+    "stages": [
+      16,
+      28
+    ]
+  },
+  {
+    "id": 60,
+    "agent": "task_taxonomy_agent",
+    "custom_agent_name": "task-taxonomy-agent",
+    "phase": "4.8 Screening, Taxonomy, and Evidence Modeling",
+    "phase_slug": "screening_taxonomy_evidence",
+    "responsibility": "Group papers by task definition, problem setting, input-output structure, and target objective.",
+    "output": "task taxonomy",
+    "failure_mode": "Different tasks may be conflated into one undifferentiated paper set.",
+    "prompt": "prompts/task_taxonomy_agent.md",
+    "toml": ".codex/agents/task_taxonomy_agent.toml",
+    "stages": [
+      20
+    ]
+  },
+  {
+    "id": 61,
+    "agent": "method_taxonomy_agent",
+    "custom_agent_name": "method-taxonomy-agent",
+    "phase": "4.8 Screening, Taxonomy, and Evidence Modeling",
+    "phase_slug": "screening_taxonomy_evidence",
+    "responsibility": "Group papers by technical route, model family, theoretical assumption, optimization strategy, or algorithmic mechanism.",
+    "output": "method taxonomy",
+    "failure_mode": "Coverage of major method families may be unclear or falsely assumed.",
+    "prompt": "prompts/method_taxonomy_agent.md",
+    "toml": ".codex/agents/method_taxonomy_agent.toml",
+    "stages": [
+      20
+    ]
+  },
+  {
+    "id": 62,
+    "agent": "dataset_metric_extraction_agent",
+    "custom_agent_name": "dataset-metric-extraction-agent",
+    "phase": "4.8 Screening, Taxonomy, and Evidence Modeling",
+    "phase_slug": "screening_taxonomy_evidence",
+    "responsibility": "Extract datasets, simulators, benchmarks, metrics, baselines, and evaluation protocols from candidate papers.",
+    "output": "dataset and metric table",
+    "failure_mode": "The experimental context may be missing from taxonomy and coverage decisions.",
+    "prompt": "prompts/dataset_metric_extraction_agent.md",
+    "toml": ".codex/agents/dataset_metric_extraction_agent.toml",
+    "stages": [
+      20
+    ]
+  },
+  {
+    "id": 63,
+    "agent": "experimental_setting_agent",
+    "custom_agent_name": "experimental-setting-agent",
+    "phase": "4.8 Screening, Taxonomy, and Evidence Modeling",
+    "phase_slug": "screening_taxonomy_evidence",
+    "responsibility": "Extract system and experiment settings such as channel model, frequency band, antennas, subcarriers, training regime, hardware, or domain-specific conditions.",
+    "output": "experimental setting table",
+    "failure_mode": "Papers may look relevant while using incompatible experimental conditions.",
+    "prompt": "prompts/experimental_setting_agent.md",
+    "toml": ".codex/agents/experimental_setting_agent.toml",
+    "stages": [
+      20
+    ]
+  },
+  {
+    "id": 64,
+    "agent": "evidence_graph_agent",
+    "custom_agent_name": "evidence-graph-agent",
+    "phase": "4.8 Screening, Taxonomy, and Evidence Modeling",
+    "phase_slug": "screening_taxonomy_evidence",
+    "responsibility": "Build a heterogeneous graph connecting papers, terms, authors, venues, datasets, code, references, claims, and frontiers.",
+    "output": "evidence graph",
+    "failure_mode": "Coverage gaps, provenance paths, and cluster relationships may be impossible to evaluate.",
+    "prompt": "prompts/evidence_graph_agent.md",
+    "toml": ".codex/agents/evidence_graph_agent.toml",
+    "stages": [
+      29
+    ]
+  },
+  {
+    "id": 65,
+    "agent": "cluster_coverage_agent",
+    "custom_agent_name": "cluster-coverage-agent",
+    "phase": "4.9 Coverage Audit and Adversarial Review",
+    "phase_slug": "coverage_audit_adversarial",
+    "responsibility": "Compute coverage across task clusters, method clusters, dataset clusters, venue clusters, and evidence graph neighborhoods.",
+    "output": "cluster coverage matrix",
+    "failure_mode": "A high paper count may hide an uncovered task or method cluster.",
+    "prompt": "prompts/cluster_coverage_agent.md",
+    "toml": ".codex/agents/cluster_coverage_agent.toml",
+    "stages": [
+      30
+    ]
+  },
+  {
+    "id": 66,
+    "agent": "citation_closure_agent",
+    "custom_agent_name": "citation-closure-agent",
+    "phase": "4.9 Coverage Audit and Adversarial Review",
+    "phase_slug": "coverage_audit_adversarial",
+    "responsibility": "Evaluate whether core citation neighborhoods are sufficiently explored and identify high-value unvisited citation nodes.",
+    "output": "citation closure report",
+    "failure_mode": "Citation expansion may stop while important connected papers remain unvisited.",
+    "prompt": "prompts/citation_closure_agent.md",
+    "toml": ".codex/agents/citation_closure_agent.toml",
+    "stages": [
+      30
+    ]
+  },
+  {
+    "id": 67,
+    "agent": "source_diversity_agent",
+    "custom_agent_name": "source-diversity-agent",
+    "phase": "4.9 Coverage Audit and Adversarial Review",
+    "phase_slug": "coverage_audit_adversarial",
+    "responsibility": "Assess diversity across databases, venues, years, institutions, author groups, publication types, and access paths.",
+    "output": "source diversity report",
+    "failure_mode": "The corpus may overrepresent one source, team, venue, or time period.",
+    "prompt": "prompts/source_diversity_agent.md",
+    "toml": ".codex/agents/source_diversity_agent.toml",
+    "stages": [
+      30
+    ]
+  },
+  {
+    "id": 68,
+    "agent": "recency_and_seminal_balance_agent",
+    "custom_agent_name": "recency-and-seminal-balance-agent",
+    "phase": "4.9 Coverage Audit and Adversarial Review",
+    "phase_slug": "coverage_audit_adversarial",
+    "responsibility": "Balance recent work, foundational work, transitional periods, and mature survey-era papers.",
+    "output": "recency and seminal balance report",
+    "failure_mode": "The corpus may include only new papers or only classic papers.",
+    "prompt": "prompts/recency_and_seminal_balance_agent.md",
+    "toml": ".codex/agents/recency_and_seminal_balance_agent.toml",
+    "stages": [
+      21,
+      30
+    ]
+  },
+  {
+    "id": 69,
+    "agent": "missing_cluster_hunter_agent",
+    "custom_agent_name": "missing-cluster-hunter-agent",
+    "phase": "4.9 Coverage Audit and Adversarial Review",
+    "phase_slug": "coverage_audit_adversarial",
+    "responsibility": "Actively search for weakly connected, undercovered, or suspiciously absent clusters in the evidence graph.",
+    "output": "missing cluster report",
+    "failure_mode": "An entire relevant branch may remain undiscovered because no query or frontier targeted it.",
+    "prompt": "prompts/missing_cluster_hunter_agent.md",
+    "toml": ".codex/agents/missing_cluster_hunter_agent.toml",
+    "stages": [
+      31
+    ]
+  },
+  {
+    "id": 70,
+    "agent": "coverage_scoring_agent",
+    "custom_agent_name": "coverage-scoring-agent",
+    "phase": "4.9 Coverage Audit and Adversarial Review",
+    "phase_slug": "coverage_audit_adversarial",
+    "responsibility": "Aggregate independent coverage evidence into a weighted coverage score with dimension-level justification.",
+    "output": "coverage score",
+    "failure_mode": "The workflow may lack a coherent stopping signal.",
+    "prompt": "prompts/coverage_scoring_agent.md",
+    "toml": ".codex/agents/coverage_scoring_agent.toml",
+    "stages": [
+      32
+    ]
+  },
+  {
+    "id": 71,
+    "agent": "coverage_audit_agent",
+    "custom_agent_name": "coverage-audit-agent",
+    "phase": "4.9 Coverage Audit and Adversarial Review",
+    "phase_slug": "coverage_audit_adversarial",
+    "responsibility": "Audit coverage scores, demand evidence for high ratings, and identify inflated or unsupported coverage claims.",
+    "output": "coverage audit report",
+    "failure_mode": "Self-scored coverage may be overly optimistic.",
+    "prompt": "prompts/coverage_audit_agent.md",
+    "toml": ".codex/agents/coverage_audit_agent.toml",
+    "stages": [
+      32
+    ]
+  },
+  {
+    "id": 72,
+    "agent": "adversarial_reviewer_agent",
+    "custom_agent_name": "adversarial-reviewer-agent",
+    "phase": "4.9 Coverage Audit and Adversarial Review",
+    "phase_slug": "coverage_audit_adversarial",
+    "responsibility": "Construct the strongest plausible argument that important papers, terms, or clusters are still missing.",
+    "output": "adversarial challenge",
+    "failure_mode": "The system may believe it is complete because no one tested the opposite case.",
+    "prompt": "prompts/adversarial_reviewer_agent.md",
+    "toml": ".codex/agents/adversarial_reviewer_agent.toml",
+    "stages": [
+      33
+    ]
+  },
+  {
+    "id": 73,
+    "agent": "iteration_decision_agent",
+    "custom_agent_name": "iteration-decision-agent",
+    "phase": "4.9 Coverage Audit and Adversarial Review",
+    "phase_slug": "coverage_audit_adversarial",
+    "responsibility": "Choose PASS, loopback, user clarification, or STOP_WITH_RISK based on audits, budget, marginal yield, and unresolved challenges.",
+    "output": "iteration decision",
+    "failure_mode": "The workflow may loop blindly or stop before resolving a concrete deficiency.",
+    "prompt": "prompts/iteration_decision_agent.md",
+    "toml": ".codex/agents/iteration_decision_agent.toml",
+    "stages": [
+      33
+    ]
+  },
+  {
+    "id": 74,
+    "agent": "stop_condition_validator_agent",
+    "custom_agent_name": "stop-condition-validator-agent",
+    "phase": "4.9 Coverage Audit and Adversarial Review",
+    "phase_slug": "coverage_audit_adversarial",
+    "responsibility": "Validate all hard stopping gates before final output is allowed.",
+    "output": "stop validation",
+    "failure_mode": "The system may publish final results before required quality gates are satisfied.",
+    "prompt": "prompts/stop_condition_validator_agent.md",
+    "toml": ".codex/agents/stop_condition_validator_agent.toml",
+    "stages": [
+      33
+    ]
+  },
+  {
+    "id": 75,
+    "agent": "corpus_export_agent",
+    "custom_agent_name": "corpus-export-agent",
+    "phase": "4.10 Output and Monitoring",
+    "phase_slug": "output_monitoring",
+    "responsibility": "Export the final corpus, version graph, identifiers, and metadata into reusable machine-readable formats.",
+    "output": "corpus package",
+    "failure_mode": "The research result may be difficult to reuse in papers, spreadsheets, databases, or later runs.",
+    "prompt": "prompts/corpus_export_agent.md",
+    "toml": ".codex/agents/corpus_export_agent.toml",
+    "stages": [
+      34
+    ]
+  },
+  {
+    "id": 76,
+    "agent": "search_protocol_report_agent",
+    "custom_agent_name": "search-protocol-report-agent",
+    "phase": "4.10 Output and Monitoring",
+    "phase_slug": "output_monitoring",
+    "responsibility": "Write the reproducible search protocol, including queries, databases, stages, inclusion criteria, exclusions, and loopbacks.",
+    "output": "reproducible search report",
+    "failure_mode": "The search process may be impossible to reproduce or defend.",
+    "prompt": "prompts/search_protocol_report_agent.md",
+    "toml": ".codex/agents/search_protocol_report_agent.toml",
+    "stages": [
+      34
+    ]
+  },
+  {
+    "id": 77,
+    "agent": "coverage_report_agent",
+    "custom_agent_name": "coverage-report-agent",
+    "phase": "4.10 Output and Monitoring",
+    "phase_slug": "output_monitoring",
+    "responsibility": "Write the coverage report with scores, evidence, audit findings, adversarial challenges, and residual risks.",
+    "output": "coverage report",
+    "failure_mode": "Users may not know how much confidence to place in the corpus.",
+    "prompt": "prompts/coverage_report_agent.md",
+    "toml": ".codex/agents/coverage_report_agent.toml",
+    "stages": [
+      34
+    ]
+  },
+  {
+    "id": 78,
+    "agent": "gap_report_agent",
+    "custom_agent_name": "gap-report-agent",
+    "phase": "4.10 Output and Monitoring",
+    "phase_slug": "output_monitoring",
+    "responsibility": "Summarize weakly covered areas, research gaps, unresolved uncertainties, and recommended future search directions.",
+    "output": "gap report",
+    "failure_mode": "The final result may not help the user decide what to investigate next.",
+    "prompt": "prompts/gap_report_agent.md",
+    "toml": ".codex/agents/gap_report_agent.toml",
+    "stages": [
+      34
+    ]
+  },
+  {
+    "id": 79,
+    "agent": "monitoring_query_agent",
+    "custom_agent_name": "monitoring-query-agent",
+    "phase": "4.10 Output and Monitoring",
+    "phase_slug": "output_monitoring",
+    "responsibility": "Generate monitoring queries and alert targets for new papers, citations, authors, venues, datasets, and retractions.",
+    "output": "monitoring configuration",
+    "failure_mode": "The literature review may become stale without a targeted update path.",
+    "prompt": "prompts/monitoring_query_agent.md",
+    "toml": ".codex/agents/monitoring_query_agent.toml",
+    "stages": [
+      34
+    ]
+  }
+]
