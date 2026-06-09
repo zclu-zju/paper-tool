@@ -1,0 +1,17 @@
+.env
+.DS_Store
+__pycache__/
+*.pyc
+
+# User papers, local configs, and private material
+paper/
+config/deep-paper-search.yaml
+
+# Runtime outputs, reports, cloned third-party repositories, and backups
+workspace/
+backups/
+
+# Local editor/cache files
+.idea/
+.vscode/
+.pytest_cache/
