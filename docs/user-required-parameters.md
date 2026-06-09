@@ -49,6 +49,7 @@ Use these defaults unless calibration or the user indicates otherwise:
 
 - `minimum_core_papers`: 30.
 - `search_depth`: `DEEP_SURVEY`.
+- `execution.todo_mode`: false.
 - `year_policy.mode`: `FOUNDATIONAL_PLUS_RECENT`.
 - `year_policy.recent_years`: 5.
 - `artifact_download.paper_artifacts`: `NONE`, but ask the user if they want PDFs or TeX before artifact download stages.
@@ -56,6 +57,21 @@ Use these defaults unless calibration or the user indicates otherwise:
 - `code.clone_repositories`: false.
 - Standard output package: enabled.
 - Inclusion policy: system-managed.
+
+## TODO Mode
+
+TODO mode is optional. If `execution.todo_mode` is true, the workflow behaves like a goal-driven execution loop. It creates a TODO queue after calibration, executes one TODO at a time, verifies completion, and may append new TODOs when audits reveal concrete unfinished work.
+
+Use TODO mode when the user wants the system to keep working until no useful task remains. Do not use TODO mode for a quick one-pass search.
+
+TODO mode files:
+
+- `workspace/work/deep-paper-search/todo/active.todo`
+- `workspace/work/deep-paper-search/todo/done.todo`
+- `workspace/work/deep-paper-search/todo/todo_state.json`
+- `workspace/work/deep-paper-search/todo/todo_log.md`
+
+The workflow may stop in TODO mode only when the active TODO queue is empty, the continuation auditor says no new TODO is justified, and final stop validation passes. New TODOs must have evidence, source, priority, target stage or agent, and completion criteria. Duplicate, vague, or low-yield TODOs should be merged, rejected, or converted to residual risk.
 
 ## Search Depth Meaning
 

@@ -10,6 +10,24 @@ calibration:
   max_calibration_sources: 3
   write_candidate_papers: true
 
+execution:
+  # TODO mode turns the workflow into a goal-like execution loop.
+  # The run may finish only when active TODOs are empty, continuation audit says
+  # no new TODO is useful, and stop validation passes.
+  todo_mode: false
+  max_todo_iterations: 100
+  require_completion_verification: true
+  require_continuation_audit: true
+  allow_agents_to_append_todos: true
+  duplicate_todo_policy: "MERGE"
+  low_yield_policy: "CONVERT_TO_RESIDUAL_RISK"
+
+todo:
+  active_file: "workspace/work/deep-paper-search/todo/active.todo"
+  done_file: "workspace/work/deep-paper-search/todo/done.todo"
+  state_file: "workspace/work/deep-paper-search/todo/todo_state.json"
+  log_file: "workspace/work/deep-paper-search/todo/todo_log.md"
+
 research:
   # Required. A topic, direction, keyword set, seed paper path, title, abstract, or summary.
   direction: ""

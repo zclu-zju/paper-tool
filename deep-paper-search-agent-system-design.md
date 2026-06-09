@@ -264,6 +264,18 @@ research_state:
 | 78 | `gap_report_agent` | 总结研究空白、弱覆盖区域、后续搜索建议 | gap report | 搜索结果不能指导下一步研究 |
 | 79 | `monitoring_query_agent` | 生成后续监控查询、作者/venue/引用提醒 | monitoring config | 调研完成后无法跟踪新论文 |
 
+### 4.11 TODO 执行控制 Agent
+
+TODO mode 是可选执行模式。它不是普通 checklist，而是一个持续执行控制协议：系统维护 active TODO 队列，每次选择一条 TODO 执行，执行完成后删除或移动到 done；如果审查发现还有未解决任务，则继续追加 TODO。只有 active TODO 为空，且续写审查确认没有必要新增 TODO 时，系统才允许进入最终停止检查。
+
+| # | Agent | 不可替代职责 | 独立输出 | 防止的失败模式 |
+|---|---|---|---|---|
+| 80 | `todo_planner_agent` | 根据用户目标、校准结果、config 和当前 state 生成初始 TODO 队列 | initial TODO queue | TODO mode 启动后没有可执行任务粒度 |
+| 81 | `todo_selector_agent` | 从 active TODO 中选择下一条最应该执行的任务 | selected TODO | 低价值或无依赖准备的任务被盲目执行 |
+| 82 | `todo_executor_router_agent` | 将选中的 TODO 路由给正确 Stage 或 Agent | TODO routing decision | TODO 被错误 Agent 执行或绕过已有 pipeline |
+| 83 | `todo_completion_verifier_agent` | 检查 TODO 是否真的完成，并决定移入 done、阻塞或重试 | TODO completion verdict | TODO 表面执行但没有有效 artifact |
+| 84 | `todo_continuation_auditor_agent` | 判断是否需要基于缺口、失败、反方意见继续追加 TODO | continuation audit | 队列为空但仍有可执行缺口，或无限追加低价值任务 |
+
 ## 5. Stage 设计
 
 本系统使用 34 个 Stage。Stage 的粒度按“后续决策需要一个独立 artifact”划分，而不是按 Agent 数量划分。
@@ -304,8 +316,50 @@ research_state:
 | 32 | 覆盖评分与审查 | `coverage_scoring_agent`, `coverage_audit_agent` | subreports、missing clusters | score、audit | 防止自评分虚高 |
 | 33 | 反方挑战与迭代决策 | `adversarial_reviewer_agent`, `iteration_decision_agent`, `stop_condition_validator_agent` | score、audit、budget | next action | 决定回到哪个 flow 或停止 |
 | 34 | 输出与监控 | `corpus_export_agent`, `search_protocol_report_agent`, `coverage_report_agent`, `gap_report_agent`, `monitoring_query_agent` | final state | final packages | 输出可复用、可复现、可继续监控的结果 |
+| 35 | TODO 执行循环 | `todo_planner_agent`, `todo_selector_agent`, `todo_executor_router_agent`, `todo_completion_verifier_agent`, `todo_continuation_auditor_agent` | config、calibration result、current state、active TODO | updated TODO queue、done TODO、continuation decision | 在 TODO mode 下持续执行直到没有可执行任务 |
 
 ## 6. 核心 Flow
+
+### 6.0 TODO Mode Flow
+
+触发条件：`execution.todo_mode: true`。
+
+```text
+calibrated goal and config
+  -> todo_planner_agent
+  -> loop:
+       todo_selector_agent
+       todo_executor_router_agent
+       target stage or target agent executes
+       todo_completion_verifier_agent
+       todo_continuation_auditor_agent
+     until active TODO is empty and no new TODO is justified
+  -> stop_condition_validator_agent
+```
+
+实际意义：
+
+- 用户只需给目标，系统可以把目标拆成可执行任务。
+- 每个 TODO 必须有来源、优先级、目标 Agent 或 Stage、完成标准。
+- 执行完成的 TODO 必须有 artifact 证据，否则不能删除。
+- coverage gap、adversarial challenge、source failure、missing cluster、low confidence assumption 都可以生成新 TODO。
+- 低收益或重复 TODO 不能无限追加，应转为 residual risk 或关闭 frontier。
+
+建议 TODO 文件：
+
+```text
+workspace/work/deep-paper-search/todo/active.todo
+workspace/work/deep-paper-search/todo/done.todo
+workspace/work/deep-paper-search/todo/todo_state.json
+workspace/work/deep-paper-search/todo/todo_log.md
+```
+
+TODO mode 的停止条件：
+
+1. `active.todo` 为空。
+2. `todo_continuation_auditor_agent` 输出 `NO_NEW_TODO`.
+3. `stop_condition_validator_agent` 通过。
+4. 若仍有不可执行风险，写入 residual risks，而不是继续追加低价值 TODO。
 
 ### 6.1 Query Bootstrap Flow
 

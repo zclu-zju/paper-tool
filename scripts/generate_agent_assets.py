@@ -175,6 +175,18 @@ PHASE_PACKS = {
         ],
         "handoffs": "users, future workflow runs, and monitoring tasks consume the exported corpus, reports, graph, and alert configuration",
     },
+    "todo_execution_control": {
+        "mission": "control optional TODO-mode execution by creating, selecting, routing, verifying, and continuing concrete tasks until no useful task remains",
+        "inputs": "user goal, calibration results, run config, active TODO queue, done TODO log, current research state, audit reports, source failures, frontier yields, and residual risks",
+        "methods": [
+            "treat each TODO as an executable task with a source, owner, priority, dependency, and completion criterion",
+            "select TODOs by value, dependency readiness, risk reduction, and alignment with the depth contract",
+            "route execution to existing stages or agents instead of duplicating their work inside the TODO controller",
+            "verify completion from artifacts and evidence before removing a TODO from the active queue",
+            "append new TODOs only when there is evidence that they can reduce a concrete gap, failure, or uncertainty",
+        ],
+        "handoffs": "the orchestrator consumes selected TODOs, routing decisions, completion verdicts, updated queues, and continuation decisions",
+    },
 }
 
 
@@ -189,6 +201,7 @@ PHASE_DISPLAY_NAMES = {
     "screening_taxonomy_evidence": "4.8 Screening, Taxonomy, and Evidence Modeling",
     "coverage_audit_adversarial": "4.9 Coverage Audit and Adversarial Review",
     "output_monitoring": "4.10 Output and Monitoring",
+    "todo_execution_control": "4.11 TODO Execution Control",
 }
 
 
@@ -588,6 +601,31 @@ AGENT_ENGLISH = {
         "output": "monitoring configuration",
         "failure_mode": "The literature review may become stale without a targeted update path.",
     },
+    "todo_planner_agent": {
+        "responsibility": "Create the initial TODO queue from the user goal, calibration result, config, and current research state when TODO mode is enabled.",
+        "output": "initial TODO queue",
+        "failure_mode": "TODO mode may start without concrete executable tasks or with tasks that do not map to the workflow.",
+    },
+    "todo_selector_agent": {
+        "responsibility": "Select the next active TODO using priority, dependencies, expected value, risk reduction, and available budget.",
+        "output": "selected TODO",
+        "failure_mode": "The workflow may execute low-value tasks while important ready tasks remain untouched.",
+    },
+    "todo_executor_router_agent": {
+        "responsibility": "Route the selected TODO to the correct existing stage or agent and define the expected completion artifact.",
+        "output": "TODO routing decision",
+        "failure_mode": "A TODO may be executed by the wrong agent, bypass an existing stage, or produce an unusable artifact.",
+    },
+    "todo_completion_verifier_agent": {
+        "responsibility": "Verify whether a routed TODO is actually complete, blocked, failed, duplicated, or in need of retry.",
+        "output": "TODO completion verdict",
+        "failure_mode": "A TODO may be removed from the active queue even though no valid completion evidence exists.",
+    },
+    "todo_continuation_auditor_agent": {
+        "responsibility": "Audit whether the empty or current TODO queue should receive new TODOs from gaps, failures, low confidence, or adversarial findings.",
+        "output": "TODO continuation audit",
+        "failure_mode": "The workflow may stop with unresolved executable work or continue indefinitely with low-value tasks.",
+    },
 }
 
 
@@ -626,6 +664,7 @@ STAGE_ENGLISH = {
     32: ("Coverage Scoring and Audit", "subreports and missing clusters", "coverage score and audit report", "Prevent inflated self-assessment."),
     33: ("Adversarial Challenge and Iteration Decision", "score, audit, and budget", "next action", "Route the workflow back to the right flow or stop."),
     34: ("Output and Monitoring", "final state", "final packages", "Produce reusable, reproducible, and monitorable outputs."),
+    35: ("TODO Execution Loop", "config, calibration result, current state, and active TODO queue", "updated TODO queue, done TODO log, and continuation decision", "Continue TODO-mode execution until no useful executable task remains."),
 }
 
 
@@ -640,6 +679,7 @@ PHASE_SLUG_RULES = [
     ("筛选", "screening_taxonomy_evidence"),
     ("覆盖", "coverage_audit_adversarial"),
     ("输出", "output_monitoring"),
+    ("TODO", "todo_execution_control"),
 ]
 
 
@@ -836,6 +876,13 @@ PHASE_FIELD_CONTRACTS = {
         "omitted_records_and_reason",
         "future_monitoring_action",
     ],
+    "todo_execution_control": [
+        "todo_id",
+        "todo_source",
+        "priority_and_dependencies",
+        "assigned_stage_or_agent",
+        "completion_criteria",
+    ],
 }
 
 
@@ -889,6 +936,11 @@ PHASE_SPECIFIC_CHECKS = {
         "Confirm that generated files derive from the same final state snapshot.",
         "Confirm that missing optional outputs are documented with their upstream cause.",
         "Confirm that monitoring queries target concrete terms, authors, venues, datasets, citations, or validity risks.",
+    ],
+    "todo_execution_control": [
+        "Confirm that every TODO has a concrete source and completion criterion.",
+        "Confirm that the TODO is routed to an existing stage or agent unless a new support task is explicitly justified.",
+        "Confirm that no duplicate or low-value TODO is appended when the issue should become residual risk.",
     ],
 }
 
@@ -1165,6 +1217,21 @@ The default behavior is:
 
 Ask the user only when the calibration pass reveals multiple plausible interpretations, missing hard lower bounds, artifact download choices, or a year policy that cannot be safely defaulted. Do not ask the user to provide obvious terms that the system can discover from papers. Do not ask the user to paste credentials, private keys, API tokens, or paid content. If access is needed, ask the user to configure the local environment and stop at the access boundary. Ask no more than three concise questions at a time.
 
+## TODO Mode
+
+If `execution.todo_mode` is true, the workflow enters TODO-mode execution after calibration and config confirmation. TODO mode is a goal-like execution loop, not a simple note list. The workflow must maintain `workspace/work/deep-paper-search/todo/active.todo`, `done.todo`, `todo_state.json`, and `todo_log.md`. Each TODO must have an identifier, source, priority, dependency state, target stage or agent, and completion criteria.
+
+TODO-mode loop:
+
+1. `todo_planner_agent` creates the initial queue from the confirmed goal, config, and calibration evidence.
+2. `todo_selector_agent` chooses the next ready and valuable TODO.
+3. `todo_executor_router_agent` maps that TODO to an existing stage or agent and defines the expected artifact.
+4. The target stage or agent executes the work.
+5. `todo_completion_verifier_agent` checks whether completion evidence exists before the TODO is removed from `active.todo`.
+6. `todo_continuation_auditor_agent` decides whether gaps, failures, weak coverage, or adversarial findings justify new TODOs.
+
+The workflow may stop in TODO mode only when the active queue is empty, the continuation auditor returns `NO_NEW_TODO`, and stop-condition validation passes. Repeated, duplicate, or low-value tasks should be merged, rejected, or converted into residual risk rather than appended forever.
+
 ## Loopback Policy
 
 Every loopback must name a specific target stage or agent. Never say only "search more." Use the evidence to choose a route:
@@ -1412,6 +1479,7 @@ Use these defaults unless calibration or the user indicates otherwise:
 
 - `minimum_core_papers`: 30.
 - `search_depth`: `DEEP_SURVEY`.
+- `execution.todo_mode`: false.
 - `year_policy.mode`: `FOUNDATIONAL_PLUS_RECENT`.
 - `year_policy.recent_years`: 5.
 - `artifact_download.paper_artifacts`: `NONE`, but ask the user if they want PDFs or TeX before artifact download stages.
@@ -1419,6 +1487,21 @@ Use these defaults unless calibration or the user indicates otherwise:
 - `code.clone_repositories`: false.
 - Standard output package: enabled.
 - Inclusion policy: system-managed.
+
+## TODO Mode
+
+TODO mode is optional. If `execution.todo_mode` is true, the workflow behaves like a goal-driven execution loop. It creates a TODO queue after calibration, executes one TODO at a time, verifies completion, and may append new TODOs when audits reveal concrete unfinished work.
+
+Use TODO mode when the user wants the system to keep working until no useful task remains. Do not use TODO mode for a quick one-pass search.
+
+TODO mode files:
+
+- `workspace/work/deep-paper-search/todo/active.todo`
+- `workspace/work/deep-paper-search/todo/done.todo`
+- `workspace/work/deep-paper-search/todo/todo_state.json`
+- `workspace/work/deep-paper-search/todo/todo_log.md`
+
+The workflow may stop in TODO mode only when the active TODO queue is empty, the continuation auditor says no new TODO is justified, and final stop validation passes. New TODOs must have evidence, source, priority, target stage or agent, and completion criteria. Duplicate, vague, or low-yield TODOs should be merged, rejected, or converted to residual risk.
 
 ## Search Depth Meaning
 
@@ -1500,6 +1583,24 @@ calibration:
   probe_result_limit_per_source: 10
   max_calibration_sources: 3
   write_candidate_papers: true
+
+execution:
+  # TODO mode turns the workflow into a goal-like execution loop.
+  # The run may finish only when active TODOs are empty, continuation audit says
+  # no new TODO is useful, and stop validation passes.
+  todo_mode: false
+  max_todo_iterations: 100
+  require_completion_verification: true
+  require_continuation_audit: true
+  allow_agents_to_append_todos: true
+  duplicate_todo_policy: "MERGE"
+  low_yield_policy: "CONVERT_TO_RESIDUAL_RISK"
+
+todo:
+  active_file: "workspace/work/deep-paper-search/todo/active.todo"
+  done_file: "workspace/work/deep-paper-search/todo/done.todo"
+  state_file: "workspace/work/deep-paper-search/todo/todo_state.json"
+  log_file: "workspace/work/deep-paper-search/todo/todo_log.md"
 
 research:
   # Required. A topic, direction, keyword set, seed paper path, title, abstract, or summary.
@@ -1604,10 +1705,10 @@ def word_count(path: Path) -> int:
 
 def main() -> int:
     agents, stages = parse_design()
-    if len(agents) != 79:
-        raise SystemExit(f"Expected 79 agents, parsed {len(agents)}")
-    if len(stages) != 34:
-        raise SystemExit(f"Expected 34 stages, parsed {len(stages)}")
+    if len(agents) != 84:
+        raise SystemExit(f"Expected 84 agents, parsed {len(agents)}")
+    if len(stages) != 35:
+        raise SystemExit(f"Expected 35 stages, parsed {len(stages)}")
 
     for directory in [
         PROJECT_PROMPTS,

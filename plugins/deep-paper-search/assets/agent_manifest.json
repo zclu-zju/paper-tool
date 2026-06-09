@@ -1185,5 +1185,80 @@
     "stages": [
       34
     ]
+  },
+  {
+    "id": 80,
+    "agent": "todo_planner_agent",
+    "custom_agent_name": "todo-planner-agent",
+    "phase": "4.11 TODO Execution Control",
+    "phase_slug": "todo_execution_control",
+    "responsibility": "Create the initial TODO queue from the user goal, calibration result, config, and current research state when TODO mode is enabled.",
+    "output": "initial TODO queue",
+    "failure_mode": "TODO mode may start without concrete executable tasks or with tasks that do not map to the workflow.",
+    "prompt": "prompts/todo_planner_agent.md",
+    "toml": ".codex/agents/todo_planner_agent.toml",
+    "stages": [
+      35
+    ]
+  },
+  {
+    "id": 81,
+    "agent": "todo_selector_agent",
+    "custom_agent_name": "todo-selector-agent",
+    "phase": "4.11 TODO Execution Control",
+    "phase_slug": "todo_execution_control",
+    "responsibility": "Select the next active TODO using priority, dependencies, expected value, risk reduction, and available budget.",
+    "output": "selected TODO",
+    "failure_mode": "The workflow may execute low-value tasks while important ready tasks remain untouched.",
+    "prompt": "prompts/todo_selector_agent.md",
+    "toml": ".codex/agents/todo_selector_agent.toml",
+    "stages": [
+      35
+    ]
+  },
+  {
+    "id": 82,
+    "agent": "todo_executor_router_agent",
+    "custom_agent_name": "todo-executor-router-agent",
+    "phase": "4.11 TODO Execution Control",
+    "phase_slug": "todo_execution_control",
+    "responsibility": "Route the selected TODO to the correct existing stage or agent and define the expected completion artifact.",
+    "output": "TODO routing decision",
+    "failure_mode": "A TODO may be executed by the wrong agent, bypass an existing stage, or produce an unusable artifact.",
+    "prompt": "prompts/todo_executor_router_agent.md",
+    "toml": ".codex/agents/todo_executor_router_agent.toml",
+    "stages": [
+      35
+    ]
+  },
+  {
+    "id": 83,
+    "agent": "todo_completion_verifier_agent",
+    "custom_agent_name": "todo-completion-verifier-agent",
+    "phase": "4.11 TODO Execution Control",
+    "phase_slug": "todo_execution_control",
+    "responsibility": "Verify whether a routed TODO is actually complete, blocked, failed, duplicated, or in need of retry.",
+    "output": "TODO completion verdict",
+    "failure_mode": "A TODO may be removed from the active queue even though no valid completion evidence exists.",
+    "prompt": "prompts/todo_completion_verifier_agent.md",
+    "toml": ".codex/agents/todo_completion_verifier_agent.toml",
+    "stages": [
+      35
+    ]
+  },
+  {
+    "id": 84,
+    "agent": "todo_continuation_auditor_agent",
+    "custom_agent_name": "todo-continuation-auditor-agent",
+    "phase": "4.11 TODO Execution Control",
+    "phase_slug": "todo_execution_control",
+    "responsibility": "Audit whether the empty or current TODO queue should receive new TODOs from gaps, failures, low confidence, or adversarial findings.",
+    "output": "TODO continuation audit",
+    "failure_mode": "The workflow may stop with unresolved executable work or continue indefinitely with low-value tasks.",
+    "prompt": "prompts/todo_continuation_auditor_agent.md",
+    "toml": ".codex/agents/todo_continuation_auditor_agent.toml",
+    "stages": [
+      35
+    ]
   }
 ]
