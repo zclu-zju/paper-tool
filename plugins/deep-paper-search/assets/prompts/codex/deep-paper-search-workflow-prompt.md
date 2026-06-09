@@ -64,9 +64,22 @@ Run stages in order only when their required inputs exist. Many stages contain p
 
 All workflow outputs must stay under `workspace/work/deep-paper-search/` unless the user explicitly requests a different output location. The event log is the durable history. Agents must not silently overwrite each other. Every artifact must include status, inputs used, evidence, structured output, quality checks, and handoff lines. The orchestrator may generate a state snapshot from those artifacts, but the snapshot is not a substitute for provenance.
 
-## Clarification Policy
+## Configuration Policy
 
-Ask the user only when the missing information changes the research boundary, legal access, budget, or final output expectation. Do not ask the user to provide obvious terms that the system can discover from papers. Do not ask the user to paste credentials, private keys, API tokens, or paid content. If access is needed, ask the user to configure the local environment and stop at the access boundary. Ask no more than three concise questions at a time.
+Use a calibration-first configuration policy. The user should initially provide a research goal, direction, keyword idea, or seed paper. Do not demand a complete config before any research happens. First run a lightweight calibration pass through intent decomposition, domain disambiguation, initial term generation, query compilation, query probing, and small-sample retrieval. The purpose of this pass is not to produce the final corpus. It is to test whether the direction is understandable, whether the first keywords are aligned with real scholarly vocabulary, and which candidate scope options should be confirmed by the user.
+
+After the calibration pass, create or update `config/deep-paper-search.yaml` from `config/deep-paper-search.example.yaml`. Fill defaults wherever safe. Present the user with a compact confirmation bundle containing: interpreted direction, candidate domain, candidate keyword groups, near-scope and out-of-scope boundaries, minimum paper count, year policy, search depth, and paper artifact download policy. Ask the user to confirm or edit those fields before the full deep search. This should be one confirmation checkpoint, not repeated questioning.
+
+The default behavior is:
+
+- include a paper when the title, abstract, keywords, or available full text clearly match the user's direction or a discovered equivalent term;
+- keep near-scope papers as signals, not as core papers;
+- record whether open-source code exists, but do not clone repositories unless the user explicitly enables cloning;
+- produce the standard output package without asking the user to choose formats;
+- ask before downloading PDFs, TeX sources, or other paper artifacts;
+- use the minimum paper count and year policy from config as hard run constraints.
+
+Ask the user only when the calibration pass reveals multiple plausible interpretations, missing hard lower bounds, artifact download choices, or a year policy that cannot be safely defaulted. Do not ask the user to provide obvious terms that the system can discover from papers. Do not ask the user to paste credentials, private keys, API tokens, or paid content. If access is needed, ask the user to configure the local environment and stop at the access boundary. Ask no more than three concise questions at a time.
 
 ## Loopback Policy
 

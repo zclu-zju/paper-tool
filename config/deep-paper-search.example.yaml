@@ -1,0 +1,96 @@
+# Deep Paper Search configuration.
+# Copy this file to config/deep-paper-search.yaml and edit the fields for a run.
+
+calibration:
+  # Initial mode: the user may provide only a goal or seed. The workflow runs a
+  # lightweight calibration pass before full search.
+  enabled: true
+  require_user_confirmation_after_calibration: true
+  probe_result_limit_per_source: 10
+  max_calibration_sources: 3
+  write_candidate_papers: true
+
+research:
+  # Required. A topic, direction, keyword set, seed paper path, title, abstract, or summary.
+  direction: ""
+
+  # Optional but recommended when the topic has ambiguous terminology across fields.
+  domain_hint: ""
+
+  # Required lower bound. The workflow should not stop before this many core relevant papers
+  # are found unless it records STOP_WITH_RISK.
+  minimum_core_papers: 30
+
+  # Controls effort and stopping strictness: EXPLORATORY, DEEP_SURVEY,
+  # SYSTEMATIC_LIKE, or NEAR_EXHAUSTIVE.
+  search_depth: "DEEP_SURVEY"
+
+confirmation_bundle:
+  # Filled by the calibration pass, then confirmed or edited by the user.
+  interpreted_direction: ""
+  interpreted_domain: ""
+  candidate_keyword_groups:
+    user_terms: []
+    observed_paper_terms: []
+    aliases: []
+    exclusion_terms: []
+  candidate_scope:
+    in_scope: []
+    near_scope: []
+    out_of_scope: []
+  candidate_examples:
+    papers: []
+  user_confirmed: false
+
+year_policy:
+  # Choose RANGE, RECENT_YEARS, ALL_YEARS, or FOUNDATIONAL_PLUS_RECENT.
+  mode: "FOUNDATIONAL_PLUS_RECENT"
+  start_year: 2018
+  end_year: 2026
+  recent_years: 5
+  include_foundational: true
+
+artifact_download:
+  # Choose NONE, PDF_ONLY, TEX_ONLY, or PDF_AND_TEX.
+  paper_artifacts: "NONE"
+  target_dir: "workspace/work/deep-paper-search/artifacts/"
+  tex_compile_policy: "DOWNLOAD_ONLY"
+
+code:
+  # Default for literature research: record code availability but do not clone.
+  record_code_availability: true
+  clone_repositories: false
+  clone_target_dir: "workspace/work/deep-paper-search/code/"
+
+inclusion_policy:
+  # Default behavior: the system decides relevance from title, abstract, keywords,
+  # available full text, discovered equivalent terms, citation clusters, datasets,
+  # benchmarks, and method/task alignment.
+  system_managed: true
+  include_preprints: true
+  include_surveys: true
+  include_standards_as_term_signals: true
+  user_required_terms: []
+  user_excluded_terms: []
+  user_required_venues: []
+  user_excluded_venues: []
+
+outputs:
+  # Standard package is enabled by default. Users usually do not need to edit this.
+  corpus_csv: true
+  corpus_bibtex: true
+  corpus_json: true
+  versions_json: true
+  excluded_csv: true
+  near_miss_csv: true
+  search_protocol_md: true
+  coverage_report_md: true
+  evidence_graph_json: true
+  gap_report_md: true
+  monitoring_config_yaml: true
+
+budgets:
+  max_iterations: 6
+  max_runtime_minutes: 180
+  max_pdf_downloads: 0
+  max_api_calls: 2000

@@ -964,7 +964,7 @@ If you are invoked outside the stage listed above, continue only when the reques
 
 ## Required Inputs
 
-Before you begin, identify the exact inputs you used. Acceptable inputs include the latest user request, the locked scope contract, the depth contract, current `research_state`, previous agent artifacts, raw source batches, canonical paper records, parsed text, evidence graph slices, query logs, frontier records, audit reports, and iteration decisions. If a required input is absent, produce `STATUS: BLOCKED_INPUT_MISSING` and list the missing input names. Do not continue with a pretend version of an absent artifact. If a useful but nonessential input is absent, proceed and record it under residual uncertainty.
+Before you begin, identify the exact inputs you used. Acceptable inputs include `config/deep-paper-search.yaml`, `config/deep-paper-search.example.yaml`, the latest user request, the locked scope contract, the depth contract, current `research_state`, previous agent artifacts, raw source batches, canonical paper records, parsed text, evidence graph slices, query logs, frontier records, audit reports, and iteration decisions. Prefer reading the local config over asking incremental parameter questions. The normal startup path is calibration-first: a user goal is enough to run lightweight intent, query, and probe stages; after that, the workflow writes a confirmation bundle into config and asks the user to confirm or edit it before full deep search. If `config/deep-paper-search.yaml` is missing, use the example config as the schema. Ask the orchestrator to create or update a run config when calibration lacks a research direction or seed, minimum core paper count, year policy, artifact download policy, or a domain clarification for an ambiguous topic. If another optional input is absent, proceed with the documented default and record the assumption. Do not continue with a pretend version of an absent required artifact.
 
 For `{agent.snake}`, pay special attention to the following input questions:
 
@@ -1148,9 +1148,22 @@ Run stages in order only when their required inputs exist. Many stages contain p
 
 All workflow outputs must stay under `workspace/work/deep-paper-search/` unless the user explicitly requests a different output location. The event log is the durable history. Agents must not silently overwrite each other. Every artifact must include status, inputs used, evidence, structured output, quality checks, and handoff lines. The orchestrator may generate a state snapshot from those artifacts, but the snapshot is not a substitute for provenance.
 
-## Clarification Policy
+## Configuration Policy
 
-Ask the user only when the missing information changes the research boundary, legal access, budget, or final output expectation. Do not ask the user to provide obvious terms that the system can discover from papers. Do not ask the user to paste credentials, private keys, API tokens, or paid content. If access is needed, ask the user to configure the local environment and stop at the access boundary. Ask no more than three concise questions at a time.
+Use a calibration-first configuration policy. The user should initially provide a research goal, direction, keyword idea, or seed paper. Do not demand a complete config before any research happens. First run a lightweight calibration pass through intent decomposition, domain disambiguation, initial term generation, query compilation, query probing, and small-sample retrieval. The purpose of this pass is not to produce the final corpus. It is to test whether the direction is understandable, whether the first keywords are aligned with real scholarly vocabulary, and which candidate scope options should be confirmed by the user.
+
+After the calibration pass, create or update `config/deep-paper-search.yaml` from `config/deep-paper-search.example.yaml`. Fill defaults wherever safe. Present the user with a compact confirmation bundle containing: interpreted direction, candidate domain, candidate keyword groups, near-scope and out-of-scope boundaries, minimum paper count, year policy, search depth, and paper artifact download policy. Ask the user to confirm or edit those fields before the full deep search. This should be one confirmation checkpoint, not repeated questioning.
+
+The default behavior is:
+
+- include a paper when the title, abstract, keywords, or available full text clearly match the user's direction or a discovered equivalent term;
+- keep near-scope papers as signals, not as core papers;
+- record whether open-source code exists, but do not clone repositories unless the user explicitly enables cloning;
+- produce the standard output package without asking the user to choose formats;
+- ask before downloading PDFs, TeX sources, or other paper artifacts;
+- use the minimum paper count and year policy from config as hard run constraints.
+
+Ask the user only when the calibration pass reveals multiple plausible interpretations, missing hard lower bounds, artifact download choices, or a year policy that cannot be safely defaulted. Do not ask the user to provide obvious terms that the system can discover from papers. Do not ask the user to paste credentials, private keys, API tokens, or paid content. If access is needed, ask the user to configure the local environment and stop at the access boundary. Ask no more than three concise questions at a time.
 
 ## Loopback Policy
 
@@ -1350,74 +1363,228 @@ if __name__ == "__main__":
 def build_user_parameters_doc() -> str:
     return """# User-Required Parameters
 
-This document defines the parameters the Deep Paper Search workflow may need from the user. The workflow should not ask for all of these at once. It should collect the minimal set required for the requested depth and only ask follow-up questions when the missing answer changes the search boundary, access model, budget, or final output.
+This document defines how the Deep Paper Search workflow should obtain parameters. The preferred model is calibration-first. The user gives an initial research goal, the system runs a lightweight calibration search, then it presents a compact confirmation bundle and writes `config/deep-paper-search.yaml`. The workflow should not demand a complete config before it has tested whether the initial direction and keywords are accurate.
 
-## Required Before Search
+## Initial User Input
 
-These parameters are required before the workflow starts literature retrieval:
+The user should initially provide one of the following:
 
-1. **Research seed type**: one of `DIRECTION`, `KEYWORDS`, `SEED_PAPER`, `MIXED`, or `UNKNOWN`.
-2. **Research seed content**: the research direction, keyword set, seed paper path, seed paper title, seed paper abstract, or short description.
-3. **Target domain or disambiguation hint**: the field or community the user intends, especially when terms are ambiguous across domains.
-4. **Primary research objective**: what the search should explain or collect, such as mechanism understanding, survey corpus, benchmark comparison, method taxonomy, code-bearing papers, or near-exhaustive related work.
-5. **Desired search depth**: `EXPLORATORY`, `DEEP_SURVEY`, `SYSTEMATIC_LIKE`, or `NEAR_EXHAUSTIVE`.
-6. **Approximate output size**: target number of core papers, or permission for the workflow to choose a count from the depth contract.
-7. **Time or recency requirement**: year range, recent-years window, include-foundational-work requirement, or no year restriction.
-8. **Inclusion criteria**: required tasks, methods, datasets, venues, publication types, languages, or evidence standards.
-9. **Exclusion criteria**: explicitly unwanted fields, tasks, application domains, paper types, or noisy meanings of shared terms.
-10. **Final output format**: at minimum whether the user wants Markdown only, CSV/BibTeX/JSON, evidence graph, monitoring configuration, or all standard outputs.
+1. A research direction or question.
+2. A keyword idea.
+3. A seed paper path, title, abstract, or summary.
+4. A mixed request containing direction, constraints, and seed material.
 
-If any of the above are absent, the first-stage agents should either infer a provisional value from evidence and record it as an assumption, or ask the user no more than three concise questions when the missing value would change the search boundary.
+This is enough to start calibration. The workflow should not ask for detailed inclusion criteria, output format, code cloning, or every keyword before calibration.
 
-## Required Only For Code-Oriented Runs
+## Calibration Pass
 
-Ask these only if the user wants code availability, repository verification, repository cloning, benchmark reproduction, or implementation-oriented analysis:
+The workflow should run a lightweight calibration pass before full deep search. This pass should:
 
-1. **Code requirement level**: `IGNORE_CODE`, `RECORD_CODE_SIGNALS`, `VERIFY_CODE_LINKS`, or `REQUIRE_CODE_AVAILABLE`.
-2. **Repository cloning policy**: `DO_NOT_CLONE`, `CLONE_SELECTED`, `CLONE_ALL_VERIFIED`, or `ASK_BEFORE_EACH_CLONE`.
-3. **Clone target directory**: default may be `workspace/work/deep-paper-search/code/` if the user accepts defaults.
-4. **Repository access expectation**: public-only, private allowed, institution-hosted, unknown, or user-managed.
-5. **Git LFS and submodule policy**: skip, fetch if needed, or ask before fetching.
-6. **Reproducibility depth**: record repository only, inspect README, verify commit, run tests, or reproduce experiments.
+1. Decompose the user goal into domain, task, object, method, setting, and possible evaluation target.
+2. Disambiguate the domain when terms have multiple meanings.
+3. Generate first-pass seed terms and aliases.
+4. Compile a small number of Boolean and semantic queries.
+5. Probe a small result set from open scholarly sources.
+6. Extract observed terms from candidate titles and abstracts.
+7. Produce candidate scope boundaries.
+8. Produce a default config proposal.
 
-The workflow must not ask the user to paste secrets. If authentication is required, ask the user to configure SSH, Git credential helper, GitHub CLI, or an environment variable in the local environment.
+The calibration pass is successful when it can show the user candidate keywords, candidate domain interpretation, likely in-scope themes, likely near-scope themes, and a few example candidate papers or paper-like records. It should not be treated as the final corpus.
 
-## Required Only For Paper Artifact Retrieval
+## Confirmation Bundle
 
-Ask these only if the user wants local PDFs, TeX sources, supplementary files, or compiled paper artifacts:
+After calibration, the workflow should ask the user to confirm or edit a small bundle:
 
-1. **Artifact retrieval policy**: `DO_NOT_DOWNLOAD`, `DOWNLOAD_SELECTED`, `DOWNLOAD_ALL_IN_SCOPE`, or `DOWNLOAD_VERIFIED_CODE_ONLY`.
-2. **Artifact types**: PDF, HTML snapshot, TeX source, supplementary files, dataset links, or all available public artifacts.
-3. **Artifact target directory**: default may be `workspace/work/deep-paper-search/artifacts/` if the user accepts defaults.
-4. **TeX compile policy**: `DOWNLOAD_ONLY`, `COMPILE_IF_ENV_AVAILABLE`, or `REQUIRE_COMPILE_SUCCESS`.
-5. **Missing dependency policy**: skip and record, ask user to install, or fail the artifact stage.
+1. **Research direction or seed**: the topic, direction, keyword set, seed paper path, seed paper title, seed paper abstract, or short description.
+2. **Interpreted domain**: the field or community inferred from calibration.
+3. **Candidate keyword groups**: user terms, observed paper terms, aliases, and exclusion terms.
+4. **Candidate scope boundaries**: in-scope, near-scope, and out-of-scope interpretations.
+5. **Minimum core paper count**: the lower bound for relevant papers that must be found or else reported as `STOP_WITH_RISK`.
+6. **Year policy**: a year range, recent-years window, all-years policy, or foundational-plus-recent policy.
+7. **Search depth**: `EXPLORATORY`, `DEEP_SURVEY`, `SYSTEMATIC_LIKE`, or `NEAR_EXHAUSTIVE`.
+8. **Paper artifact download policy**: no artifacts, PDFs only, TeX only, or both.
 
-The workflow may only download publicly accessible artifacts or artifacts the user is authorized to access. It must not bypass access controls.
+If the user accepts the bundle, the workflow proceeds to full deep search. If the user edits it, update `config/deep-paper-search.yaml` and then proceed.
 
-## Optional Quality Preferences
+## Defaults
 
-These improve output quality but should not block search unless the user marks them as required:
+Use these defaults unless calibration or the user indicates otherwise:
 
-1. Preferred databases or sources.
-2. Preferred venues or excluded venues.
-3. Citation-count preference or tolerance for new low-citation papers.
-4. Whether to include preprints.
-5. Whether to include surveys.
-6. Whether to include patents, standards, and white papers as terminology evidence.
-7. Preferred citation style for final reports.
-8. Preferred language of final human-readable reports.
-9. Maximum runtime, API budget, download budget, or token budget.
-10. Whether the workflow should continue monitoring after the first run.
+- `minimum_core_papers`: 30.
+- `search_depth`: `DEEP_SURVEY`.
+- `year_policy.mode`: `FOUNDATIONAL_PLUS_RECENT`.
+- `year_policy.recent_years`: 5.
+- `artifact_download.paper_artifacts`: `NONE`, but ask the user if they want PDFs or TeX before artifact download stages.
+- `code.record_code_availability`: true.
+- `code.clone_repositories`: false.
+- Standard output package: enabled.
+- Inclusion policy: system-managed.
+
+## Search Depth Meaning
+
+Search depth controls how hard the system works before it is allowed to stop:
+
+- `EXPLORATORY`: find enough representative papers to understand the area. Use fewer expansion loops and lower coverage thresholds.
+- `DEEP_SURVEY`: default mode. Search multiple sources, expand by terms, citations, authors, venues, datasets, and code signals, then run coverage audit.
+- `SYSTEMATIC_LIKE`: stronger reproducibility. Preserve detailed query logs, inclusion and exclusion decisions, citation closure, and coverage evidence.
+- `NEAR_EXHAUSTIVE`: highest effort. Continue until marginal yield, coverage audit, and adversarial review support stopping, or budget is exhausted with residual risk.
+
+Depth does not mean "make the prompt longer." It controls iteration count, source diversity, citation closure strictness, coverage threshold, and adversarial review strictness.
+
+## Default Inclusion Policy
+
+The default inclusion policy is system-managed:
+
+- Include a paper in the core corpus when the title, abstract, keywords, or available full text clearly match the user direction or a discovered equivalent term.
+- Include a paper when it uses different terminology but matches the same task, mechanism, dataset, benchmark, or citation cluster.
+- Keep near-scope papers outside the core corpus but mine them for terms, references, authors, venues, datasets, and code signals.
+- Exclude papers whose overlap is only a shared word, a different domain sense, a generic background mention, or an unrelated method reused in a different task.
+- Record relevance and reference value separately. A paper can be relevant but low quality, or near-scope but useful for discovering vocabulary.
+
+The user may override inclusion and exclusion criteria in the config, but should not be forced to define them for ordinary runs.
+
+## Code Policy
+
+By default, the workflow records whether a paper appears to have open-source code and stores code URLs as signals. It does not clone repositories. Repository cloning is disabled because literature research usually needs code availability as metadata, not local repository state. Cloning should be enabled only when the user explicitly requests implementation inspection, reproduction, or local artifact collection.
+
+## Paper Artifact Policy
+
+PDF and TeX download should be explicitly controlled by the user because it affects storage, access, copyright constraints, and runtime. The workflow may ask:
+
+1. Download no paper artifacts.
+2. Download public PDFs only.
+3. Download public TeX or source archives only.
+4. Download both public PDFs and public TeX sources.
+
+The workflow must not bypass access controls.
+
+## Output Format Policy
+
+The user does not need to choose output formats for normal runs. The default output package is:
+
+- `corpus.csv`
+- `corpus.bib`
+- `corpus.json`
+- `versions.json`
+- `excluded.csv`
+- `near_miss.csv`
+- `search_protocol.md`
+- `coverage_report.md`
+- `evidence_graph.json`
+- `gap_report.md`
+- `monitoring_config.yaml`
+
+Users can disable outputs in config if they want a smaller run, but the default should be comprehensive.
 
 ## Minimal Clarification Set
 
 When the user gives only a rough topic, the workflow should usually ask these three questions first:
 
-1. What search depth do you want: exploratory, deep survey, systematic-like, or near-exhaustive?
-2. What final output do you want: paper list only, CSV/BibTeX/JSON package, evidence graph, coverage report, or all standard outputs?
-3. Are there any hard inclusion or exclusion criteria, such as year range, target domain, paper type, dataset, method family, or venue?
+1. What is the exact research direction or seed paper?
+2. What is the minimum number of relevant papers to find?
+3. What year range or recency policy should be used?
 
-If the answer gives permission to use sensible defaults, the workflow may proceed with a recorded default depth contract and ask fewer questions.
+If the direction is ambiguous, ask a domain clarification question. If the user did not specify artifact download, ask whether to download PDFs, TeX sources, both, or neither. Everything else can use defaults unless the user asks for tighter control.
+"""
+
+
+def build_config_example() -> str:
+    return """# Deep Paper Search configuration.
+# Copy this file to config/deep-paper-search.yaml and edit the fields for a run.
+
+calibration:
+  # Initial mode: the user may provide only a goal or seed. The workflow runs a
+  # lightweight calibration pass before full search.
+  enabled: true
+  require_user_confirmation_after_calibration: true
+  probe_result_limit_per_source: 10
+  max_calibration_sources: 3
+  write_candidate_papers: true
+
+research:
+  # Required. A topic, direction, keyword set, seed paper path, title, abstract, or summary.
+  direction: ""
+
+  # Optional but recommended when the topic has ambiguous terminology across fields.
+  domain_hint: ""
+
+  # Required lower bound. The workflow should not stop before this many core relevant papers
+  # are found unless it records STOP_WITH_RISK.
+  minimum_core_papers: 30
+
+  # Controls effort and stopping strictness: EXPLORATORY, DEEP_SURVEY,
+  # SYSTEMATIC_LIKE, or NEAR_EXHAUSTIVE.
+  search_depth: "DEEP_SURVEY"
+
+confirmation_bundle:
+  # Filled by the calibration pass, then confirmed or edited by the user.
+  interpreted_direction: ""
+  interpreted_domain: ""
+  candidate_keyword_groups:
+    user_terms: []
+    observed_paper_terms: []
+    aliases: []
+    exclusion_terms: []
+  candidate_scope:
+    in_scope: []
+    near_scope: []
+    out_of_scope: []
+  candidate_examples:
+    papers: []
+  user_confirmed: false
+
+year_policy:
+  # Choose RANGE, RECENT_YEARS, ALL_YEARS, or FOUNDATIONAL_PLUS_RECENT.
+  mode: "FOUNDATIONAL_PLUS_RECENT"
+  start_year: 2018
+  end_year: 2026
+  recent_years: 5
+  include_foundational: true
+
+artifact_download:
+  # Choose NONE, PDF_ONLY, TEX_ONLY, or PDF_AND_TEX.
+  paper_artifacts: "NONE"
+  target_dir: "workspace/work/deep-paper-search/artifacts/"
+  tex_compile_policy: "DOWNLOAD_ONLY"
+
+code:
+  # Default for literature research: record code availability but do not clone.
+  record_code_availability: true
+  clone_repositories: false
+  clone_target_dir: "workspace/work/deep-paper-search/code/"
+
+inclusion_policy:
+  # Default behavior: the system decides relevance from title, abstract, keywords,
+  # available full text, discovered equivalent terms, citation clusters, datasets,
+  # benchmarks, and method/task alignment.
+  system_managed: true
+  include_preprints: true
+  include_surveys: true
+  include_standards_as_term_signals: true
+  user_required_terms: []
+  user_excluded_terms: []
+  user_required_venues: []
+  user_excluded_venues: []
+
+outputs:
+  # Standard package is enabled by default. Users usually do not need to edit this.
+  corpus_csv: true
+  corpus_bibtex: true
+  corpus_json: true
+  versions_json: true
+  excluded_csv: true
+  near_miss_csv: true
+  search_protocol_md: true
+  coverage_report_md: true
+  evidence_graph_json: true
+  gap_report_md: true
+  monitoring_config_yaml: true
+
+budgets:
+  max_iterations: 6
+  max_runtime_minutes: 180
+  max_pdf_downloads: 0
+  max_api_calls: 2000
 """
 
 
@@ -1452,6 +1619,7 @@ def main() -> int:
         PLUGIN_SCRIPT,
         ROOT / ".agents" / "plugins",
         ROOT / "docs",
+        ROOT / "config",
     ]:
         directory.mkdir(parents=True, exist_ok=True)
 
@@ -1517,11 +1685,13 @@ This repository follows the `paper-tool` research branch layout while using orig
 - Plugin assets: `plugins/deep-paper-search/assets/`
 - Plugin installer: `plugins/deep-paper-search/scripts/install_project_agents.py`
 - Agent manifest: `plugins/deep-paper-search/assets/agent_manifest.json`
+- Config template: `config/deep-paper-search.example.yaml`
 
 The generator parses `deep-paper-search-agent-system-design.md` and writes {len(agents)} agent TOML files plus {len(agents)} project prompt files. Each project agent prompt is expected to be at least 1000 words.
 """
     write(ROOT / "docs" / "generated-agent-assets.md", short_doc)
     write(ROOT / "docs" / "user-required-parameters.md", build_user_parameters_doc())
+    write(ROOT / "config" / "deep-paper-search.example.yaml", build_config_example())
 
     too_short = []
     for path in sorted(PROJECT_PROMPTS.glob("*.md")):
