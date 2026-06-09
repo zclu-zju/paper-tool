@@ -18,6 +18,7 @@ The workflow starts from a research idea that may be incomplete, translated poor
 - `screening_taxonomy_evidence`: `relevance_screening_agent`, `near_miss_mining_agent`, `exclusion_reason_agent`, `task_taxonomy_agent`, `method_taxonomy_agent`, `dataset_metric_extraction_agent`, `experimental_setting_agent`, `evidence_graph_agent`
 - `coverage_audit_adversarial`: `cluster_coverage_agent`, `citation_closure_agent`, `source_diversity_agent`, `recency_and_seminal_balance_agent`, `missing_cluster_hunter_agent`, `coverage_scoring_agent`, `coverage_audit_agent`, `adversarial_reviewer_agent`, `iteration_decision_agent`, `stop_condition_validator_agent`
 - `output_monitoring`: `corpus_export_agent`, `search_protocol_report_agent`, `coverage_report_agent`, `gap_report_agent`, `monitoring_query_agent`
+- `todo_execution_control`: `todo_planner_agent`, `todo_selector_agent`, `todo_executor_router_agent`, `todo_completion_verifier_agent`, `todo_continuation_auditor_agent`
 
 ## Stage Protocol
 
@@ -57,6 +58,7 @@ The workflow has these stages:
 32. Coverage Scoring and Audit: output `coverage score and audit report`; purpose: Prevent inflated self-assessment..
 33. Adversarial Challenge and Iteration Decision: output `next action`; purpose: Route the workflow back to the right flow or stop..
 34. Output and Monitoring: output `final packages`; purpose: Produce reusable, reproducible, and monitorable outputs..
+35. TODO Execution Loop: output `updated TODO queue, done TODO log, and continuation decision`; purpose: Continue TODO-mode execution until no useful executable task remains..
 
 Run stages in order only when their required inputs exist. Many stages contain parallel agents. Parallelism is expected for source retrieval, citation expansion, author expansion, venue expansion, dataset/code expansion, and coverage subreports. Do not wait for a slow or failed data source before preserving successful results from other sources. Instead, record the failure and let `failure_triage_agent` decide whether retry, downgrade, or loopback is appropriate.
 
@@ -80,6 +82,21 @@ The default behavior is:
 - use the minimum paper count and year policy from config as hard run constraints.
 
 Ask the user only when the calibration pass reveals multiple plausible interpretations, missing hard lower bounds, artifact download choices, or a year policy that cannot be safely defaulted. Do not ask the user to provide obvious terms that the system can discover from papers. Do not ask the user to paste credentials, private keys, API tokens, or paid content. If access is needed, ask the user to configure the local environment and stop at the access boundary. Ask no more than three concise questions at a time.
+
+## TODO Mode
+
+If `execution.todo_mode` is true, the workflow enters TODO-mode execution after calibration and config confirmation. TODO mode is a goal-like execution loop, not a simple note list. The workflow must maintain `workspace/work/deep-paper-search/todo/active.todo`, `done.todo`, `todo_state.json`, and `todo_log.md`. Each TODO must have an identifier, source, priority, dependency state, target stage or agent, and completion criteria.
+
+TODO-mode loop:
+
+1. `todo_planner_agent` creates the initial queue from the confirmed goal, config, and calibration evidence.
+2. `todo_selector_agent` chooses the next ready and valuable TODO.
+3. `todo_executor_router_agent` maps that TODO to an existing stage or agent and defines the expected artifact.
+4. The target stage or agent executes the work.
+5. `todo_completion_verifier_agent` checks whether completion evidence exists before the TODO is removed from `active.todo`.
+6. `todo_continuation_auditor_agent` decides whether gaps, failures, weak coverage, or adversarial findings justify new TODOs.
+
+The workflow may stop in TODO mode only when the active queue is empty, the continuation auditor returns `NO_NEW_TODO`, and stop-condition validation passes. Repeated, duplicate, or low-value tasks should be merged, rejected, or converted into residual risk rather than appended forever.
 
 ## Loopback Policy
 
