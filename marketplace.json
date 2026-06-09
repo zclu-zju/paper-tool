@@ -1,0 +1,10 @@
+{
+  "plugins": [
+    {
+      "name": "deep-paper-search",
+      "path": "plugins/deep-paper-search",
+      "enabled": true,
+      "version": "0.1.0"
+    }
+  ]
+}
