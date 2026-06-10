@@ -20,14 +20,14 @@
     "custom_agent_name": "state-reducer-agent",
     "phase": "4.1 Orchestration, State, and Reproducibility",
     "phase_slug": "orchestration_state_reproducibility",
-    "responsibility": "Reduce append-only agent events into the current canonical Research State and expose state diffs between iterations.",
-    "output": "state snapshot and state diff",
-    "failure_mode": "Parallel agents may mutate conflicting state or hide the history behind a decision.",
+    "responsibility": "Reduce append-only agent, stage, query, and TODO events into the current canonical Research State and expose state diffs between iterations.",
+    "output": "state snapshot, state diff, and ledger consistency notes",
+    "failure_mode": "Parallel agents may mutate conflicting state, hide the history behind a decision, or make execution progress impossible to locate.",
     "prompt": "prompts/state_reducer_agent.md",
     "toml": ".codex/agents/state_reducer_agent.toml",
     "stages": [
       1,
-      27
+      15
     ]
   },
   {
@@ -36,12 +36,15 @@
     "custom_agent_name": "provenance-trace-agent",
     "phase": "4.1 Orchestration, State, and Reproducibility",
     "phase_slug": "orchestration_state_reproducibility",
-    "responsibility": "Record the source chain for papers, terms, scores, exclusions, frontier decisions, and final claims.",
-    "output": "provenance graph",
-    "failure_mode": "The workflow may produce claims that cannot be reproduced or audited.",
+    "responsibility": "Record the source chain for papers, terms, scores, exclusions, frontier decisions, ledger events, and final claims.",
+    "output": "provenance graph and artifact index updates",
+    "failure_mode": "The workflow may produce claims or execution states that cannot be reproduced, audited, or resumed.",
     "prompt": "prompts/provenance_trace_agent.md",
     "toml": ".codex/agents/provenance_trace_agent.toml",
-    "stages": []
+    "stages": [
+      1,
+      21
+    ]
   },
   {
     "id": 4,
@@ -55,7 +58,7 @@
     "prompt": "prompts/frontier_budget_allocator_agent.md",
     "toml": ".codex/agents/frontier_budget_allocator_agent.toml",
     "stages": [
-      21
+      19
     ]
   },
   {
@@ -69,7 +72,10 @@
     "failure_mode": "Tool or access failures may be mistaken for evidence that no relevant literature exists.",
     "prompt": "prompts/failure_triage_agent.md",
     "toml": ".codex/agents/failure_triage_agent.toml",
-    "stages": []
+    "stages": [
+      1,
+      19
+    ]
   },
   {
     "id": 6,
@@ -98,7 +104,7 @@
     "prompt": "prompts/domain_disambiguation_agent.md",
     "toml": ".codex/agents/domain_disambiguation_agent.toml",
     "stages": [
-      3
+      2
     ]
   },
   {
@@ -113,7 +119,7 @@
     "prompt": "prompts/concept_definition_agent.md",
     "toml": ".codex/agents/concept_definition_agent.toml",
     "stages": [
-      4
+      2
     ]
   },
   {
@@ -128,7 +134,7 @@
     "prompt": "prompts/scope_boundary_agent.md",
     "toml": ".codex/agents/scope_boundary_agent.toml",
     "stages": [
-      5
+      2
     ]
   },
   {
@@ -143,7 +149,7 @@
     "prompt": "prompts/depth_contract_agent.md",
     "toml": ".codex/agents/depth_contract_agent.toml",
     "stages": [
-      5
+      2
     ]
   },
   {
@@ -158,7 +164,7 @@
     "prompt": "prompts/assumption_registry_agent.md",
     "toml": ".codex/agents/assumption_registry_agent.toml",
     "stages": [
-      3
+      2
     ]
   },
   {
@@ -173,7 +179,7 @@
     "prompt": "prompts/seed_keyword_agent.md",
     "toml": ".codex/agents/seed_keyword_agent.toml",
     "stages": [
-      6
+      3
     ]
   },
   {
@@ -188,7 +194,7 @@
     "prompt": "prompts/translation_alias_agent.md",
     "toml": ".codex/agents/translation_alias_agent.toml",
     "stages": [
-      6
+      3
     ]
   },
   {
@@ -203,7 +209,7 @@
     "prompt": "prompts/controlled_vocabulary_agent.md",
     "toml": ".codex/agents/controlled_vocabulary_agent.toml",
     "stages": [
-      6
+      3
     ]
   },
   {
@@ -218,7 +224,7 @@
     "prompt": "prompts/paper_term_extractor_agent.md",
     "toml": ".codex/agents/paper_term_extractor_agent.toml",
     "stages": [
-      18
+      9
     ]
   },
   {
@@ -233,7 +239,7 @@
     "prompt": "prompts/term_canonicalization_agent.md",
     "toml": ".codex/agents/term_canonicalization_agent.toml",
     "stages": [
-      18
+      9
     ]
   },
   {
@@ -248,7 +254,7 @@
     "prompt": "prompts/term_cooccurrence_graph_agent.md",
     "toml": ".codex/agents/term_cooccurrence_graph_agent.toml",
     "stages": [
-      19
+      9
     ]
   },
   {
@@ -263,7 +269,7 @@
     "prompt": "prompts/terminology_drift_agent.md",
     "toml": ".codex/agents/terminology_drift_agent.toml",
     "stages": [
-      19
+      9
     ]
   },
   {
@@ -278,7 +284,7 @@
     "prompt": "prompts/negative_query_agent.md",
     "toml": ".codex/agents/negative_query_agent.toml",
     "stages": [
-      7
+      3
     ]
   },
   {
@@ -293,6 +299,7 @@
     "prompt": "prompts/query_mutation_agent.md",
     "toml": ".codex/agents/query_mutation_agent.toml",
     "stages": [
+      4,
       9
     ]
   },
@@ -308,7 +315,7 @@
     "prompt": "prompts/boolean_query_compiler_agent.md",
     "toml": ".codex/agents/boolean_query_compiler_agent.toml",
     "stages": [
-      7
+      3
     ]
   },
   {
@@ -323,7 +330,7 @@
     "prompt": "prompts/semantic_query_compiler_agent.md",
     "toml": ".codex/agents/semantic_query_compiler_agent.toml",
     "stages": [
-      7
+      3
     ]
   },
   {
@@ -338,7 +345,7 @@
     "prompt": "prompts/query_probe_agent.md",
     "toml": ".codex/agents/query_probe_agent.toml",
     "stages": [
-      8
+      4
     ]
   },
   {
@@ -353,7 +360,7 @@
     "prompt": "prompts/keyword_gap_auditor_agent.md",
     "toml": ".codex/agents/keyword_gap_auditor_agent.toml",
     "stages": [
-      8
+      4
     ]
   },
   {
@@ -362,13 +369,14 @@
     "custom_agent_name": "semantic-scholar-search-agent",
     "phase": "4.4 Data Source Retrieval",
     "phase_slug": "data_source_retrieval",
-    "responsibility": "Retrieve candidates, citation links, and similar papers from Semantic Scholar using the assigned queries.",
-    "output": "Semantic Scholar result batch",
+    "responsibility": "Retrieve candidates, abstracts, citation counts, citation links, and similar papers from Semantic Scholar using the assigned queries.",
+    "output": "Semantic Scholar result batch with citation metadata",
     "failure_mode": "The workflow may lack an accessible citation-aware and semantic retrieval source.",
     "prompt": "prompts/semantic_scholar_search_agent.md",
     "toml": ".codex/agents/semantic_scholar_search_agent.toml",
     "stages": [
-      10
+      5,
+      16
     ]
   },
   {
@@ -377,13 +385,14 @@
     "custom_agent_name": "openalex-search-agent",
     "phase": "4.4 Data Source Retrieval",
     "phase_slug": "data_source_retrieval",
-    "responsibility": "Retrieve works, concepts, institutions, venues, and citation metadata from OpenAlex.",
-    "output": "OpenAlex result batch",
+    "responsibility": "Retrieve works, abstracts or inverted abstracts when available, concepts, institutions, venues, and citation metadata from OpenAlex.",
+    "output": "OpenAlex result batch with citation metadata",
     "failure_mode": "The workflow may overdepend on a single commercial or closed scholarly index.",
     "prompt": "prompts/openalex_search_agent.md",
     "toml": ".codex/agents/openalex_search_agent.toml",
     "stages": [
-      10
+      5,
+      16
     ]
   },
   {
@@ -398,7 +407,7 @@
     "prompt": "prompts/crossref_metadata_agent.md",
     "toml": ".codex/agents/crossref_metadata_agent.toml",
     "stages": [
-      10
+      5
     ]
   },
   {
@@ -413,7 +422,7 @@
     "prompt": "prompts/arxiv_search_agent.md",
     "toml": ".codex/agents/arxiv_search_agent.toml",
     "stages": [
-      10
+      5
     ]
   },
   {
@@ -428,7 +437,7 @@
     "prompt": "prompts/dblp_search_agent.md",
     "toml": ".codex/agents/dblp_search_agent.toml",
     "stages": [
-      10
+      5
     ]
   },
   {
@@ -443,7 +452,7 @@
     "prompt": "prompts/ieee_xplore_search_agent.md",
     "toml": ".codex/agents/ieee_xplore_search_agent.toml",
     "stages": [
-      10
+      5
     ]
   },
   {
@@ -458,7 +467,7 @@
     "prompt": "prompts/acm_dl_search_agent.md",
     "toml": ".codex/agents/acm_dl_search_agent.toml",
     "stages": [
-      10
+      5
     ]
   },
   {
@@ -473,7 +482,7 @@
     "prompt": "prompts/domain_specific_database_agent.md",
     "toml": ".codex/agents/domain_specific_database_agent.toml",
     "stages": [
-      10
+      5
     ]
   },
   {
@@ -488,7 +497,7 @@
     "prompt": "prompts/scholarly_web_fallback_agent.md",
     "toml": ".codex/agents/scholarly_web_fallback_agent.toml",
     "stages": [
-      10
+      5
     ]
   },
   {
@@ -497,13 +506,13 @@
     "custom_agent_name": "full-text-locator-agent",
     "phase": "4.5 Full Text and Content Acquisition",
     "phase_slug": "full_text_content",
-    "responsibility": "Locate legally accessible PDF, HTML, open-access, preprint, and author-hosted versions of candidate papers.",
-    "output": "full text link set",
-    "failure_mode": "The workflow may be limited to titles and abstracts and fail to mine deeper terminology or references.",
+    "responsibility": "Locate legally accessible metadata, PDF, HTML, open-access, preprint, and author-hosted versions of candidate papers and identify the best abstract source.",
+    "output": "artifact link set and abstract-source candidates",
+    "failure_mode": "The workflow may be limited to titles and fail to mine abstracts, deeper terminology, or references.",
     "prompt": "prompts/full_text_locator_agent.md",
     "toml": ".codex/agents/full_text_locator_agent.toml",
     "stages": [
-      11
+      6
     ]
   },
   {
@@ -512,13 +521,13 @@
     "custom_agent_name": "pdf-parse-agent",
     "phase": "4.5 Full Text and Content Acquisition",
     "phase_slug": "full_text_content",
-    "responsibility": "Parse accessible PDF or full-text files into sections, metadata, references, tables, figures, and text spans with confidence notes.",
-    "output": "parsed paper text",
-    "failure_mode": "Full-text information may be unavailable to downstream term, citation, and experiment extractors.",
+    "responsibility": "Parse accessible PDF, HTML, TeX, or metadata-backed text into abstracts, sections, references, tables, figures, and text spans with confidence notes.",
+    "output": "abstract-enriched parsed paper text",
+    "failure_mode": "Abstracts and full-text information may be unavailable to downstream term, citation, and experiment extractors.",
     "prompt": "prompts/pdf_parse_agent.md",
     "toml": ".codex/agents/pdf_parse_agent.toml",
     "stages": [
-      12
+      6
     ]
   },
   {
@@ -533,7 +542,7 @@
     "prompt": "prompts/reference_section_parser_agent.md",
     "toml": ".codex/agents/reference_section_parser_agent.toml",
     "stages": [
-      12
+      6
     ]
   },
   {
@@ -548,7 +557,7 @@
     "prompt": "prompts/figure_table_signal_agent.md",
     "toml": ".codex/agents/figure_table_signal_agent.toml",
     "stages": [
-      12
+      6
     ]
   },
   {
@@ -563,7 +572,7 @@
     "prompt": "prompts/backward_citation_agent.md",
     "toml": ".codex/agents/backward_citation_agent.toml",
     "stages": [
-      22
+      11
     ]
   },
   {
@@ -578,7 +587,7 @@
     "prompt": "prompts/forward_citation_agent.md",
     "toml": ".codex/agents/forward_citation_agent.toml",
     "stages": [
-      22
+      11
     ]
   },
   {
@@ -593,7 +602,7 @@
     "prompt": "prompts/co_citation_agent.md",
     "toml": ".codex/agents/co_citation_agent.toml",
     "stages": [
-      22
+      11
     ]
   },
   {
@@ -608,7 +617,7 @@
     "prompt": "prompts/bibliographic_coupling_agent.md",
     "toml": ".codex/agents/bibliographic_coupling_agent.toml",
     "stages": [
-      22
+      11
     ]
   },
   {
@@ -623,7 +632,7 @@
     "prompt": "prompts/author_profile_agent.md",
     "toml": ".codex/agents/author_profile_agent.toml",
     "stages": [
-      23
+      12
     ]
   },
   {
@@ -638,7 +647,7 @@
     "prompt": "prompts/lab_institution_agent.md",
     "toml": ".codex/agents/lab_institution_agent.toml",
     "stages": [
-      23
+      12
     ]
   },
   {
@@ -653,7 +662,7 @@
     "prompt": "prompts/venue_track_agent.md",
     "toml": ".codex/agents/venue_track_agent.toml",
     "stages": [
-      24
+      13
     ]
   },
   {
@@ -668,7 +677,7 @@
     "prompt": "prompts/workshop_special_issue_agent.md",
     "toml": ".codex/agents/workshop_special_issue_agent.toml",
     "stages": [
-      24
+      13
     ]
   },
   {
@@ -683,7 +692,7 @@
     "prompt": "prompts/dataset_benchmark_agent.md",
     "toml": ".codex/agents/dataset_benchmark_agent.toml",
     "stages": [
-      25
+      14
     ]
   },
   {
@@ -692,13 +701,14 @@
     "custom_agent_name": "code-repository-agent",
     "phase": "4.6 Expansion Frontiers",
     "phase_slug": "expansion_frontiers",
-    "responsibility": "Mine code repositories, README files, releases, model zoos, and paper-code indexes for paper links and related work.",
-    "output": "code repository frontier",
-    "failure_mode": "Implementation-centric papers may be missed when repository ecosystems expose them before indexes do.",
+    "responsibility": "Mine code repositories, README files, releases, model zoos, and paper-code indexes for paper links, related work, and code availability evidence without cloning unless enabled.",
+    "output": "code repository frontier and per-paper code evidence",
+    "failure_mode": "Implementation-centric papers or code availability signals may be missed when repository ecosystems expose them before indexes do.",
     "prompt": "prompts/code_repository_agent.md",
     "toml": ".codex/agents/code_repository_agent.toml",
     "stages": [
-      25
+      14,
+      16
     ]
   },
   {
@@ -713,7 +723,7 @@
     "prompt": "prompts/leaderboard_challenge_agent.md",
     "toml": ".codex/agents/leaderboard_challenge_agent.toml",
     "stages": [
-      25
+      14
     ]
   },
   {
@@ -728,7 +738,7 @@
     "prompt": "prompts/standard_patent_agent.md",
     "toml": ".codex/agents/standard_patent_agent.toml",
     "stages": [
-      26
+      14
     ]
   },
   {
@@ -743,8 +753,8 @@
     "prompt": "prompts/metadata_canonicalization_agent.md",
     "toml": ".codex/agents/metadata_canonicalization_agent.toml",
     "stages": [
-      13,
-      27
+      7,
+      15
     ]
   },
   {
@@ -759,7 +769,8 @@
     "prompt": "prompts/author_identity_resolution_agent.md",
     "toml": ".codex/agents/author_identity_resolution_agent.toml",
     "stages": [
-      14
+      7,
+      12
     ]
   },
   {
@@ -774,7 +785,8 @@
     "prompt": "prompts/venue_identity_resolution_agent.md",
     "toml": ".codex/agents/venue_identity_resolution_agent.toml",
     "stages": [
-      14
+      7,
+      13
     ]
   },
   {
@@ -789,7 +801,7 @@
     "prompt": "prompts/version_linking_agent.md",
     "toml": ".codex/agents/version_linking_agent.toml",
     "stages": [
-      15
+      7
     ]
   },
   {
@@ -804,8 +816,8 @@
     "prompt": "prompts/deduplication_agent.md",
     "toml": ".codex/agents/deduplication_agent.toml",
     "stages": [
-      15,
-      27
+      7,
+      15
     ]
   },
   {
@@ -820,7 +832,7 @@
     "prompt": "prompts/metadata_conflict_resolver_agent.md",
     "toml": ".codex/agents/metadata_conflict_resolver_agent.toml",
     "stages": [
-      13
+      7
     ]
   },
   {
@@ -835,7 +847,7 @@
     "prompt": "prompts/retraction_errata_agent.md",
     "toml": ".codex/agents/retraction_errata_agent.toml",
     "stages": [
-      28
+      15
     ]
   },
   {
@@ -850,8 +862,8 @@
     "prompt": "prompts/relevance_screening_agent.md",
     "toml": ".codex/agents/relevance_screening_agent.toml",
     "stages": [
-      16,
-      28
+      8,
+      15
     ]
   },
   {
@@ -866,7 +878,7 @@
     "prompt": "prompts/near_miss_mining_agent.md",
     "toml": ".codex/agents/near_miss_mining_agent.toml",
     "stages": [
-      17
+      8
     ]
   },
   {
@@ -881,8 +893,7 @@
     "prompt": "prompts/exclusion_reason_agent.md",
     "toml": ".codex/agents/exclusion_reason_agent.toml",
     "stages": [
-      16,
-      28
+      8
     ]
   },
   {
@@ -897,7 +908,7 @@
     "prompt": "prompts/task_taxonomy_agent.md",
     "toml": ".codex/agents/task_taxonomy_agent.toml",
     "stages": [
-      20
+      10
     ]
   },
   {
@@ -912,7 +923,7 @@
     "prompt": "prompts/method_taxonomy_agent.md",
     "toml": ".codex/agents/method_taxonomy_agent.toml",
     "stages": [
-      20
+      10
     ]
   },
   {
@@ -927,7 +938,7 @@
     "prompt": "prompts/dataset_metric_extraction_agent.md",
     "toml": ".codex/agents/dataset_metric_extraction_agent.toml",
     "stages": [
-      20
+      10
     ]
   },
   {
@@ -942,7 +953,7 @@
     "prompt": "prompts/experimental_setting_agent.md",
     "toml": ".codex/agents/experimental_setting_agent.toml",
     "stages": [
-      20
+      10
     ]
   },
   {
@@ -957,7 +968,7 @@
     "prompt": "prompts/evidence_graph_agent.md",
     "toml": ".codex/agents/evidence_graph_agent.toml",
     "stages": [
-      29
+      10
     ]
   },
   {
@@ -972,7 +983,7 @@
     "prompt": "prompts/cluster_coverage_agent.md",
     "toml": ".codex/agents/cluster_coverage_agent.toml",
     "stages": [
-      30
+      17
     ]
   },
   {
@@ -987,7 +998,7 @@
     "prompt": "prompts/citation_closure_agent.md",
     "toml": ".codex/agents/citation_closure_agent.toml",
     "stages": [
-      30
+      17
     ]
   },
   {
@@ -1002,7 +1013,7 @@
     "prompt": "prompts/source_diversity_agent.md",
     "toml": ".codex/agents/source_diversity_agent.toml",
     "stages": [
-      30
+      17
     ]
   },
   {
@@ -1011,14 +1022,14 @@
     "custom_agent_name": "recency-and-seminal-balance-agent",
     "phase": "4.9 Coverage Audit and Adversarial Review",
     "phase_slug": "coverage_audit_adversarial",
-    "responsibility": "Balance recent work, foundational work, transitional periods, and mature survey-era papers.",
-    "output": "recency and seminal balance report",
-    "failure_mode": "The corpus may include only new papers or only classic papers.",
+    "responsibility": "Balance recent work, foundational work, transitional periods, mature survey-era papers, and citation-based value signals.",
+    "output": "recency, seminal, and citation-value balance report",
+    "failure_mode": "The corpus may include only new papers, only classic papers, or papers whose value signals are invisible.",
     "prompt": "prompts/recency_and_seminal_balance_agent.md",
     "toml": ".codex/agents/recency_and_seminal_balance_agent.toml",
     "stages": [
-      21,
-      30
+      16,
+      17
     ]
   },
   {
@@ -1033,7 +1044,7 @@
     "prompt": "prompts/missing_cluster_hunter_agent.md",
     "toml": ".codex/agents/missing_cluster_hunter_agent.toml",
     "stages": [
-      31
+      18
     ]
   },
   {
@@ -1048,7 +1059,7 @@
     "prompt": "prompts/coverage_scoring_agent.md",
     "toml": ".codex/agents/coverage_scoring_agent.toml",
     "stages": [
-      32
+      17
     ]
   },
   {
@@ -1063,7 +1074,7 @@
     "prompt": "prompts/coverage_audit_agent.md",
     "toml": ".codex/agents/coverage_audit_agent.toml",
     "stages": [
-      32
+      18
     ]
   },
   {
@@ -1078,7 +1089,7 @@
     "prompt": "prompts/adversarial_reviewer_agent.md",
     "toml": ".codex/agents/adversarial_reviewer_agent.toml",
     "stages": [
-      33
+      18
     ]
   },
   {
@@ -1093,7 +1104,7 @@
     "prompt": "prompts/iteration_decision_agent.md",
     "toml": ".codex/agents/iteration_decision_agent.toml",
     "stages": [
-      33
+      19
     ]
   },
   {
@@ -1108,7 +1119,7 @@
     "prompt": "prompts/stop_condition_validator_agent.md",
     "toml": ".codex/agents/stop_condition_validator_agent.toml",
     "stages": [
-      33
+      19
     ]
   },
   {
@@ -1117,13 +1128,13 @@
     "custom_agent_name": "corpus-export-agent",
     "phase": "4.10 Output and Monitoring",
     "phase_slug": "output_monitoring",
-    "responsibility": "Export the final corpus, version graph, identifiers, and metadata into reusable machine-readable formats.",
-    "output": "corpus package",
-    "failure_mode": "The research result may be difficult to reuse in papers, spreadsheets, databases, or later runs.",
+    "responsibility": "Export the validated corpus into one primary CSV and optional Excel table with abstract, citations, code evidence, relevance, value notes, and summary_zh as the final column.",
+    "output": "unified final paper table",
+    "failure_mode": "The research result may be difficult to scan, reuse, or compare because core information is scattered across files.",
     "prompt": "prompts/corpus_export_agent.md",
     "toml": ".codex/agents/corpus_export_agent.toml",
     "stages": [
-      34
+      20
     ]
   },
   {
@@ -1132,13 +1143,13 @@
     "custom_agent_name": "search-protocol-report-agent",
     "phase": "4.10 Output and Monitoring",
     "phase_slug": "output_monitoring",
-    "responsibility": "Write the reproducible search protocol, including queries, databases, stages, inclusion criteria, exclusions, and loopbacks.",
-    "output": "reproducible search report",
-    "failure_mode": "The search process may be impossible to reproduce or defend.",
+    "responsibility": "Write a concise reproducible search protocol from the ledgers, including queries, databases, stages, inclusion criteria, exclusions, and loopbacks.",
+    "output": "concise reproducible search protocol",
+    "failure_mode": "The search process may be impossible to reproduce or defend without reading every agent artifact.",
     "prompt": "prompts/search_protocol_report_agent.md",
     "toml": ".codex/agents/search_protocol_report_agent.toml",
     "stages": [
-      34
+      21
     ]
   },
   {
@@ -1147,13 +1158,13 @@
     "custom_agent_name": "coverage-report-agent",
     "phase": "4.10 Output and Monitoring",
     "phase_slug": "output_monitoring",
-    "responsibility": "Write the coverage report with scores, evidence, audit findings, adversarial challenges, and residual risks.",
-    "output": "coverage report",
+    "responsibility": "Write a compact coverage report with scores, evidence, audit findings, adversarial challenges, and residual risks.",
+    "output": "compact coverage report",
     "failure_mode": "Users may not know how much confidence to place in the corpus.",
     "prompt": "prompts/coverage_report_agent.md",
     "toml": ".codex/agents/coverage_report_agent.toml",
     "stages": [
-      34
+      21
     ]
   },
   {
@@ -1162,13 +1173,13 @@
     "custom_agent_name": "gap-report-agent",
     "phase": "4.10 Output and Monitoring",
     "phase_slug": "output_monitoring",
-    "responsibility": "Summarize weakly covered areas, research gaps, unresolved uncertainties, and recommended future search directions.",
-    "output": "gap report",
+    "responsibility": "Summarize weakly covered areas, research gaps, unresolved uncertainties, and recommended future search directions as a concise support artifact.",
+    "output": "compact gap report",
     "failure_mode": "The final result may not help the user decide what to investigate next.",
     "prompt": "prompts/gap_report_agent.md",
     "toml": ".codex/agents/gap_report_agent.toml",
     "stages": [
-      34
+      21
     ]
   },
   {
@@ -1183,7 +1194,7 @@
     "prompt": "prompts/monitoring_query_agent.md",
     "toml": ".codex/agents/monitoring_query_agent.toml",
     "stages": [
-      34
+      22
     ]
   },
   {
@@ -1198,7 +1209,7 @@
     "prompt": "prompts/todo_planner_agent.md",
     "toml": ".codex/agents/todo_planner_agent.toml",
     "stages": [
-      35
+      23
     ]
   },
   {
@@ -1213,7 +1224,7 @@
     "prompt": "prompts/todo_selector_agent.md",
     "toml": ".codex/agents/todo_selector_agent.toml",
     "stages": [
-      35
+      23
     ]
   },
   {
@@ -1228,7 +1239,7 @@
     "prompt": "prompts/todo_executor_router_agent.md",
     "toml": ".codex/agents/todo_executor_router_agent.toml",
     "stages": [
-      35
+      23
     ]
   },
   {
@@ -1243,7 +1254,7 @@
     "prompt": "prompts/todo_completion_verifier_agent.md",
     "toml": ".codex/agents/todo_completion_verifier_agent.toml",
     "stages": [
-      35
+      23
     ]
   },
   {
@@ -1258,7 +1269,7 @@
     "prompt": "prompts/todo_continuation_auditor_agent.md",
     "toml": ".codex/agents/todo_continuation_auditor_agent.toml",
     "stages": [
-      35
+      23
     ]
   }
 ]
