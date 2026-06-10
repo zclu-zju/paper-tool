@@ -133,7 +133,7 @@ research_state:
 
 ## 4. Agent 清单
 
-本设计包含 79 个 Agent。它们不是全部每次都必须启用；orchestrator 会根据领域、预算和用户深度要求启用子集。但系统级设计保留这些 Agent，是因为它们分别覆盖不同漏检路径。
+本设计包含 79 个核心论文搜索 Agent，外加 5 个可选 TODO 执行控制 Agent，总计 84 个 Agent。它们不是全部每次都必须启用；orchestrator 会根据领域、预算、用户深度要求和 TODO mode 启用子集。但系统级设计保留这些 Agent，是因为它们分别覆盖不同漏检路径。
 
 ### 4.1 编排、状态与复现
 
@@ -258,10 +258,10 @@ research_state:
 
 | # | Agent | 不可替代职责 | 独立输出 | 防止的失败模式 |
 |---|---|---|---|---|
-| 75 | `corpus_export_agent` | 生成 CSV、BibTeX、JSON、去重映射 | corpus package | 结果不可复用 |
-| 76 | `search_protocol_report_agent` | 输出查询式、数据库、纳入排除、迭代历史 | reproducible search report | 调研过程不可复现 |
-| 77 | `coverage_report_agent` | 输出覆盖评分、证据和残余风险 | coverage report | 用户不知道结果能信到什么程度 |
-| 78 | `gap_report_agent` | 总结研究空白、弱覆盖区域、后续搜索建议 | gap report | 搜索结果不能指导下一步研究 |
+| 75 | `corpus_export_agent` | 生成统一 final_papers.csv 和可选 xlsx，最后一列为 summary_zh | unified final paper table | 结果散落在多个文件里难以阅读和复用 |
+| 76 | `search_protocol_report_agent` | 从 query ledger 和 stage ledger 生成简洁可复现搜索协议 | concise search protocol | 调研过程不可复现 |
+| 77 | `coverage_report_agent` | 输出紧凑覆盖评分、证据和残余风险 | compact coverage report | 用户不知道结果能信到什么程度 |
+| 78 | `gap_report_agent` | 简洁总结研究空白、弱覆盖区域、后续搜索建议 | compact gap report | 搜索结果不能指导下一步研究 |
 | 79 | `monitoring_query_agent` | 生成后续监控查询、作者/venue/引用提醒 | monitoring config | 调研完成后无法跟踪新论文 |
 
 ### 4.11 TODO 执行控制 Agent
@@ -278,45 +278,33 @@ TODO mode 是可选执行模式。它不是普通 checklist，而是一个持续
 
 ## 5. Stage 设计
 
-本系统使用 34 个 Stage。Stage 的粒度按“后续决策需要一个独立 artifact”划分，而不是按 Agent 数量划分。
+本系统收敛为 23 个 Stage。Stage 不再按小动作拆得过细，而是按“后续决策需要一个独立 artifact 或 ledger 记录”划分。这样既避免 35 个 Stage 的重复和碎片化，也不会把 subagent 流程压缩成一个黑盒。
 
 | Stage | 名称 | 主要 Agent | 输入 | 输出 | 实际意义 |
 |---|---|---|---|---|---|
-| 1 | Run 初始化 | `run_orchestrator_agent`, `state_reducer_agent` | 用户请求 | run plan、初始 state | 建立可追踪任务边界 |
-| 2 | 意图拆解 | `intent_decomposition_agent` | 原始请求 | intent frame | 把自然语言拆成可搜索字段 |
-| 3 | 领域消歧 | `domain_disambiguation_agent`, `assumption_registry_agent` | intent frame | domain decision、assumptions | 防止跨领域误搜 |
-| 4 | 概念定义 | `concept_definition_agent` | intent、domain | concept table | 建立相关性判断标准 |
-| 5 | 范围契约 | `scope_boundary_agent`, `depth_contract_agent` | concept table | scope contract、depth contract | 明确纳入、排除、停止阈值 |
-| 6 | 初始术语生成 | `seed_keyword_agent`, `translation_alias_agent`, `controlled_vocabulary_agent` | scope contract | seed terms、alias map | 创建第一批入口 |
-| 7 | 初始查询编译 | `boolean_query_compiler_agent`, `semantic_query_compiler_agent`, `negative_query_agent` | seed terms | source-specific queries | 查询可执行化 |
-| 8 | 查询探针 | `query_probe_agent`, `keyword_gap_auditor_agent` | 查询草案 | probe report、keyword gap | 大规模检索前发现坏查询 |
-| 9 | 查询修正 | `query_mutation_agent` | probe report | revised queries | 用小样本反馈修正入口 |
-| 10 | 并行数据库检索 | source search agents 25-33 | revised queries | raw records | 多数据源降低偏差 |
-| 11 | 全文定位 | `full_text_locator_agent` | raw records | full text links | 为术语和引用挖掘准备材料 |
-| 12 | 全文解析 | `pdf_parse_agent`, `reference_section_parser_agent`, `figure_table_signal_agent` | full text links | parsed text、references、signals | 获取摘要之外的真实术语 |
-| 13 | 元数据规范化 | `metadata_canonicalization_agent`, `metadata_conflict_resolver_agent` | raw records、parsed text | canonical candidates | 让多源数据可合并 |
-| 14 | 身份解析 | `author_identity_resolution_agent`, `venue_identity_resolution_agent` | canonical candidates | author map、venue map | 防止作者和 venue 扩展误差 |
-| 15 | 版本关联与去重 | `version_linking_agent`, `deduplication_agent` | canonical candidates | deduplicated corpus、version graph | 合并重复但保留版本关系 |
-| 16 | 初筛相关性 | `relevance_screening_agent`, `exclusion_reason_agent` | corpus、scope | in/near/out records | 把核心集合和噪声分开 |
-| 17 | Near-miss 挖掘 | `near_miss_mining_agent` | near-scope records | near-miss signals | 从边界论文找隐藏入口 |
-| 18 | 真实术语抽取 | `paper_term_extractor_agent`, `term_canonicalization_agent` | in-scope、parsed text | observed terms | 用论文反向修正关键词 |
-| 19 | 术语图与漂移 | `term_cooccurrence_graph_agent`, `terminology_drift_agent` | observed terms | term graph、drift report | 发现跨社区和跨年代术语 |
-| 20 | 分类建模 | `task_taxonomy_agent`, `method_taxonomy_agent`, `dataset_metric_extraction_agent`, `experimental_setting_agent` | in-scope records | taxonomies、setting table | 判断覆盖不是只靠数量 |
-| 21 | 种子论文选择 | `recency_and_seminal_balance_agent`, `frontier_budget_allocator_agent` | taxonomies、quality signals | seed papers、frontier budgets | 为多路径扩展选代表点 |
-| 22 | 引用扩展 | `backward_citation_agent`, `forward_citation_agent`, `co_citation_agent`, `bibliographic_coupling_agent` | seed papers | citation frontiers | 发现关键词搜不到的论文 |
-| 23 | 作者与机构扩展 | `author_profile_agent`, `lab_institution_agent` | seed authors、author map | author/lab frontiers | 发现同团队换术语论文 |
-| 24 | Venue 扩展 | `venue_track_agent`, `workshop_special_issue_agent` | venue map、seed venues | venue frontiers | 发现同社区未命中论文 |
-| 25 | 数据集与代码扩展 | `dataset_benchmark_agent`, `code_repository_agent`, `leaderboard_challenge_agent` | dataset table、method names | dataset/code frontiers | 发现同任务不同叫法论文 |
-| 26 | 标准与产业术语扩展 | `standard_patent_agent` | core terms、domain | standards frontier | 工程领域补充别名和应用词 |
-| 27 | 扩展结果合并 | `state_reducer_agent`, `metadata_canonicalization_agent`, `deduplication_agent` | all frontiers | updated corpus | 把多路径发现并入统一库 |
-| 28 | 深度筛选与有效性 | `relevance_screening_agent`, `retraction_errata_agent`, `exclusion_reason_agent` | updated corpus | validated corpus | 清除噪声和失效论文 |
-| 29 | Evidence Graph 构建 | `evidence_graph_agent` | validated corpus、terms、taxonomies、frontiers | evidence graph | 为覆盖审查提供结构 |
-| 30 | 覆盖分析 | `cluster_coverage_agent`, `citation_closure_agent`, `source_diversity_agent`, `recency_and_seminal_balance_agent` | evidence graph | coverage subreports | 计算多个独立覆盖信号 |
-| 31 | 缺失簇主动搜索 | `missing_cluster_hunter_agent` | coverage subreports、evidence graph | missing cluster report | 主动找“没搜到什么” |
-| 32 | 覆盖评分与审查 | `coverage_scoring_agent`, `coverage_audit_agent` | subreports、missing clusters | score、audit | 防止自评分虚高 |
-| 33 | 反方挑战与迭代决策 | `adversarial_reviewer_agent`, `iteration_decision_agent`, `stop_condition_validator_agent` | score、audit、budget | next action | 决定回到哪个 flow 或停止 |
-| 34 | 输出与监控 | `corpus_export_agent`, `search_protocol_report_agent`, `coverage_report_agent`, `gap_report_agent`, `monitoring_query_agent` | final state | final packages | 输出可复用、可复现、可继续监控的结果 |
-| 35 | TODO 执行循环 | `todo_planner_agent`, `todo_selector_agent`, `todo_executor_router_agent`, `todo_completion_verifier_agent`, `todo_continuation_auditor_agent` | config、calibration result、current state、active TODO | updated TODO queue、done TODO、continuation decision | 在 TODO mode 下持续执行直到没有可执行任务 |
+| 1 | Run 设置与目标校准 | `run_orchestrator_agent`, `state_reducer_agent`, `provenance_trace_agent`, `failure_triage_agent` | 用户请求或现有 config | run plan、初始 ledger、校准方向 | 先轻量校准，不急着要求用户填写完整配置 |
+| 2 | 领域、范围与深度契约 | `intent_decomposition_agent`, `domain_disambiguation_agent`, `concept_definition_agent`, `scope_boundary_agent`, `depth_contract_agent`, `assumption_registry_agent` | 校准方向、探针样例、默认参数 | domain decision、scope contract、depth contract、assumptions | 明确主题含义、论文数量下限、年份策略和停止标准 |
+| 3 | 启动术语与查询编译 | `seed_keyword_agent`, `translation_alias_agent`, `controlled_vocabulary_agent`, `negative_query_agent`, `boolean_query_compiler_agent`, `semantic_query_compiler_agent` | scope contract、domain decision | seed terms、alias map、Boolean queries、semantic queries | 把用户词和领域词转成可执行查询 |
+| 4 | 查询探针、关键词审查与修正 | `query_probe_agent`, `keyword_gap_auditor_agent`, `query_mutation_agent` | 查询草案、校准预算 | probe report、keyword gap、revised queries、confirmation bundle | 用小样本发现坏关键词、噪声查询和缺失术语 |
+| 5 | 并行学术数据源检索 | source search agents 25-33 | revised queries、year policy、source budgets | raw records、abstracts、citation metadata、query ledger | 多源检索并保留每个数据源的查询和失败状态 |
+| 6 | Artifact 访问、解析与 Abstract 提取 | `full_text_locator_agent`, `pdf_parse_agent`, `reference_section_parser_agent`, `figure_table_signal_agent` | candidate records、URL、DOI、arXiv、download policy | abstract-enriched records、parsed signals、references、artifact index | 不只是下载论文，而是抽取 abstract 和可用正文信号 |
+| 7 | 元数据身份、版本与去重 | `metadata_canonicalization_agent`, `author_identity_resolution_agent`, `venue_identity_resolution_agent`, `version_linking_agent`, `deduplication_agent`, `metadata_conflict_resolver_agent` | raw records、abstract-enriched records | canonical records、identity maps、version graph、deduplicated corpus | 形成稳定论文身份并保留版本关系 |
+| 8 | 相关性筛选与 Near-miss 挖掘 | `relevance_screening_agent`, `near_miss_mining_agent`, `exclusion_reason_agent` | canonical corpus、scope contract、abstracts、parsed text | relevance labels、exclusion reasons、near-miss signals | 保证论文质量，同时从边界论文提取扩展线索 |
+| 9 | 论文驱动术语刷新 | `paper_term_extractor_agent`, `term_canonicalization_agent`, `term_cooccurrence_graph_agent`, `terminology_drift_agent`, `query_mutation_agent` | screened papers、near-miss signals、parsed text | observed terms、canonical terms、term graph、drift notes、query mutations | 让真实论文反向修正关键词 |
+| 10 | 分类、实验设置与 Evidence Graph | `task_taxonomy_agent`, `method_taxonomy_agent`, `dataset_metric_extraction_agent`, `experimental_setting_agent`, `evidence_graph_agent` | screened corpus、term graph、parsed signals | task taxonomy、method taxonomy、dataset metric table、settings、evidence graph | 用任务、方法、数据集、实验设置判断覆盖 |
+| 11 | 引用滚雪球扩展 | `backward_citation_agent`, `forward_citation_agent`, `co_citation_agent`, `bibliographic_coupling_agent` | seed papers、evidence graph、parsed references | citation frontiers | 找到关键词搜不到的奠基、后续和平行工作 |
+| 12 | 作者与实验室扩展 | `author_profile_agent`, `lab_institution_agent`, `author_identity_resolution_agent` | core authors、author map、seed papers | author frontier、lab frontier、identity warnings | 发现同团队换术语或未充分索引的工作 |
+| 13 | Venue 与社区扩展 | `venue_identity_resolution_agent`, `venue_track_agent`, `workshop_special_issue_agent` | venue map、seed venues、community signals | venue frontier、workshop frontier | 通过会议、track、workshop 搜同社区论文 |
+| 14 | 数据集、代码、Benchmark 与标准扩展 | `dataset_benchmark_agent`, `code_repository_agent`, `leaderboard_challenge_agent`, `standard_patent_agent` | dataset table、method names、code hints、standards terms | dataset/code/leaderboard/standards frontiers、code evidence | 通过实验对象、代码生态和工程术语找隐藏论文 |
+| 15 | 扩展结果合并与有效性检查 | `state_reducer_agent`, `metadata_canonicalization_agent`, `deduplication_agent`, `retraction_errata_agent`, `relevance_screening_agent` | all frontiers、prior corpus | updated corpus、validity flags、low-yield frontier notes | 把扩展结果并回统一库并清理噪声和失效论文 |
+| 16 | 引用量、代码与论文价值补全 | `semantic_scholar_search_agent`, `openalex_search_agent`, `code_repository_agent`, `recency_and_seminal_balance_agent` | validated corpus、source metadata、code signals | citation counts、citation source、code URL、quality notes、idea relation | 在最终表中体现论文价值、引用量和开源代码情况 |
+| 17 | 覆盖子报告 | `cluster_coverage_agent`, `citation_closure_agent`, `source_diversity_agent`, `recency_and_seminal_balance_agent`, `coverage_scoring_agent` | enriched corpus、evidence graph、source ledger | cluster coverage、citation closure、source diversity、time balance、coverage score | 多维度评估覆盖，而不是只看论文数量 |
+| 18 | 缺失簇搜索与反方审查 | `missing_cluster_hunter_agent`, `coverage_audit_agent`, `adversarial_reviewer_agent` | coverage subreports、evidence graph、near-miss signals | missing cluster report、audit objections、adversarial challenge | 主动找可能漏掉的分支并鞭策覆盖评分 |
+| 19 | 迭代决策与停止验证 | `iteration_decision_agent`, `stop_condition_validator_agent`, `frontier_budget_allocator_agent`, `failure_triage_agent` | coverage score、audit objections、budget、paper lower bound | PASS、loopback target、ASK_USER 或 STOP_WITH_RISK | 把问题回流到具体 Stage 或在满足硬门槛后停止 |
+| 20 | 统一最终表生成 | `corpus_export_agent` | validated enriched corpus、final state、output config | final_papers.csv、optional final_papers.xlsx | 把 abstract、引用量、代码、相关性、动机、限制和 summary_zh 汇总到一个主表 |
+| 21 | 执行 Ledger 与最小支持输出 | `provenance_trace_agent`, `search_protocol_report_agent`, `coverage_report_agent`, `gap_report_agent` | stage events、agent handoffs、query records、artifact index、final decision | run ledger、stage ledger、agent ledger、query ledger、artifact index、run summary | 保留定位 subagent 进度和失败所需的关键日志 |
+| 22 | 可选监控包 | `monitoring_query_agent` | final table、accepted terms、authors、venues、datasets、residual risks | monitoring queries、update targets | 支持后续增量监控，但不强制每次输出 |
+| 23 | 可选 TODO 执行循环 | `todo_planner_agent`, `todo_selector_agent`, `todo_executor_router_agent`, `todo_completion_verifier_agent`, `todo_continuation_auditor_agent` | todo-mode config、calibration result、current state、ledgers、active TODO | updated TODO queue、done TODO、todo_state、continuation decision | TODO mode 下持续执行直到没有有价值的可执行任务 |
 
 ## 6. 核心 Flow
 
@@ -353,6 +341,8 @@ workspace/work/deep-paper-search/todo/done.todo
 workspace/work/deep-paper-search/todo/todo_state.json
 workspace/work/deep-paper-search/todo/todo_log.md
 ```
+
+TODO 状态变化也必须写入 `workspace/work/deep-paper-search/ledgers/agent_ledger.jsonl` 或 `stage_ledger.jsonl`，否则 subagent 模式下只能打开 TODO 文件猜测执行进度。
 
 TODO mode 的停止条件：
 
@@ -565,20 +555,20 @@ evidence graph
 
 | 被检查对象 | 鞭策 Agent | 检查问题 | 可能回流 |
 |---|---|---|---|
-| `seed_keyword_agent` | `keyword_gap_auditor_agent` | 初始词是否只覆盖用户措辞 | Stage 6 |
-| `translation_alias_agent` | `paper_term_extractor_agent` | 翻译词是否被真实论文使用 | Stage 18 |
-| `boolean_query_compiler_agent` | `query_probe_agent` | 查询语法正确但结果是否高噪声 | Stage 9 |
-| `semantic_query_compiler_agent` | `query_probe_agent` | 语义查询是否漂移到相邻领域 | Stage 9 |
-| source search agents | `source_diversity_agent` | 是否过度依赖单一数据库 | Stage 10 |
-| `author_profile_agent` | `author_identity_resolution_agent` | 是否混入同名作者 | Stage 23 |
-| `venue_track_agent` | `venue_identity_resolution_agent` | venue 缩写和子会是否误合并 | Stage 24 |
-| `deduplication_agent` | `version_linking_agent` | 是否把期刊扩展版错误丢弃 | Stage 15 |
-| `relevance_screening_agent` | `near_miss_mining_agent` | 边界论文是否仍有扩展价值 | Stage 17 |
-| `method_taxonomy_agent` | `missing_cluster_hunter_agent` | 方法族是否漏分支 | Stage 31 |
-| `citation_closure_agent` | `adversarial_reviewer_agent` | 引用闭合是否只在局部成立 | Stage 22 |
-| `coverage_scoring_agent` | `coverage_audit_agent` | 覆盖分是否有证据支撑 | Stage 32 |
-| `coverage_audit_agent` | `adversarial_reviewer_agent` | 审查是否太宽松 | Stage 33 |
-| `iteration_decision_agent` | `stop_condition_validator_agent` | 是否满足硬停止条件 | Stage 33 |
+| `seed_keyword_agent` | `keyword_gap_auditor_agent` | 初始词是否只覆盖用户措辞 | Stage 3 或 Stage 4 |
+| `translation_alias_agent` | `paper_term_extractor_agent` | 翻译词是否被真实论文使用 | Stage 9 |
+| `boolean_query_compiler_agent` | `query_probe_agent` | 查询语法正确但结果是否高噪声 | Stage 4 |
+| `semantic_query_compiler_agent` | `query_probe_agent` | 语义查询是否漂移到相邻领域 | Stage 4 |
+| source search agents | `source_diversity_agent` | 是否过度依赖单一数据库 | Stage 5 或 Stage 17 |
+| `author_profile_agent` | `author_identity_resolution_agent` | 是否混入同名作者 | Stage 12 |
+| `venue_track_agent` | `venue_identity_resolution_agent` | venue 缩写和子会是否误合并 | Stage 13 |
+| `deduplication_agent` | `version_linking_agent` | 是否把期刊扩展版错误丢弃 | Stage 7 |
+| `relevance_screening_agent` | `near_miss_mining_agent` | 边界论文是否仍有扩展价值 | Stage 8 |
+| `method_taxonomy_agent` | `missing_cluster_hunter_agent` | 方法族是否漏分支 | Stage 10 或 Stage 18 |
+| `citation_closure_agent` | `adversarial_reviewer_agent` | 引用闭合是否只在局部成立 | Stage 11 或 Stage 18 |
+| `coverage_scoring_agent` | `coverage_audit_agent` | 覆盖分是否有证据支撑 | Stage 17 或 Stage 18 |
+| `coverage_audit_agent` | `adversarial_reviewer_agent` | 审查是否太宽松 | Stage 18 |
+| `iteration_decision_agent` | `stop_condition_validator_agent` | 是否满足硬停止条件 | Stage 19 |
 
 ## 8. 迭代决策
 
@@ -608,13 +598,15 @@ iteration_decision:
 
 回流规则：
 
-- 术语缺口：回到 Stage 6 或 Stage 18。
-- 查询噪声高：回到 Stage 8-9。
-- 引用不闭合：回到 Stage 22。
-- 作者网络有未探索高价值节点：回到 Stage 23。
-- Venue 覆盖弱：回到 Stage 24。
-- 数据集或代码线索强：回到 Stage 25。
-- 工程术语和论文术语断裂：回到 Stage 26。
+- 术语缺口：回到 Stage 3、Stage 4 或 Stage 9。
+- 查询噪声高：回到 Stage 4。
+- 引用不闭合：回到 Stage 11。
+- 作者网络有未探索高价值节点：回到 Stage 12。
+- Venue 覆盖弱：回到 Stage 13。
+- 数据集或代码线索强：回到 Stage 14。
+- 工程术语和论文术语断裂：回到 Stage 14。
+- 元数据冲突：回到 Stage 7。
+- 相关性不清：回到 Stage 8。
 - 评分虚高或证据不足：回到对应产生证据的 Stage，而不是重复全流程。
 
 ## 9. 覆盖评分体系
@@ -623,18 +615,18 @@ iteration_decision:
 
 | 维度 | 权重 | 证据来源 | 低分时回流 |
 |---|---:|---|---|
-| 任务定义覆盖 | 10 | `task_taxonomy_agent` | Stage 6, 18 |
-| 方法族覆盖 | 12 | `method_taxonomy_agent`, `missing_cluster_hunter_agent` | Stage 22, 31 |
-| 术语覆盖 | 10 | `term_cooccurrence_graph_agent`, `terminology_drift_agent` | Stage 18, 19 |
-| 引用闭合 | 12 | `citation_closure_agent` | Stage 22 |
-| 作者网络覆盖 | 8 | `author_profile_agent`, `author_identity_resolution_agent` | Stage 23 |
-| Venue 社区覆盖 | 8 | `venue_track_agent`, `workshop_special_issue_agent` | Stage 24 |
-| 数据集与 benchmark 覆盖 | 8 | `dataset_benchmark_agent`, `leaderboard_challenge_agent` | Stage 25 |
-| 代码生态覆盖 | 6 | `code_repository_agent` | Stage 25 |
-| 数据源多样性 | 8 | `source_diversity_agent` | Stage 10 |
-| 年代平衡 | 6 | `recency_and_seminal_balance_agent` | Stage 22 |
-| Near-miss 解释 | 5 | `near_miss_mining_agent`, `exclusion_reason_agent` | Stage 17 |
-| 反方审查通过度 | 7 | `coverage_audit_agent`, `adversarial_reviewer_agent` | Stage 31-33 |
+| 任务定义覆盖 | 10 | `task_taxonomy_agent` | Stage 2, 10 |
+| 方法族覆盖 | 12 | `method_taxonomy_agent`, `missing_cluster_hunter_agent` | Stage 10, 18 |
+| 术语覆盖 | 10 | `term_cooccurrence_graph_agent`, `terminology_drift_agent` | Stage 9 |
+| 引用闭合 | 12 | `citation_closure_agent` | Stage 11, 17 |
+| 作者网络覆盖 | 8 | `author_profile_agent`, `author_identity_resolution_agent` | Stage 12 |
+| Venue 社区覆盖 | 8 | `venue_track_agent`, `workshop_special_issue_agent` | Stage 13 |
+| 数据集与 benchmark 覆盖 | 8 | `dataset_benchmark_agent`, `leaderboard_challenge_agent` | Stage 14 |
+| 代码生态覆盖 | 6 | `code_repository_agent` | Stage 14, 16 |
+| 数据源多样性 | 8 | `source_diversity_agent` | Stage 5, 17 |
+| 年代平衡 | 6 | `recency_and_seminal_balance_agent` | Stage 16, 17 |
+| Near-miss 解释 | 5 | `near_miss_mining_agent`, `exclusion_reason_agent` | Stage 8 |
+| 反方审查通过度 | 7 | `coverage_audit_agent`, `adversarial_reviewer_agent` | Stage 18, 19 |
 
 建议阈值：
 
@@ -680,7 +672,65 @@ agent_event:
   timestamp: string
 ```
 
-### 11.2 Paper Record
+### 11.2 Required Execution Ledgers
+
+这些 ledger 是关键日志，不属于可删除 debug 文件。它们的目的不是写长篇过程，而是让用户和 orchestrator 能快速定位 subagent 模式下任务执行到哪里。
+
+```yaml
+run_ledger_event:
+  run_id: string
+  iteration: int
+  status: running | passed | loopback | blocked | stop_with_risk | failed
+  active_stage: int
+  active_todo: string | null
+  paper_count_core: int
+  coverage_score: float | null
+  stop_decision: string | null
+  timestamp: string
+
+stage_ledger_row:
+  run_id: string
+  iteration: int
+  stage: int
+  stage_name: string
+  status: ready | running | passed | loopback | blocked | failed
+  agents_started: []
+  agents_completed: []
+  input_refs: []
+  output_refs: []
+  loopback_target: int | null
+  failure_ref: string | null
+  timestamp_start: string
+  timestamp_end: string | null
+
+agent_ledger_event:
+  run_id: string
+  iteration: int
+  stage: int
+  agent: string
+  status: ready | running | passed | needs_loopback | blocked_input_missing | failed
+  input_refs: []
+  output_refs: []
+  decision: string | null
+  confidence: float | null
+  handoff_target: string
+  failure_ref: string | null
+  timestamp: string
+
+query_ledger_event:
+  run_id: string
+  stage: int
+  source_name: string
+  query: string
+  result_count: int
+  useful_result_count: int | null
+  failure_ref: string | null
+  timestamp: string
+```
+
+`artifact_index.json` 维护逻辑 artifact 到物理路径的映射，例如 final table、parsed text、frontier records、coverage subreports、TODO 文件等。
+
+### 11.3 Paper Record
 
 ```yaml
 paper:
@@ -695,6 +745,12 @@ paper:
   arxiv_id: string | null
   urls: []
   abstract: string | null
+  abstract_source: metadata | pdf | html | tex | source_record | unknown
+  citation_count: int | null
+  citation_source: string | null
+  code_available: true | false | unknown
+  code_url: string | null
+  code_evidence: string | null
   source_records: []
   versions: []
   references: []
@@ -713,9 +769,10 @@ paper:
   validity:
     retraction_status: clear | warning | retracted | unknown
     metadata_conflicts: []
+  summary_zh: string | null
 ```
 
-### 11.3 Term Record
+### 11.4 Term Record
 
 ```yaml
 term:
@@ -732,7 +789,7 @@ term:
   status: accepted | candidate | rejected
 ```
 
-### 11.4 Frontier Record
+### 11.5 Frontier Record
 
 ```yaml
 frontier:
@@ -775,7 +832,7 @@ frontier:
 
 ### 13.1 MVP 必须保留的 Agent
 
-MVP 可以不启用所有 79 个 Agent，但以下 Agent 不能删：
+MVP 可以不启用所有 84 个 Agent，但以下核心 Agent 不能删：
 
 - `run_orchestrator_agent`
 - `state_reducer_agent`
@@ -883,19 +940,65 @@ relevance_decision:
 
 ## 15. 最终输出物
 
-完整系统最终输出：
+完整系统默认最终输出分三层。
 
-- `corpus.csv`：去重后的论文库。
-- `corpus.bib`：BibTeX。
-- `corpus.json`：完整结构化元数据。
-- `versions.json`：arXiv、会议版、期刊版关系。
-- `excluded.csv`：排除论文和排除理由。
-- `near_miss.csv`：边界论文及可用扩展信号。
-- `search_protocol.md`：查询式、数据库、迭代路径、纳入排除标准。
-- `coverage_report.md`：覆盖评分、证据、审查意见、反方挑战。
-- `evidence_graph.json`：论文、术语、作者、venue、数据集、代码、引用图。
-- `gap_report.md`：弱覆盖区域和研究空白。
-- `monitoring_config.yaml`：后续监控查询。
+第一层是用户主要阅读文件：
+
+- `workspace/work/deep-paper-search/final/final_papers.csv`：必需主表。
+- `workspace/work/deep-paper-search/final/final_papers.xlsx`：可选 Excel 镜像。
+
+`final_papers` 必须至少包含以下列，且 `summary_zh` 必须是最后一列：
+
+```text
+paper_id
+title
+authors
+year
+venue
+publication_type
+doi
+arxiv_id
+paper_url
+abstract
+abstract_source
+citation_count
+citation_source
+code_available
+code_url
+code_evidence
+relevance_label
+relevance_score
+reference_value_score
+idea_relation
+quality_notes
+limitations
+motivation
+source_query
+discovery_path
+summary_zh
+```
+
+其中 `summary_zh` 用中文概述论文做了什么、与用户方向或 idea 的贴合度、论文动机、局限、如果用户给的是 idea 则分析是否撞车或支持、以及对用户 idea 的启发。
+
+第二层是必须保留的关键执行日志，用于定位 subagent 进度、失败、回流和 handoff：
+
+- `workspace/work/deep-paper-search/ledgers/run_ledger.jsonl`
+- `workspace/work/deep-paper-search/ledgers/stage_ledger.csv`
+- `workspace/work/deep-paper-search/ledgers/stage_ledger.jsonl`
+- `workspace/work/deep-paper-search/ledgers/agent_ledger.jsonl`
+- `workspace/work/deep-paper-search/ledgers/query_ledger.jsonl`
+- `workspace/work/deep-paper-search/ledgers/artifact_index.json`
+- `workspace/work/deep-paper-search/ledgers/failure_ledger.jsonl`
+
+第三层是简洁支持报告，默认可保留，但不能替代主表：
+
+- `workspace/work/deep-paper-search/final/run_summary.md`
+- `workspace/work/deep-paper-search/support/search_protocol.md`
+- `workspace/work/deep-paper-search/support/coverage_report.md`
+- `workspace/work/deep-paper-search/support/gap_report.md`
+- `workspace/work/deep-paper-search/support/monitoring_config.yaml`，仅在启用监控时生成。
+
+非必要的大型 debug 文件、每个 Agent 的长篇日志、raw dump、完整 evidence graph 导出、BibTeX、JSON corpus 镜像都应放到可选 debug artifact，只有 config 或用户显式启用时才生成。
 
 ## 16. 核心原则
 

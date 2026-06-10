@@ -47,4 +47,12 @@ Workflow artifacts are written under:
 workspace/work/deep-paper-search/
 ```
 
-Final outputs may include `corpus.csv`, `corpus.bib`, `corpus.json`, `versions.json`, `excluded.csv`, `near_miss.csv`, `search_protocol.md`, `coverage_report.md`, `evidence_graph.json`, `gap_report.md`, and `monitoring_config.yaml`.
+Primary output:
+
+```text
+workspace/work/deep-paper-search/final/final_papers.csv
+```
+
+The optional spreadsheet mirror is `workspace/work/deep-paper-search/final/final_papers.xlsx`. The final table contains abstracts, citation counts, code availability, relevance labels, value notes, and `summary_zh` as the final column.
+
+Required execution ledgers are kept under `workspace/work/deep-paper-search/ledgers/`: `run_ledger.jsonl`, `stage_ledger.csv`, `stage_ledger.jsonl`, `agent_ledger.jsonl`, `query_ledger.jsonl`, `artifact_index.json`, and `failure_ledger.jsonl`. These ledgers are intentionally retained so subagent progress, failures, loopbacks, and handoffs can be located without generating many scattered progress logs.

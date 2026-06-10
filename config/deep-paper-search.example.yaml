@@ -94,18 +94,68 @@ inclusion_policy:
   user_excluded_venues: []
 
 outputs:
-  # Standard package is enabled by default. Users usually do not need to edit this.
-  corpus_csv: true
-  corpus_bibtex: true
-  corpus_json: true
-  versions_json: true
-  excluded_csv: true
-  near_miss_csv: true
-  search_protocol_md: true
-  coverage_report_md: true
-  evidence_graph_json: true
-  gap_report_md: true
-  monitoring_config_yaml: true
+  # Primary user-facing output. Users usually do not need to edit this.
+  primary_table: "workspace/work/deep-paper-search/final/final_papers.csv"
+  excel_table: "workspace/work/deep-paper-search/final/final_papers.xlsx"
+  write_excel: true
+  summary_language: "zh"
+  summary_column_last: true
+  write_run_summary: true
+  run_summary_path: "workspace/work/deep-paper-search/final/run_summary.md"
+
+  # Compact support reports. These are concise and derived from ledgers.
+  write_search_protocol: true
+  search_protocol_path: "workspace/work/deep-paper-search/support/search_protocol.md"
+  write_coverage_report: true
+  coverage_report_path: "workspace/work/deep-paper-search/support/coverage_report.md"
+  write_gap_report: true
+  gap_report_path: "workspace/work/deep-paper-search/support/gap_report.md"
+  write_monitoring_config: false
+  monitoring_config_path: "workspace/work/deep-paper-search/support/monitoring_config.yaml"
+
+  # Verbose artifacts are disabled by default to avoid noisy scattered files.
+  debug_artifacts: false
+  debug_dir: "workspace/work/deep-paper-search/debug/"
+
+ledgers:
+  # Required execution observability for subagent mode.
+  enabled: true
+  run_ledger: "workspace/work/deep-paper-search/ledgers/run_ledger.jsonl"
+  stage_ledger_csv: "workspace/work/deep-paper-search/ledgers/stage_ledger.csv"
+  stage_ledger_jsonl: "workspace/work/deep-paper-search/ledgers/stage_ledger.jsonl"
+  agent_ledger: "workspace/work/deep-paper-search/ledgers/agent_ledger.jsonl"
+  query_ledger: "workspace/work/deep-paper-search/ledgers/query_ledger.jsonl"
+  artifact_index: "workspace/work/deep-paper-search/ledgers/artifact_index.json"
+  failure_ledger: "workspace/work/deep-paper-search/ledgers/failure_ledger.jsonl"
+
+final_table:
+  required_columns:
+    - paper_id
+    - title
+    - authors
+    - year
+    - venue
+    - publication_type
+    - doi
+    - arxiv_id
+    - paper_url
+    - abstract
+    - abstract_source
+    - citation_count
+    - citation_source
+    - code_available
+    - code_url
+    - code_evidence
+    - relevance_label
+    - relevance_score
+    - reference_value_score
+    - idea_relation
+    - quality_notes
+    - limitations
+    - motivation
+    - source_query
+    - discovery_path
+    - summary_zh
 
 budgets:
   max_iterations: 6

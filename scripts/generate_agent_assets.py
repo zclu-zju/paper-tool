@@ -56,16 +56,17 @@ class Agent:
 
 PHASE_PACKS = {
     "orchestration_state_reproducibility": {
-        "mission": "coordinate execution, preserve state integrity, and make every later research claim traceable to the exact event that created it",
-        "inputs": "user requests, prior state snapshots, event logs, budget records, stage outputs, retry requests, and audit decisions",
+        "mission": "coordinate execution, preserve state integrity, and make every later research claim and progress state traceable to the exact event that created it",
+        "inputs": "user requests, prior state snapshots, run ledgers, stage ledgers, agent ledgers, query ledgers, artifact indexes, budget records, stage outputs, retry requests, and audit decisions",
         "methods": [
             "treat the append-only event log as the only durable history and never silently replace it",
             "separate orchestration decisions from domain claims so reviewers can see which agent made which assertion",
             "allocate budgets by frontier value, uncertainty, and expected marginal gain instead of equal splitting",
             "mark tool failure, empty result, ambiguous scope, and low-yield expansion as different operational states",
+            "keep compact run, stage, agent, query, and artifact ledgers so subagent progress can be located without many noisy prose logs",
             "write clear recovery actions that can be executed without rereading the whole conversation",
         ],
-        "handoffs": "downstream agents consume the run plan, state snapshot, budget allocation, provenance graph, and recovery actions",
+        "handoffs": "downstream agents consume the run plan, state snapshot, budget allocation, provenance graph, execution ledgers, artifact index, and recovery actions",
     },
     "intent_definition_boundaries": {
         "mission": "turn an underspecified user idea into a searchable, auditable scope contract without pretending that early assumptions are facts",
@@ -104,10 +105,11 @@ PHASE_PACKS = {
         "handoffs": "canonicalization, source diversity, citation expansion, and provenance agents consume raw result batches with complete source evidence",
     },
     "full_text_content": {
-        "mission": "obtain and parse legally accessible full-text signals so the system can learn terms, references, datasets, and metrics that abstracts omit",
+        "mission": "obtain and parse legally accessible paper artifacts and metadata so abstracts, references, datasets, metrics, and full-text signals are available for the unified result table",
         "inputs": "candidate paper records, URLs, DOI/arXiv identifiers, open-access links, author pages, PDF files, HTML pages, and parsed metadata",
         "methods": [
             "look for open, legitimate copies and do not bypass access controls or fabricate unavailable text",
+            "extract or preserve the abstract for every candidate whenever it is available from metadata, PDF, HTML, or source records",
             "separate full text, abstract-only text, reference list, figure caption, table caption, appendix, and supplementary material",
             "preserve page, section, figure, and table provenance when extracting terms or references",
             "record parsing confidence and extraction gaps instead of pretending a malformed PDF was fully read",
@@ -164,16 +166,19 @@ PHASE_PACKS = {
         "handoffs": "the orchestrator consumes PASS, loopback, ASK_USER, or STOP_WITH_RISK decisions with the evidence needed to execute them",
     },
     "output_monitoring": {
-        "mission": "package the research result into reusable artifacts and set up monitoring without hiding uncertainty or provenance",
-        "inputs": "final state, canonical corpus, version graph, exclusions, near-miss table, search protocol, coverage evidence, gap analysis, and monitoring frontiers",
+        "mission": "package the research result into one primary unified paper table plus compact execution ledgers and concise supporting artifacts, without hiding uncertainty, progress, or provenance",
+        "inputs": "final state, canonical corpus, version graph, exclusions, near-miss table, run ledger, stage ledger, agent ledger, query ledger, artifact index, search protocol, coverage evidence, gap analysis, and monitoring frontiers",
         "methods": [
-            "export machine-readable files and human-readable reports from the same state snapshot",
-            "include provenance, query history, inclusion and exclusion rules, coverage evidence, and residual risks",
+            "make the unified paper table the primary deliverable and avoid scattering core information across many files",
+            "include title, abstract, citation count, code availability, relevance, quality, and Chinese summary in the same row",
+            "put the Chinese summary in the final column so the table is easy to scan and edit",
+            "always preserve compact execution ledgers for run, stage, agent, query, and artifact tracking",
+            "export verbose debug artifacts and secondary narrative reports only when the config explicitly enables them",
             "make monitoring queries specific enough to catch new papers without recreating the whole workflow",
             "never convert weak coverage into confident prose",
             "verify that final paths, columns, identifiers, and version relationships are present before declaring completion",
         ],
-        "handoffs": "users, future workflow runs, and monitoring tasks consume the exported corpus, reports, graph, and alert configuration",
+        "handoffs": "users consume the unified result table first; debuggers and future workflow runs consume compact ledgers, the artifact index, the concise run summary, and optional state artifacts",
     },
     "todo_execution_control": {
         "mission": "control optional TODO-mode execution by creating, selecting, routing, verifying, and continuing concrete tasks until no useful task remains",
@@ -212,14 +217,14 @@ AGENT_ENGLISH = {
         "failure_mode": "Parallel discovery branches may be skipped, duplicated, or integrated in the wrong order.",
     },
     "state_reducer_agent": {
-        "responsibility": "Reduce append-only agent events into the current canonical Research State and expose state diffs between iterations.",
-        "output": "state snapshot and state diff",
-        "failure_mode": "Parallel agents may mutate conflicting state or hide the history behind a decision.",
+        "responsibility": "Reduce append-only agent, stage, query, and TODO events into the current canonical Research State and expose state diffs between iterations.",
+        "output": "state snapshot, state diff, and ledger consistency notes",
+        "failure_mode": "Parallel agents may mutate conflicting state, hide the history behind a decision, or make execution progress impossible to locate.",
     },
     "provenance_trace_agent": {
-        "responsibility": "Record the source chain for papers, terms, scores, exclusions, frontier decisions, and final claims.",
-        "output": "provenance graph",
-        "failure_mode": "The workflow may produce claims that cannot be reproduced or audited.",
+        "responsibility": "Record the source chain for papers, terms, scores, exclusions, frontier decisions, ledger events, and final claims.",
+        "output": "provenance graph and artifact index updates",
+        "failure_mode": "The workflow may produce claims or execution states that cannot be reproduced, audited, or resumed.",
     },
     "frontier_budget_allocator_agent": {
         "responsibility": "Allocate time, API, download, and model budgets across keyword, citation, author, venue, dataset, code, and standards frontiers.",
@@ -327,13 +332,13 @@ AGENT_ENGLISH = {
         "failure_mode": "Keyword coverage may appear broad while important dimensions remain absent.",
     },
     "semantic_scholar_search_agent": {
-        "responsibility": "Retrieve candidates, citation links, and similar papers from Semantic Scholar using the assigned queries.",
-        "output": "Semantic Scholar result batch",
+        "responsibility": "Retrieve candidates, abstracts, citation counts, citation links, and similar papers from Semantic Scholar using the assigned queries.",
+        "output": "Semantic Scholar result batch with citation metadata",
         "failure_mode": "The workflow may lack an accessible citation-aware and semantic retrieval source.",
     },
     "openalex_search_agent": {
-        "responsibility": "Retrieve works, concepts, institutions, venues, and citation metadata from OpenAlex.",
-        "output": "OpenAlex result batch",
+        "responsibility": "Retrieve works, abstracts or inverted abstracts when available, concepts, institutions, venues, and citation metadata from OpenAlex.",
+        "output": "OpenAlex result batch with citation metadata",
         "failure_mode": "The workflow may overdepend on a single commercial or closed scholarly index.",
     },
     "crossref_metadata_agent": {
@@ -372,14 +377,14 @@ AGENT_ENGLISH = {
         "failure_mode": "Relevant work not well indexed by APIs may remain invisible.",
     },
     "full_text_locator_agent": {
-        "responsibility": "Locate legally accessible PDF, HTML, open-access, preprint, and author-hosted versions of candidate papers.",
-        "output": "full text link set",
-        "failure_mode": "The workflow may be limited to titles and abstracts and fail to mine deeper terminology or references.",
+        "responsibility": "Locate legally accessible metadata, PDF, HTML, open-access, preprint, and author-hosted versions of candidate papers and identify the best abstract source.",
+        "output": "artifact link set and abstract-source candidates",
+        "failure_mode": "The workflow may be limited to titles and fail to mine abstracts, deeper terminology, or references.",
     },
     "pdf_parse_agent": {
-        "responsibility": "Parse accessible PDF or full-text files into sections, metadata, references, tables, figures, and text spans with confidence notes.",
-        "output": "parsed paper text",
-        "failure_mode": "Full-text information may be unavailable to downstream term, citation, and experiment extractors.",
+        "responsibility": "Parse accessible PDF, HTML, TeX, or metadata-backed text into abstracts, sections, references, tables, figures, and text spans with confidence notes.",
+        "output": "abstract-enriched parsed paper text",
+        "failure_mode": "Abstracts and full-text information may be unavailable to downstream term, citation, and experiment extractors.",
     },
     "reference_section_parser_agent": {
         "responsibility": "Parse reference lists from full text and recover cited works not exposed through APIs.",
@@ -437,9 +442,9 @@ AGENT_ENGLISH = {
         "failure_mode": "Papers solving the same task with different terminology may be missed.",
     },
     "code_repository_agent": {
-        "responsibility": "Mine code repositories, README files, releases, model zoos, and paper-code indexes for paper links and related work.",
-        "output": "code repository frontier",
-        "failure_mode": "Implementation-centric papers may be missed when repository ecosystems expose them before indexes do.",
+        "responsibility": "Mine code repositories, README files, releases, model zoos, and paper-code indexes for paper links, related work, and code availability evidence without cloning unless enabled.",
+        "output": "code repository frontier and per-paper code evidence",
+        "failure_mode": "Implementation-centric papers or code availability signals may be missed when repository ecosystems expose them before indexes do.",
     },
     "leaderboard_challenge_agent": {
         "responsibility": "Search leaderboards, competitions, and challenge pages for papers tied to shared evaluation tasks.",
@@ -542,9 +547,9 @@ AGENT_ENGLISH = {
         "failure_mode": "The corpus may overrepresent one source, team, venue, or time period.",
     },
     "recency_and_seminal_balance_agent": {
-        "responsibility": "Balance recent work, foundational work, transitional periods, and mature survey-era papers.",
-        "output": "recency and seminal balance report",
-        "failure_mode": "The corpus may include only new papers or only classic papers.",
+        "responsibility": "Balance recent work, foundational work, transitional periods, mature survey-era papers, and citation-based value signals.",
+        "output": "recency, seminal, and citation-value balance report",
+        "failure_mode": "The corpus may include only new papers, only classic papers, or papers whose value signals are invisible.",
     },
     "missing_cluster_hunter_agent": {
         "responsibility": "Actively search for weakly connected, undercovered, or suspiciously absent clusters in the evidence graph.",
@@ -577,23 +582,23 @@ AGENT_ENGLISH = {
         "failure_mode": "The system may publish final results before required quality gates are satisfied.",
     },
     "corpus_export_agent": {
-        "responsibility": "Export the final corpus, version graph, identifiers, and metadata into reusable machine-readable formats.",
-        "output": "corpus package",
-        "failure_mode": "The research result may be difficult to reuse in papers, spreadsheets, databases, or later runs.",
+        "responsibility": "Export the validated corpus into one primary CSV and optional Excel table with abstract, citations, code evidence, relevance, value notes, and summary_zh as the final column.",
+        "output": "unified final paper table",
+        "failure_mode": "The research result may be difficult to scan, reuse, or compare because core information is scattered across files.",
     },
     "search_protocol_report_agent": {
-        "responsibility": "Write the reproducible search protocol, including queries, databases, stages, inclusion criteria, exclusions, and loopbacks.",
-        "output": "reproducible search report",
-        "failure_mode": "The search process may be impossible to reproduce or defend.",
+        "responsibility": "Write a concise reproducible search protocol from the ledgers, including queries, databases, stages, inclusion criteria, exclusions, and loopbacks.",
+        "output": "concise reproducible search protocol",
+        "failure_mode": "The search process may be impossible to reproduce or defend without reading every agent artifact.",
     },
     "coverage_report_agent": {
-        "responsibility": "Write the coverage report with scores, evidence, audit findings, adversarial challenges, and residual risks.",
-        "output": "coverage report",
+        "responsibility": "Write a compact coverage report with scores, evidence, audit findings, adversarial challenges, and residual risks.",
+        "output": "compact coverage report",
         "failure_mode": "Users may not know how much confidence to place in the corpus.",
     },
     "gap_report_agent": {
-        "responsibility": "Summarize weakly covered areas, research gaps, unresolved uncertainties, and recommended future search directions.",
-        "output": "gap report",
+        "responsibility": "Summarize weakly covered areas, research gaps, unresolved uncertainties, and recommended future search directions as a concise support artifact.",
+        "output": "compact gap report",
         "failure_mode": "The final result may not help the user decide what to investigate next.",
     },
     "monitoring_query_agent": {
@@ -630,41 +635,29 @@ AGENT_ENGLISH = {
 
 
 STAGE_ENGLISH = {
-    1: ("Run Initialization", "user request", "run plan and initial state", "Create a traceable task boundary."),
-    2: ("Intent Decomposition", "raw request", "intent frame", "Turn natural language into searchable fields."),
-    3: ("Domain Disambiguation", "intent frame", "domain decision and assumptions", "Prevent cross-domain false retrieval."),
-    4: ("Concept Definition", "intent and domain decision", "concept table", "Create relevance standards for later screening."),
-    5: ("Scope Contract", "concept table", "scope contract and depth contract", "Define inclusion, exclusion, and stopping thresholds."),
-    6: ("Initial Term Generation", "scope contract", "seed terms and alias map", "Create the first retrieval entry points."),
-    7: ("Initial Query Compilation", "seed terms", "source-specific queries", "Make queries executable."),
-    8: ("Query Probing", "draft queries", "probe report and keyword gap report", "Detect bad queries before large-scale retrieval."),
-    9: ("Query Revision", "probe report", "revised queries", "Repair the retrieval entry points using evidence."),
-    10: ("Parallel Database Retrieval", "revised queries", "raw records", "Reduce source bias through parallel retrieval."),
-    11: ("Full Text Location", "raw records", "full text links", "Prepare materials for term and reference mining."),
-    12: ("Full Text Parsing", "full text links", "parsed text, references, and signals", "Recover terminology beyond abstracts."),
-    13: ("Metadata Normalization", "raw records and parsed text", "canonical candidates", "Make multi-source data mergeable."),
-    14: ("Identity Resolution", "canonical candidates", "author map and venue map", "Prevent author and venue expansion errors."),
-    15: ("Version Linking and Deduplication", "canonical candidates", "deduplicated corpus and version graph", "Merge duplicates while preserving version relationships."),
-    16: ("Initial Relevance Screening", "corpus and scope contract", "in-scope, near-scope, and out-of-scope records", "Separate core papers from noise."),
-    17: ("Near-Miss Mining", "near-scope records", "near-miss signals", "Find hidden entry points in boundary papers."),
-    18: ("Observed Term Extraction", "in-scope papers and parsed text", "observed terms", "Use papers to revise the search language."),
-    19: ("Term Graph and Drift Analysis", "observed terms", "term graph and drift report", "Discover cross-community and cross-period terminology."),
-    20: ("Taxonomy Modeling", "in-scope records", "taxonomies and setting table", "Measure coverage by dimensions, not by count."),
-    21: ("Seed Paper Selection", "taxonomies and quality signals", "seed papers and frontier budgets", "Choose representative seeds for multi-path expansion."),
-    22: ("Citation Expansion", "seed papers", "citation frontiers", "Find papers that keyword search misses."),
-    23: ("Author and Institution Expansion", "seed authors and author map", "author and lab frontiers", "Find same-team work that uses different terminology."),
-    24: ("Venue Expansion", "venue map and seed venues", "venue frontiers", "Find community papers not reached by keywords."),
-    25: ("Dataset and Code Expansion", "dataset table and method names", "dataset and code frontiers", "Find papers with the same task but different wording."),
-    26: ("Standards and Engineering Vocabulary Expansion", "core terms and domain", "standards frontier", "Add engineering aliases and application vocabulary."),
-    27: ("Expansion Result Merge", "all frontiers", "updated corpus", "Integrate multi-path discoveries into one corpus."),
-    28: ("Deep Screening and Validity Check", "updated corpus", "validated corpus", "Remove noise and invalid papers."),
-    29: ("Evidence Graph Construction", "validated corpus, terms, taxonomies, and frontiers", "evidence graph", "Provide structure for coverage audit."),
-    30: ("Coverage Analysis", "evidence graph", "coverage subreports", "Compute independent coverage signals."),
-    31: ("Missing Cluster Search", "coverage subreports and evidence graph", "missing cluster report", "Actively search for what has not been found."),
-    32: ("Coverage Scoring and Audit", "subreports and missing clusters", "coverage score and audit report", "Prevent inflated self-assessment."),
-    33: ("Adversarial Challenge and Iteration Decision", "score, audit, and budget", "next action", "Route the workflow back to the right flow or stop."),
-    34: ("Output and Monitoring", "final state", "final packages", "Produce reusable, reproducible, and monitorable outputs."),
-    35: ("TODO Execution Loop", "config, calibration result, current state, and active TODO queue", "updated TODO queue, done TODO log, and continuation decision", "Continue TODO-mode execution until no useful executable task remains."),
+    1: ("Run Setup and Goal Calibration", "user goal, seed paper, or existing config", "run plan, initial ledgers, calibrated direction, and unresolved parameter list", "Start with a lightweight calibration pass so the system can test the user's direction before asking for detailed configuration."),
+    2: ("Domain, Scope, and Depth Contract", "calibrated direction, probe examples, and user-confirmed defaults", "domain decision, concept definitions, scope boundary, depth contract, and assumption ledger", "Lock the meaning of the task, paper-count lower bound, year policy, and stopping standard before full search."),
+    3: ("Seed Terms and Query Compilation", "scope contract, domain decision, aliases, and controlled vocabulary hints", "seed terms, alias map, negative rules, Boolean queries, and semantic queries", "Create executable search entries without treating the user's first wording as the final boundary."),
+    4: ("Query Probe, Keyword Audit, and Repair", "compiled queries and calibration source budgets", "probe report, keyword gap report, revised query set, and config confirmation bundle", "Use small samples to detect wrong vocabulary, high-noise queries, and missing term families before large retrieval."),
+    5: ("Parallel Scholarly Source Retrieval", "confirmed query set, year policy, source budgets, and source access state", "raw candidate records with abstracts, citation metadata when available, source failures, and query ledger entries", "Retrieve candidates from complementary indexes while preserving enough provenance to debug each source."),
+    6: ("Artifact Access, Parsing, and Abstract Extraction", "candidate records, URLs, identifiers, and artifact download policy", "abstract-enriched paper records, parsed text signals, reference records, parse confidence, and artifact index updates", "Move beyond download-only behavior by extracting abstracts and useful text signals from legal metadata, HTML, PDF, or TeX artifacts."),
+    7: ("Metadata Identity, Versioning, and Deduplication", "raw candidates, abstract-enriched records, source metadata, and parsed identifiers", "canonical records, author identities, venue identities, version graph, deduplicated corpus, and conflict notes", "Turn noisy multi-source records into stable paper identities while preserving meaningful versions."),
+    8: ("Relevance Screening and Near-Miss Mining", "canonical corpus, scope contract, abstracts, parsed text, and discovered terms", "in-scope, near-scope, out-of-scope, unknown labels, exclusion reasons, and near-miss expansion signals", "Protect corpus quality while still using boundary papers to discover hidden terminology and paths."),
+    9: ("Paper-Driven Terminology Refresh", "screened papers, near-miss signals, abstracts, parsed sections, captions, and references", "observed terms, canonical term table, term graph, terminology drift notes, and query mutations", "Let real papers update the vocabulary, including old terms, new terms, aliases, and cross-community bridge terms."),
+    10: ("Taxonomy, Settings, and Evidence Graph", "screened corpus, parsed signals, term graph, references, datasets, metrics, and settings", "task taxonomy, method taxonomy, dataset/metric table, experimental settings, and evidence graph", "Organize papers by what they actually do so coverage can be judged by substance rather than count."),
+    11: ("Citation Snowball Expansion", "seed papers, evidence graph, parsed references, citation metadata, and frontier budget", "backward, forward, co-citation, and bibliographic-coupling frontiers with relevance candidates", "Recover foundational, parallel, and follow-up work that keyword search cannot reliably find."),
+    12: ("Author and Lab Expansion", "core authors, author identities, affiliations, labs, and high-value seed papers", "author profile frontier, lab frontier, identity warnings, and candidate records", "Find related papers from the same researchers or groups when terminology changes across a project line."),
+    13: ("Venue and Community Expansion", "venue identities, seed venues, workshop names, special issues, and community signals", "venue, track, workshop, and special-issue frontiers with candidate records", "Search the research community around the topic, not only the literal terms."),
+    14: ("Dataset, Code, Benchmark, and Standards Expansion", "datasets, metrics, method names, code hints, leaderboards, standards, patents, and engineering terms", "dataset/code/leaderboard/standards frontiers, code availability signals, and engineering alias terms", "Expose papers connected through shared evaluation objects, implementations, and engineering vocabulary."),
+    15: ("Expansion Merge and Validity Check", "all frontier outputs, canonicalization rules, prior corpus, and validity sources", "updated corpus, deduplicated expansion records, retraction or errata flags, and low-yield frontier notes", "Integrate expansion results without polluting the corpus or hiding invalid records."),
+    16: ("Citation, Code, and Paper-Value Enrichment", "validated corpus, source metadata, citation sources, code search results, abstracts, and relevance labels", "citation counts, citation source, code URL, code evidence, value score, quality notes, limitations, and idea relation fields", "Make paper value and implementation availability visible in the same record that will reach the user."),
+    17: ("Coverage Subreports", "enriched corpus, taxonomies, evidence graph, citation graph, source ledger, and year policy", "cluster coverage, citation closure, source diversity, and recency/seminal balance subreports", "Separate coverage evidence into independent dimensions so paper count cannot masquerade as completeness."),
+    18: ("Missing-Cluster Hunt and Adversarial Audit", "coverage subreports, evidence graph, near-miss signals, exclusions, and iteration history", "missing-cluster report, coverage audit objections, adversarial challenge, and concrete loopback targets", "Actively search for what may still be missing and challenge weak stopping claims."),
+    19: ("Iteration Decision and Stop Validation", "coverage score, audit objections, adversarial challenge, budget state, lower-bound paper count, and residual risks", "PASS, specific loopback target, ASK_USER, or STOP_WITH_RISK decision", "Route the next loop to a concrete stage or stop only when the configured gates are satisfied."),
+    20: ("Unified Final Table Generation", "validated enriched corpus, final state snapshot, output config, and summary policy", "final_papers.csv and optional final_papers.xlsx with summary_zh as the final column", "Put the user's useful paper information into one primary table including abstract, citations, code, relevance, limitations, motivation, and Chinese summary."),
+    21: ("Execution Ledgers and Minimal Support Outputs", "stage events, agent handoffs, query records, source failures, artifact index, and final decision", "run_ledger.jsonl, stage_ledger.csv/jsonl, agent_ledger.jsonl, query_ledger.jsonl, artifact_index.json, and concise run_summary.md", "Keep enough observability to locate subagent progress and failures without scattering noisy narrative logs."),
+    22: ("Optional Monitoring Package", "final table, accepted terms, authors, venues, datasets, citations, and residual risks", "monitoring queries and update targets when monitoring is enabled", "Support future refreshes without forcing monitoring artifacts into every run."),
+    23: ("Optional TODO Execution Loop", "todo-mode config, calibration result, current state, ledgers, residual risks, and active TODO queue", "updated TODO queue, done TODO log, todo_state.json, and continuation decision", "Continue TODO-mode execution until no useful executable task remains and stop validation passes."),
 }
 
 
@@ -809,6 +802,7 @@ PHASE_FIELD_CONTRACTS = {
     "orchestration_state_reproducibility": [
         "execution_context",
         "stage_or_frontier_status",
+        "ledger_event",
         "state_or_budget_delta",
         "blocking_condition",
         "recovery_or_next_action",
@@ -873,6 +867,7 @@ PHASE_FIELD_CONTRACTS = {
         "export_or_report_path",
         "source_state_snapshot",
         "included_records",
+        "ledger_or_artifact_index_ref",
         "omitted_records_and_reason",
         "future_monitoring_action",
     ],
@@ -889,6 +884,7 @@ PHASE_FIELD_CONTRACTS = {
 PHASE_SPECIFIC_CHECKS = {
     "orchestration_state_reproducibility": [
         "Confirm that every stage or frontier status has a single current value and a traceable event history.",
+        "Confirm that progress is visible through compact ledgers, especially run, stage, agent, query, and artifact ledgers.",
         "Confirm that recovery actions distinguish missing input, tool failure, low yield, and user clarification.",
         "Confirm that any budget change names the frontier receiving or losing budget and why.",
     ],
@@ -934,6 +930,8 @@ PHASE_SPECIFIC_CHECKS = {
     ],
     "output_monitoring": [
         "Confirm that generated files derive from the same final state snapshot.",
+        "Confirm that final_papers.csv is the primary user-facing paper table and that summary_zh is the final column.",
+        "Confirm that compact execution ledgers are preserved even when verbose debug artifacts are disabled.",
         "Confirm that missing optional outputs are documented with their upstream cause.",
         "Confirm that monitoring queries target concrete terms, authors, venues, datasets, citations, or validity risks.",
     ],
@@ -963,7 +961,7 @@ def agent_specific_contract(agent: Agent) -> str:
     payload_key = yaml_key(agent.output)
     return f"""## Agent-Specific Contract
 
-This prompt is long because the agent boundary must be operationally complete, not because filler text is acceptable. For `{agent.snake}`, the essential artifact is `{agent.output}`. That artifact exists to prevent this failure mode: {agent.failure_mode.rstrip(".")}. {stage_hint} The output must therefore contain enough detail for a later agent to decide whether to trust it, challenge it, or send the workflow back to a specific stage.
+For `{agent.snake}`, the essential artifact is `{agent.output}`. That artifact exists to prevent this failure mode: {agent.failure_mode.rstrip(".")}. {stage_hint} The output must contain enough detail for a later agent to trust it, challenge it, or route the workflow back to a specific stage.
 
 The artifact payload for this agent must include these fields whenever the input evidence permits:
 
@@ -985,8 +983,8 @@ def build_prompt(agent: Agent) -> str:
     stage_text = stage_summary(agent)
     methods = phase_methods(agent)
     specific_contract = agent_specific_contract(agent)
-    workspace_path = f"workspace/work/deep-paper-search/{agent.phase_slug}/{agent.snake}.md"
-    json_path = f"workspace/work/deep-paper-search/{agent.phase_slug}/{agent.snake}.json"
+    workspace_path = f"workspace/work/deep-paper-search/agent_artifacts/{agent.phase_slug}/{agent.snake}.md"
+    json_path = f"workspace/work/deep-paper-search/agent_artifacts/{agent.phase_slug}/{agent.snake}.json"
     responsibility = agent.responsibility.rstrip(".")
     failure_mode = agent.failure_mode.rstrip(".")
     return f"""# {agent.title} Prompt
@@ -995,59 +993,56 @@ def build_prompt(agent: Agent) -> str:
 **Agent name**: `{agent.snake}`
 **Custom agent name**: `{agent.kebab}`
 **Phase**: {agent.phase_heading}
-**Primary artifact**: `{workspace_path}`
-**Optional structured artifact**: `{json_path}`
+**Detailed artifact path**: `{workspace_path}`
+**Optional structured artifact path**: `{json_path}`
+**Required ledger**: `workspace/work/deep-paper-search/ledgers/agent_ledger.jsonl`
 
 ## Role
 
-You are `{agent.snake}`, a specialist subagent in the Deep Paper Search workflow. Your non-substitutable responsibility is: {responsibility}. You are included because the workflow would otherwise fail in this concrete way: {failure_mode}. Your normal output is: {agent.output}. Treat that output as an artifact that another agent must be able to inspect, parse, challenge, and reuse. You are not a generic literature reviewer, not a casual brainstorming assistant, and not a report writer unless the artifact explicitly requires prose. Your task is to perform the narrow role defined here with enough evidence, structure, and operational detail that the global orchestrator can make a reliable next decision.
+You are `{agent.snake}`, a specialist subagent in the Deep Paper Search workflow. Your non-substitutable responsibility is: {responsibility}. You are included because the workflow would otherwise fail in this concrete way: {failure_mode}. Your normal output is `{agent.output}`. Treat that output as a reusable decision object, not as a casual note. Another agent must be able to inspect it, parse it, challenge it, and route the workflow from it.
 
 ## Workflow Context
 
-The overall system starts from an incomplete user research idea and progressively discovers real field vocabulary, papers, citation paths, authors, venues, datasets, code ecosystems, standards, and missing clusters. The key design principle is that initial keywords are only an entry point. The search boundary is shaped by evidence from papers and scholarly networks, not by the first wording supplied by the user. Every agent writes auditable artifacts under `workspace/work/deep-paper-search/`. Every claim must point to input evidence, prior state, a source record, a query, a parsed paper section, a graph edge, or a clearly labeled assumption. If evidence is missing, state that it is missing and route the gap rather than inventing it.
+The workflow starts from an incomplete user research idea and progressively discovers field vocabulary, papers, citation paths, authors, venues, datasets, code ecosystems, standards, and missing clusters. Initial keywords are only an entry point. The search boundary is shaped by evidence from papers and scholarly networks, not by the first wording supplied by the user. Every important claim must point to input evidence, prior state, a source record, a query, a parsed paper section, a graph edge, a ledger event, or a clearly labeled assumption. If evidence is missing, state that it is missing and route the gap rather than inventing it.
 
-Your phase mission is to {pack["mission"]}. The inputs normally available to this phase are {pack["inputs"]}. The principal handoff expectation is: {pack["handoffs"]}. Work locally inside the repository. Do not modify unrelated user files. Do not overwrite artifacts from other agents unless the orchestrator has explicitly assigned you a replacement run. When the same artifact already exists, append a dated revision section or write a new iteration-specific file if the orchestrator has provided an iteration identifier.
+Your phase mission is to {pack["mission"]}. The inputs normally available to this phase are {pack["inputs"]}. The principal handoff expectation is: {pack["handoffs"]}. Work locally inside the repository. Do not modify unrelated user files. Do not overwrite artifacts from other agents unless the orchestrator has explicitly assigned a replacement run.
 
 ## Stage Placement
 
 {stage_text}
 
-If you are invoked outside the stage listed above, continue only when the request is consistent with your role. If the user or orchestrator asks you to do another agent's job, write a short handoff note naming the correct agent and the missing artifact. Do not silently expand your mandate. The system depends on sharp agent boundaries because coverage and adversarial review need to know who made each decision.
+If you are invoked outside the stage listed above, continue only when the request is consistent with your role. If the orchestrator asks you to do another agent's job, write a handoff note naming the correct agent and missing artifact. Do not silently expand your mandate.
 
 ## Required Inputs
 
-Before you begin, identify the exact inputs you used. Acceptable inputs include `config/deep-paper-search.yaml`, `config/deep-paper-search.example.yaml`, the latest user request, the locked scope contract, the depth contract, current `research_state`, previous agent artifacts, raw source batches, canonical paper records, parsed text, evidence graph slices, query logs, frontier records, audit reports, and iteration decisions. Prefer reading the local config over asking incremental parameter questions. The normal startup path is calibration-first: a user goal is enough to run lightweight intent, query, and probe stages; after that, the workflow writes a confirmation bundle into config and asks the user to confirm or edit it before full deep search. If `config/deep-paper-search.yaml` is missing, use the example config as the schema. Ask the orchestrator to create or update a run config when calibration lacks a research direction or seed, minimum core paper count, year policy, artifact download policy, or a domain clarification for an ambiguous topic. If another optional input is absent, proceed with the documented default and record the assumption. Do not continue with a pretend version of an absent required artifact.
+Identify the exact inputs you used before making decisions. Acceptable inputs include `config/deep-paper-search.yaml`, the example config, the latest user request, locked scope contract, depth contract, current `research_state`, compact ledgers under `workspace/work/deep-paper-search/ledgers/`, previous agent artifacts, raw source batches, canonical paper records, parsed text, evidence graph slices, query records, frontier records, audit reports, and iteration decisions. Prefer reading config and calibration artifacts over asking incremental parameter questions. If a required input is absent, mark the artifact `BLOCKED_INPUT_MISSING`; if an optional input is absent, proceed with the documented default and record the assumption.
 
 For `{agent.snake}`, pay special attention to the following input questions:
 
 {questions}
 
-These questions are not decorative. They are a completeness checklist for deciding whether the artifact will be useful to downstream agents. If you cannot answer one of them, state the limitation and whether it requires loopback, user clarification, or a lower confidence score.
+These questions are a completeness checklist. If you cannot answer one, state the limitation and whether it requires loopback, user clarification, or lower confidence.
 
 {specific_contract}
 
-## Operating Procedure
-
-1. Restate the active task in one paragraph using the locked scope language, not loose user wording.
-2. List the concrete input artifacts and their paths or identifiers.
-3. Extract the facts that are relevant to your role and ignore facts that belong to other agents.
-4. Apply the phase methods below in order, adapting them to the evidence you actually have.
-5. Produce structured decisions, not only prose. Tables, bullet lists, YAML blocks, and explicit status labels are preferred when they make the result machine-consumable.
-6. Attach provenance to every important decision. A decision without provenance is a candidate for rejection by the coverage auditor.
-7. Separate evidence, inference, assumption, and recommendation. Do not let a plausible inference masquerade as a source fact.
-8. Identify the downstream agent or stage that should consume your output.
-9. Write the artifact to `{workspace_path}`. If your output contains records that would be easier to parse as data, also write `{json_path}`.
-10. Finish with a compact handoff section that says `READY`, `NEEDS_LOOPBACK`, `NEEDS_USER_INPUT`, or `BLOCKED_INPUT_MISSING`.
-
-## Phase Methods
+## Procedure
 
 {methods}
 
-Apply these methods concretely. For example, if you are creating a budget plan, give frontier budgets and rationale. If you are screening papers, give inclusion labels and exclusion reasons. If you are querying a source, preserve the source query and failure conditions. If you are auditing coverage, identify which evidence channels support each score and which channels are weak. The method list is a set of required operational moves, not a topic outline.
+1. Restate the active task using the locked scope language.
+2. List input artifacts, identifiers, and ledger references.
+3. Extract only the facts relevant to this agent boundary.
+4. Apply the phase methods above concretely.
+5. Produce structured decisions, not only prose.
+6. Attach provenance to every important decision.
+7. Separate evidence, inference, assumption, and recommendation.
+8. Append a compact event to `workspace/work/deep-paper-search/ledgers/agent_ledger.jsonl`.
+9. Write `{workspace_path}` only when this invocation creates a reusable artifact beyond the ledger row; write `{json_path}` when records should be parsed by another stage.
+10. End with `HANDOFF_STATUS`, `HANDOFF_TARGET`, and `HANDOFF_REASON`.
 
 ## Output Contract
 
-Your artifact must use this Markdown structure unless the orchestrator provided a stricter schema:
+The ledger row must include at least `run_id`, `iteration`, `stage`, `agent`, `status`, `inputs`, `outputs`, `decision`, `confidence`, `failure`, `handoff_target`, and `timestamp`. Detailed artifacts, when written, must use this structure unless the orchestrator provides a stricter schema:
 
 ````markdown
 ## STATUS
@@ -1077,6 +1072,7 @@ records: []
 assumptions: []
 uncertainties: []
 downstream_consumers: []
+ledger_refs: []
 ```
 
 ## Quality Checks
@@ -1103,11 +1099,14 @@ Your output can be rejected if any of these conditions are true:
 - It expands the search space without tying the expansion to scope, evidence, or a frontier record.
 - It narrows the search space without recording the exclusion logic.
 - It fails to name the downstream consumer of the artifact.
+- It creates a separate progress log instead of using the compact ledgers.
 - It ends with a generic summary instead of a status and handoff.
+
+For final table or export-related tasks, confirm that the primary paper table is `workspace/work/deep-paper-search/final/final_papers.csv`, the optional spreadsheet is `workspace/work/deep-paper-search/final/final_papers.xlsx`, citation counts and code availability are in the same row as each paper, and `summary_zh` is the final column.
 
 ## Boundaries
 
-Do not fabricate papers, citations, abstracts, code repositories, datasets, benchmarks, venues, author identities, DOI values, citation counts, or standard names. Do not bypass paywalls, authentication, or access controls. Do not ask the user to paste secrets. If private access, credentials, institutional subscriptions, or tokens are needed, state the access requirement and stop at the correct boundary. Do not delete or rewrite prior artifacts unless explicitly instructed. Do not claim that coverage is sufficient unless your role is one of the coverage decision agents and the required audit evidence is present.
+Do not fabricate papers, citations, abstracts, code repositories, datasets, benchmarks, venues, author identities, DOI values, citation counts, or standard names. Do not bypass paywalls, authentication, or access controls. Do not ask the user to paste secrets. If access is needed, state the requirement and stop at the correct boundary. Do not delete or rewrite prior artifacts unless explicitly instructed. Do not claim that coverage is sufficient unless your role is one of the coverage decision agents and the required audit evidence is present.
 
 ## Handling Uncertainty
 
@@ -1134,7 +1133,7 @@ def toml_escape(value: str) -> str:
 
 def build_toml(agent: Agent) -> str:
     prompt_path = f"prompts/{agent.snake}.md"
-    output_path = f"workspace/work/deep-paper-search/{agent.phase_slug}/{agent.snake}.md"
+    output_path = f"workspace/work/deep-paper-search/agent_artifacts/{agent.phase_slug}/{agent.snake}.md"
     instructions = f"""You are Agent {agent.number}: {agent.title}.
 
 Authoritative prompt:
@@ -1144,13 +1143,15 @@ Role:
 - {agent.responsibility}
 
 Expected output:
-- Write {output_path}.
-- If structured records are produced, also write workspace/work/deep-paper-search/{agent.phase_slug}/{agent.snake}.json.
+- Append a compact event to workspace/work/deep-paper-search/ledgers/agent_ledger.jsonl.
+- Write {output_path} when this invocation produces a reusable artifact beyond the ledger row.
+- If structured records are produced, also write workspace/work/deep-paper-search/agent_artifacts/{agent.phase_slug}/{agent.snake}.json.
 
 Rules:
 - Stay inside this agent's boundary.
 - Use the current Deep Paper Search state and prior artifacts as inputs.
 - Preserve provenance for every important decision.
+- Do not create separate progress logs; use the compact run, stage, agent, query, and artifact ledgers.
 - Do not fabricate papers, metadata, citations, abstracts, datasets, repositories, venues, or coverage evidence.
 - If required inputs are missing, write STATUS: BLOCKED_INPUT_MISSING instead of guessing.
 - Finish with HANDOFF_STATUS, HANDOFF_TARGET, and HANDOFF_REASON.
@@ -1198,7 +1199,21 @@ Run stages in order only when their required inputs exist. Many stages contain p
 
 ## State and Artifacts
 
-All workflow outputs must stay under `workspace/work/deep-paper-search/` unless the user explicitly requests a different output location. The event log is the durable history. Agents must not silently overwrite each other. Every artifact must include status, inputs used, evidence, structured output, quality checks, and handoff lines. The orchestrator may generate a state snapshot from those artifacts, but the snapshot is not a substitute for provenance.
+All workflow outputs must stay under `workspace/work/deep-paper-search/` unless the user explicitly requests a different output location. The system has two output layers.
+
+The primary user-facing output is `workspace/work/deep-paper-search/final/final_papers.csv`, plus `final_papers.xlsx` when spreadsheet export is enabled. This table is the place for paper title, abstract, citation count, code availability, relevance, value notes, limitations, motivation, source path, and `summary_zh` as the final column.
+
+The execution-observability layer is mandatory because subagent mode must be debuggable. Preserve these compact ledgers by default:
+
+- `workspace/work/deep-paper-search/ledgers/run_ledger.jsonl`
+- `workspace/work/deep-paper-search/ledgers/stage_ledger.csv`
+- `workspace/work/deep-paper-search/ledgers/stage_ledger.jsonl`
+- `workspace/work/deep-paper-search/ledgers/agent_ledger.jsonl`
+- `workspace/work/deep-paper-search/ledgers/query_ledger.jsonl`
+- `workspace/work/deep-paper-search/ledgers/artifact_index.json`
+- `workspace/work/deep-paper-search/ledgers/failure_ledger.jsonl`
+
+These ledgers replace scattered progress logs. They must show which stage and agent ran, what inputs were used, what outputs were produced, whether the step passed, failed, blocked, or looped back, and where the next action is routed. Detailed agent artifacts may be written under `workspace/work/deep-paper-search/agent_artifacts/` only when they are actual handoff artifacts, not routine progress logs. The orchestrator may generate a state snapshot from ledgers and artifacts, but the snapshot is not a substitute for provenance.
 
 ## Configuration Policy
 
@@ -1211,7 +1226,7 @@ The default behavior is:
 - include a paper when the title, abstract, keywords, or available full text clearly match the user's direction or a discovered equivalent term;
 - keep near-scope papers as signals, not as core papers;
 - record whether open-source code exists, but do not clone repositories unless the user explicitly enables cloning;
-- produce the standard output package without asking the user to choose formats;
+- produce the unified final paper table and compact ledgers without asking the user to choose formats;
 - ask before downloading PDFs, TeX sources, or other paper artifacts;
 - use the minimum paper count and year policy from config as hard run constraints.
 
@@ -1219,7 +1234,7 @@ Ask the user only when the calibration pass reveals multiple plausible interpret
 
 ## TODO Mode
 
-If `execution.todo_mode` is true, the workflow enters TODO-mode execution after calibration and config confirmation. TODO mode is a goal-like execution loop, not a simple note list. The workflow must maintain `workspace/work/deep-paper-search/todo/active.todo`, `done.todo`, `todo_state.json`, and `todo_log.md`. Each TODO must have an identifier, source, priority, dependency state, target stage or agent, and completion criteria.
+If `execution.todo_mode` is true, the workflow enters TODO-mode execution after calibration and config confirmation. TODO mode is a goal-like execution loop, not a simple note list. The workflow must maintain `workspace/work/deep-paper-search/todo/active.todo`, `workspace/work/deep-paper-search/todo/done.todo`, `workspace/work/deep-paper-search/todo/todo_state.json`, and `workspace/work/deep-paper-search/todo/todo_log.md`. Each TODO must have an identifier, source, priority, dependency state, target stage or agent, and completion criteria. TODO status changes must also appear in `agent_ledger.jsonl` or `stage_ledger.jsonl` so progress can be inspected without opening TODO files.
 
 TODO-mode loop:
 
@@ -1254,7 +1269,19 @@ The workflow may stop only when the depth contract is satisfied, coverage score 
 
 ## Output Package
 
-The final package should include `corpus.csv`, `corpus.bib`, `corpus.json`, `versions.json`, `excluded.csv`, `near_miss.csv`, `search_protocol.md`, `coverage_report.md`, `evidence_graph.json`, `gap_report.md`, and `monitoring_config.yaml` when the required upstream artifacts exist. If a file cannot be produced, the final report must say exactly which upstream artifact is missing and whether the absence affects correctness or only convenience.
+The default final package is intentionally compact:
+
+- `workspace/work/deep-paper-search/final/final_papers.csv`: required primary table.
+- `workspace/work/deep-paper-search/final/final_papers.xlsx`: optional spreadsheet mirror when enabled.
+- `workspace/work/deep-paper-search/final/run_summary.md`: concise human-readable summary of status, coverage, residual risks, and next actions.
+- `workspace/work/deep-paper-search/support/search_protocol.md`: concise reproducibility record derived from `query_ledger.jsonl` and stage decisions.
+- `workspace/work/deep-paper-search/support/coverage_report.md`: compact coverage and adversarial-audit report when coverage artifacts exist.
+- `workspace/work/deep-paper-search/support/gap_report.md`: compact gap notes when gap artifacts exist.
+- Mandatory ledgers under `workspace/work/deep-paper-search/ledgers/` as listed above.
+
+The final table must include at least these columns, with `summary_zh` last: `paper_id`, `title`, `authors`, `year`, `venue`, `publication_type`, `doi`, `arxiv_id`, `paper_url`, `abstract`, `abstract_source`, `citation_count`, `citation_source`, `code_available`, `code_url`, `code_evidence`, `relevance_label`, `relevance_score`, `reference_value_score`, `idea_relation`, `quality_notes`, `limitations`, `motivation`, `source_query`, `discovery_path`, `summary_zh`. The Chinese-language summary must describe what the paper does, how closely it matches the user's direction or idea, its motivation, limitations, whether it collides with or supports the user's idea when an idea was provided, and what inspiration it gives.
+
+Verbose per-agent reports, raw dumps, large debug graphs, and extra exports such as BibTeX or JSON should be written only when config enables `outputs.debug_artifacts` or the user requests them. If a required output cannot be produced, the run summary must say exactly which upstream artifact is missing and whether the absence affects correctness or only convenience.
 
 ## Execution Rule
 
@@ -1345,7 +1372,15 @@ Workflow artifacts are written under:
 workspace/work/deep-paper-search/
 ```
 
-Final outputs may include `corpus.csv`, `corpus.bib`, `corpus.json`, `versions.json`, `excluded.csv`, `near_miss.csv`, `search_protocol.md`, `coverage_report.md`, `evidence_graph.json`, `gap_report.md`, and `monitoring_config.yaml`.
+Primary output:
+
+```text
+workspace/work/deep-paper-search/final/final_papers.csv
+```
+
+The optional spreadsheet mirror is `workspace/work/deep-paper-search/final/final_papers.xlsx`. The final table contains abstracts, citation counts, code availability, relevance labels, value notes, and `summary_zh` as the final column.
+
+Required execution ledgers are kept under `workspace/work/deep-paper-search/ledgers/`: `run_ledger.jsonl`, `stage_ledger.csv`, `stage_ledger.jsonl`, `agent_ledger.jsonl`, `query_ledger.jsonl`, `artifact_index.json`, and `failure_ledger.jsonl`. These ledgers are intentionally retained so subagent progress, failures, loopbacks, and handoffs can be located without generating many scattered progress logs.
 """
 
 
@@ -1485,7 +1520,8 @@ Use these defaults unless calibration or the user indicates otherwise:
 - `artifact_download.paper_artifacts`: `NONE`, but ask the user if they want PDFs or TeX before artifact download stages.
 - `code.record_code_availability`: true.
 - `code.clone_repositories`: false.
-- Standard output package: enabled.
+- Primary final table and compact execution ledgers: enabled.
+- Verbose debug artifacts: disabled.
 - Inclusion policy: system-managed.
 
 ## TODO Mode
@@ -1541,23 +1577,26 @@ PDF and TeX download should be explicitly controlled by the user because it affe
 
 The workflow must not bypass access controls.
 
-## Output Format Policy
+## Output and Ledger Policy
 
-The user does not need to choose output formats for normal runs. The default output package is:
+The user does not need to choose output formats for normal runs. The default primary output is:
 
-- `corpus.csv`
-- `corpus.bib`
-- `corpus.json`
-- `versions.json`
-- `excluded.csv`
-- `near_miss.csv`
-- `search_protocol.md`
-- `coverage_report.md`
-- `evidence_graph.json`
-- `gap_report.md`
-- `monitoring_config.yaml`
+- `workspace/work/deep-paper-search/final/final_papers.csv`
+- `workspace/work/deep-paper-search/final/final_papers.xlsx` when spreadsheet export is enabled
 
-Users can disable outputs in config if they want a smaller run, but the default should be comprehensive.
+The final table should consolidate the useful paper information into one row per paper. Required columns include title, authors, year, venue, DOI/arXiv identifiers, paper URL, abstract, abstract source, citation count, citation source, code availability, code URL, code evidence, relevance label, relevance score, value score, idea relation, quality notes, limitations, motivation, source query, discovery path, and `summary_zh` as the final column. The `summary_zh` cell must be written in Chinese and should summarize what the paper does, how closely it matches the user's direction or idea, the paper motivation, limitations, possible collision or relationship with the user's idea, and useful inspiration.
+
+Compact execution ledgers are required even when verbose artifacts are disabled:
+
+- `workspace/work/deep-paper-search/ledgers/run_ledger.jsonl`
+- `workspace/work/deep-paper-search/ledgers/stage_ledger.csv`
+- `workspace/work/deep-paper-search/ledgers/stage_ledger.jsonl`
+- `workspace/work/deep-paper-search/ledgers/agent_ledger.jsonl`
+- `workspace/work/deep-paper-search/ledgers/query_ledger.jsonl`
+- `workspace/work/deep-paper-search/ledgers/artifact_index.json`
+- `workspace/work/deep-paper-search/ledgers/failure_ledger.jsonl`
+
+These files are not optional noise. They are the minimum observability layer for subagent mode. They let the user locate which stage ran, which agent produced which artifact, where a query came from, why a loopback happened, and where a failure occurred. Verbose debug artifacts, raw dumps, large graphs, BibTeX, JSON corpus mirrors, and extra narrative reports should be enabled only when the config or user asks for them.
 
 ## Minimal Clarification Set
 
@@ -1668,18 +1707,68 @@ inclusion_policy:
   user_excluded_venues: []
 
 outputs:
-  # Standard package is enabled by default. Users usually do not need to edit this.
-  corpus_csv: true
-  corpus_bibtex: true
-  corpus_json: true
-  versions_json: true
-  excluded_csv: true
-  near_miss_csv: true
-  search_protocol_md: true
-  coverage_report_md: true
-  evidence_graph_json: true
-  gap_report_md: true
-  monitoring_config_yaml: true
+  # Primary user-facing output. Users usually do not need to edit this.
+  primary_table: "workspace/work/deep-paper-search/final/final_papers.csv"
+  excel_table: "workspace/work/deep-paper-search/final/final_papers.xlsx"
+  write_excel: true
+  summary_language: "zh"
+  summary_column_last: true
+  write_run_summary: true
+  run_summary_path: "workspace/work/deep-paper-search/final/run_summary.md"
+
+  # Compact support reports. These are concise and derived from ledgers.
+  write_search_protocol: true
+  search_protocol_path: "workspace/work/deep-paper-search/support/search_protocol.md"
+  write_coverage_report: true
+  coverage_report_path: "workspace/work/deep-paper-search/support/coverage_report.md"
+  write_gap_report: true
+  gap_report_path: "workspace/work/deep-paper-search/support/gap_report.md"
+  write_monitoring_config: false
+  monitoring_config_path: "workspace/work/deep-paper-search/support/monitoring_config.yaml"
+
+  # Verbose artifacts are disabled by default to avoid noisy scattered files.
+  debug_artifacts: false
+  debug_dir: "workspace/work/deep-paper-search/debug/"
+
+ledgers:
+  # Required execution observability for subagent mode.
+  enabled: true
+  run_ledger: "workspace/work/deep-paper-search/ledgers/run_ledger.jsonl"
+  stage_ledger_csv: "workspace/work/deep-paper-search/ledgers/stage_ledger.csv"
+  stage_ledger_jsonl: "workspace/work/deep-paper-search/ledgers/stage_ledger.jsonl"
+  agent_ledger: "workspace/work/deep-paper-search/ledgers/agent_ledger.jsonl"
+  query_ledger: "workspace/work/deep-paper-search/ledgers/query_ledger.jsonl"
+  artifact_index: "workspace/work/deep-paper-search/ledgers/artifact_index.json"
+  failure_ledger: "workspace/work/deep-paper-search/ledgers/failure_ledger.jsonl"
+
+final_table:
+  required_columns:
+    - paper_id
+    - title
+    - authors
+    - year
+    - venue
+    - publication_type
+    - doi
+    - arxiv_id
+    - paper_url
+    - abstract
+    - abstract_source
+    - citation_count
+    - citation_source
+    - code_available
+    - code_url
+    - code_evidence
+    - relevance_label
+    - relevance_score
+    - reference_value_score
+    - idea_relation
+    - quality_notes
+    - limitations
+    - motivation
+    - source_query
+    - discovery_path
+    - summary_zh
 
 budgets:
   max_iterations: 6
@@ -1707,8 +1796,8 @@ def main() -> int:
     agents, stages = parse_design()
     if len(agents) != 84:
         raise SystemExit(f"Expected 84 agents, parsed {len(agents)}")
-    if len(stages) != 35:
-        raise SystemExit(f"Expected 35 stages, parsed {len(stages)}")
+    if len(stages) != 23:
+        raise SystemExit(f"Expected 23 stages, parsed {len(stages)}")
 
     for directory in [
         PROJECT_PROMPTS,
@@ -1788,7 +1877,7 @@ This repository follows the `paper-tool` research branch layout while using orig
 - Agent manifest: `plugins/deep-paper-search/assets/agent_manifest.json`
 - Config template: `config/deep-paper-search.example.yaml`
 
-The generator parses `deep-paper-search-agent-system-design.md` and writes {len(agents)} agent TOML files plus {len(agents)} project prompt files. Each project agent prompt is expected to be at least 1000 words.
+The generator parses `deep-paper-search-agent-system-design.md` and writes {len(agents)} agent TOML files plus {len(agents)} project prompt files. Each project agent prompt is expected to be at least 300 words and must remain operationally complete.
 """
     write(ROOT / "docs" / "generated-agent-assets.md", short_doc)
     write(ROOT / "docs" / "user-required-parameters.md", build_user_parameters_doc())
@@ -1797,14 +1886,14 @@ The generator parses `deep-paper-search-agent-system-design.md` and writes {len(
     too_short = []
     for path in sorted(PROJECT_PROMPTS.glob("*.md")):
         count = word_count(path)
-        if count < 1000:
+        if count < 300:
             too_short.append((path.name, count))
     launcher_count = word_count(launcher_path)
-    if launcher_count < 1000:
+    if launcher_count < 300:
         too_short.append((LAUNCHER_NAME, launcher_count))
     if too_short:
         detail = "\n".join(f"{name}: {count}" for name, count in too_short)
-        raise SystemExit(f"Prompts below 1000 words:\n{detail}")
+        raise SystemExit(f"Prompts below 300 words:\n{detail}")
 
     print(f"Generated {len(agents)} agents, {len(stages)} stages, launcher words={launcher_count}")
     print(f"Shortest project prompt words={min(word_count(path) for path in PROJECT_PROMPTS.glob('*.md'))}")

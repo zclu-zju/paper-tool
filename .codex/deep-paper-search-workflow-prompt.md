@@ -24,47 +24,49 @@ The workflow starts from a research idea that may be incomplete, translated poor
 
 The workflow has these stages:
 
-1. Run Initialization: output `run plan and initial state`; purpose: Create a traceable task boundary..
-2. Intent Decomposition: output `intent frame`; purpose: Turn natural language into searchable fields..
-3. Domain Disambiguation: output `domain decision and assumptions`; purpose: Prevent cross-domain false retrieval..
-4. Concept Definition: output `concept table`; purpose: Create relevance standards for later screening..
-5. Scope Contract: output `scope contract and depth contract`; purpose: Define inclusion, exclusion, and stopping thresholds..
-6. Initial Term Generation: output `seed terms and alias map`; purpose: Create the first retrieval entry points..
-7. Initial Query Compilation: output `source-specific queries`; purpose: Make queries executable..
-8. Query Probing: output `probe report and keyword gap report`; purpose: Detect bad queries before large-scale retrieval..
-9. Query Revision: output `revised queries`; purpose: Repair the retrieval entry points using evidence..
-10. Parallel Database Retrieval: output `raw records`; purpose: Reduce source bias through parallel retrieval..
-11. Full Text Location: output `full text links`; purpose: Prepare materials for term and reference mining..
-12. Full Text Parsing: output `parsed text, references, and signals`; purpose: Recover terminology beyond abstracts..
-13. Metadata Normalization: output `canonical candidates`; purpose: Make multi-source data mergeable..
-14. Identity Resolution: output `author map and venue map`; purpose: Prevent author and venue expansion errors..
-15. Version Linking and Deduplication: output `deduplicated corpus and version graph`; purpose: Merge duplicates while preserving version relationships..
-16. Initial Relevance Screening: output `in-scope, near-scope, and out-of-scope records`; purpose: Separate core papers from noise..
-17. Near-Miss Mining: output `near-miss signals`; purpose: Find hidden entry points in boundary papers..
-18. Observed Term Extraction: output `observed terms`; purpose: Use papers to revise the search language..
-19. Term Graph and Drift Analysis: output `term graph and drift report`; purpose: Discover cross-community and cross-period terminology..
-20. Taxonomy Modeling: output `taxonomies and setting table`; purpose: Measure coverage by dimensions, not by count..
-21. Seed Paper Selection: output `seed papers and frontier budgets`; purpose: Choose representative seeds for multi-path expansion..
-22. Citation Expansion: output `citation frontiers`; purpose: Find papers that keyword search misses..
-23. Author and Institution Expansion: output `author and lab frontiers`; purpose: Find same-team work that uses different terminology..
-24. Venue Expansion: output `venue frontiers`; purpose: Find community papers not reached by keywords..
-25. Dataset and Code Expansion: output `dataset and code frontiers`; purpose: Find papers with the same task but different wording..
-26. Standards and Engineering Vocabulary Expansion: output `standards frontier`; purpose: Add engineering aliases and application vocabulary..
-27. Expansion Result Merge: output `updated corpus`; purpose: Integrate multi-path discoveries into one corpus..
-28. Deep Screening and Validity Check: output `validated corpus`; purpose: Remove noise and invalid papers..
-29. Evidence Graph Construction: output `evidence graph`; purpose: Provide structure for coverage audit..
-30. Coverage Analysis: output `coverage subreports`; purpose: Compute independent coverage signals..
-31. Missing Cluster Search: output `missing cluster report`; purpose: Actively search for what has not been found..
-32. Coverage Scoring and Audit: output `coverage score and audit report`; purpose: Prevent inflated self-assessment..
-33. Adversarial Challenge and Iteration Decision: output `next action`; purpose: Route the workflow back to the right flow or stop..
-34. Output and Monitoring: output `final packages`; purpose: Produce reusable, reproducible, and monitorable outputs..
-35. TODO Execution Loop: output `updated TODO queue, done TODO log, and continuation decision`; purpose: Continue TODO-mode execution until no useful executable task remains..
+1. Run Setup and Goal Calibration: output `run plan, initial ledgers, calibrated direction, and unresolved parameter list`; purpose: Start with a lightweight calibration pass so the system can test the user's direction before asking for detailed configuration..
+2. Domain, Scope, and Depth Contract: output `domain decision, concept definitions, scope boundary, depth contract, and assumption ledger`; purpose: Lock the meaning of the task, paper-count lower bound, year policy, and stopping standard before full search..
+3. Seed Terms and Query Compilation: output `seed terms, alias map, negative rules, Boolean queries, and semantic queries`; purpose: Create executable search entries without treating the user's first wording as the final boundary..
+4. Query Probe, Keyword Audit, and Repair: output `probe report, keyword gap report, revised query set, and config confirmation bundle`; purpose: Use small samples to detect wrong vocabulary, high-noise queries, and missing term families before large retrieval..
+5. Parallel Scholarly Source Retrieval: output `raw candidate records with abstracts, citation metadata when available, source failures, and query ledger entries`; purpose: Retrieve candidates from complementary indexes while preserving enough provenance to debug each source..
+6. Artifact Access, Parsing, and Abstract Extraction: output `abstract-enriched paper records, parsed text signals, reference records, parse confidence, and artifact index updates`; purpose: Move beyond download-only behavior by extracting abstracts and useful text signals from legal metadata, HTML, PDF, or TeX artifacts..
+7. Metadata Identity, Versioning, and Deduplication: output `canonical records, author identities, venue identities, version graph, deduplicated corpus, and conflict notes`; purpose: Turn noisy multi-source records into stable paper identities while preserving meaningful versions..
+8. Relevance Screening and Near-Miss Mining: output `in-scope, near-scope, out-of-scope, unknown labels, exclusion reasons, and near-miss expansion signals`; purpose: Protect corpus quality while still using boundary papers to discover hidden terminology and paths..
+9. Paper-Driven Terminology Refresh: output `observed terms, canonical term table, term graph, terminology drift notes, and query mutations`; purpose: Let real papers update the vocabulary, including old terms, new terms, aliases, and cross-community bridge terms..
+10. Taxonomy, Settings, and Evidence Graph: output `task taxonomy, method taxonomy, dataset/metric table, experimental settings, and evidence graph`; purpose: Organize papers by what they actually do so coverage can be judged by substance rather than count..
+11. Citation Snowball Expansion: output `backward, forward, co-citation, and bibliographic-coupling frontiers with relevance candidates`; purpose: Recover foundational, parallel, and follow-up work that keyword search cannot reliably find..
+12. Author and Lab Expansion: output `author profile frontier, lab frontier, identity warnings, and candidate records`; purpose: Find related papers from the same researchers or groups when terminology changes across a project line..
+13. Venue and Community Expansion: output `venue, track, workshop, and special-issue frontiers with candidate records`; purpose: Search the research community around the topic, not only the literal terms..
+14. Dataset, Code, Benchmark, and Standards Expansion: output `dataset/code/leaderboard/standards frontiers, code availability signals, and engineering alias terms`; purpose: Expose papers connected through shared evaluation objects, implementations, and engineering vocabulary..
+15. Expansion Merge and Validity Check: output `updated corpus, deduplicated expansion records, retraction or errata flags, and low-yield frontier notes`; purpose: Integrate expansion results without polluting the corpus or hiding invalid records..
+16. Citation, Code, and Paper-Value Enrichment: output `citation counts, citation source, code URL, code evidence, value score, quality notes, limitations, and idea relation fields`; purpose: Make paper value and implementation availability visible in the same record that will reach the user..
+17. Coverage Subreports: output `cluster coverage, citation closure, source diversity, and recency/seminal balance subreports`; purpose: Separate coverage evidence into independent dimensions so paper count cannot masquerade as completeness..
+18. Missing-Cluster Hunt and Adversarial Audit: output `missing-cluster report, coverage audit objections, adversarial challenge, and concrete loopback targets`; purpose: Actively search for what may still be missing and challenge weak stopping claims..
+19. Iteration Decision and Stop Validation: output `PASS, specific loopback target, ASK_USER, or STOP_WITH_RISK decision`; purpose: Route the next loop to a concrete stage or stop only when the configured gates are satisfied..
+20. Unified Final Table Generation: output `final_papers.csv and optional final_papers.xlsx with summary_zh as the final column`; purpose: Put the user's useful paper information into one primary table including abstract, citations, code, relevance, limitations, motivation, and Chinese summary..
+21. Execution Ledgers and Minimal Support Outputs: output `run_ledger.jsonl, stage_ledger.csv/jsonl, agent_ledger.jsonl, query_ledger.jsonl, artifact_index.json, and concise run_summary.md`; purpose: Keep enough observability to locate subagent progress and failures without scattering noisy narrative logs..
+22. Optional Monitoring Package: output `monitoring queries and update targets when monitoring is enabled`; purpose: Support future refreshes without forcing monitoring artifacts into every run..
+23. Optional TODO Execution Loop: output `updated TODO queue, done TODO log, todo_state.json, and continuation decision`; purpose: Continue TODO-mode execution until no useful executable task remains and stop validation passes..
 
 Run stages in order only when their required inputs exist. Many stages contain parallel agents. Parallelism is expected for source retrieval, citation expansion, author expansion, venue expansion, dataset/code expansion, and coverage subreports. Do not wait for a slow or failed data source before preserving successful results from other sources. Instead, record the failure and let `failure_triage_agent` decide whether retry, downgrade, or loopback is appropriate.
 
 ## State and Artifacts
 
-All workflow outputs must stay under `workspace/work/deep-paper-search/` unless the user explicitly requests a different output location. The event log is the durable history. Agents must not silently overwrite each other. Every artifact must include status, inputs used, evidence, structured output, quality checks, and handoff lines. The orchestrator may generate a state snapshot from those artifacts, but the snapshot is not a substitute for provenance.
+All workflow outputs must stay under `workspace/work/deep-paper-search/` unless the user explicitly requests a different output location. The system has two output layers.
+
+The primary user-facing output is `workspace/work/deep-paper-search/final/final_papers.csv`, plus `final_papers.xlsx` when spreadsheet export is enabled. This table is the place for paper title, abstract, citation count, code availability, relevance, value notes, limitations, motivation, source path, and `summary_zh` as the final column.
+
+The execution-observability layer is mandatory because subagent mode must be debuggable. Preserve these compact ledgers by default:
+
+- `workspace/work/deep-paper-search/ledgers/run_ledger.jsonl`
+- `workspace/work/deep-paper-search/ledgers/stage_ledger.csv`
+- `workspace/work/deep-paper-search/ledgers/stage_ledger.jsonl`
+- `workspace/work/deep-paper-search/ledgers/agent_ledger.jsonl`
+- `workspace/work/deep-paper-search/ledgers/query_ledger.jsonl`
+- `workspace/work/deep-paper-search/ledgers/artifact_index.json`
+- `workspace/work/deep-paper-search/ledgers/failure_ledger.jsonl`
+
+These ledgers replace scattered progress logs. They must show which stage and agent ran, what inputs were used, what outputs were produced, whether the step passed, failed, blocked, or looped back, and where the next action is routed. Detailed agent artifacts may be written under `workspace/work/deep-paper-search/agent_artifacts/` only when they are actual handoff artifacts, not routine progress logs. The orchestrator may generate a state snapshot from ledgers and artifacts, but the snapshot is not a substitute for provenance.
 
 ## Configuration Policy
 
@@ -77,7 +79,7 @@ The default behavior is:
 - include a paper when the title, abstract, keywords, or available full text clearly match the user's direction or a discovered equivalent term;
 - keep near-scope papers as signals, not as core papers;
 - record whether open-source code exists, but do not clone repositories unless the user explicitly enables cloning;
-- produce the standard output package without asking the user to choose formats;
+- produce the unified final paper table and compact ledgers without asking the user to choose formats;
 - ask before downloading PDFs, TeX sources, or other paper artifacts;
 - use the minimum paper count and year policy from config as hard run constraints.
 
@@ -85,7 +87,7 @@ Ask the user only when the calibration pass reveals multiple plausible interpret
 
 ## TODO Mode
 
-If `execution.todo_mode` is true, the workflow enters TODO-mode execution after calibration and config confirmation. TODO mode is a goal-like execution loop, not a simple note list. The workflow must maintain `workspace/work/deep-paper-search/todo/active.todo`, `done.todo`, `todo_state.json`, and `todo_log.md`. Each TODO must have an identifier, source, priority, dependency state, target stage or agent, and completion criteria.
+If `execution.todo_mode` is true, the workflow enters TODO-mode execution after calibration and config confirmation. TODO mode is a goal-like execution loop, not a simple note list. The workflow must maintain `workspace/work/deep-paper-search/todo/active.todo`, `workspace/work/deep-paper-search/todo/done.todo`, `workspace/work/deep-paper-search/todo/todo_state.json`, and `workspace/work/deep-paper-search/todo/todo_log.md`. Each TODO must have an identifier, source, priority, dependency state, target stage or agent, and completion criteria. TODO status changes must also appear in `agent_ledger.jsonl` or `stage_ledger.jsonl` so progress can be inspected without opening TODO files.
 
 TODO-mode loop:
 
@@ -120,7 +122,19 @@ The workflow may stop only when the depth contract is satisfied, coverage score 
 
 ## Output Package
 
-The final package should include `corpus.csv`, `corpus.bib`, `corpus.json`, `versions.json`, `excluded.csv`, `near_miss.csv`, `search_protocol.md`, `coverage_report.md`, `evidence_graph.json`, `gap_report.md`, and `monitoring_config.yaml` when the required upstream artifacts exist. If a file cannot be produced, the final report must say exactly which upstream artifact is missing and whether the absence affects correctness or only convenience.
+The default final package is intentionally compact:
+
+- `workspace/work/deep-paper-search/final/final_papers.csv`: required primary table.
+- `workspace/work/deep-paper-search/final/final_papers.xlsx`: optional spreadsheet mirror when enabled.
+- `workspace/work/deep-paper-search/final/run_summary.md`: concise human-readable summary of status, coverage, residual risks, and next actions.
+- `workspace/work/deep-paper-search/support/search_protocol.md`: concise reproducibility record derived from `query_ledger.jsonl` and stage decisions.
+- `workspace/work/deep-paper-search/support/coverage_report.md`: compact coverage and adversarial-audit report when coverage artifacts exist.
+- `workspace/work/deep-paper-search/support/gap_report.md`: compact gap notes when gap artifacts exist.
+- Mandatory ledgers under `workspace/work/deep-paper-search/ledgers/` as listed above.
+
+The final table must include at least these columns, with `summary_zh` last: `paper_id`, `title`, `authors`, `year`, `venue`, `publication_type`, `doi`, `arxiv_id`, `paper_url`, `abstract`, `abstract_source`, `citation_count`, `citation_source`, `code_available`, `code_url`, `code_evidence`, `relevance_label`, `relevance_score`, `reference_value_score`, `idea_relation`, `quality_notes`, `limitations`, `motivation`, `source_query`, `discovery_path`, `summary_zh`. The Chinese-language summary must describe what the paper does, how closely it matches the user's direction or idea, its motivation, limitations, whether it collides with or supports the user's idea when an idea was provided, and what inspiration it gives.
+
+Verbose per-agent reports, raw dumps, large debug graphs, and extra exports such as BibTeX or JSON should be written only when config enables `outputs.debug_artifacts` or the user requests them. If a required output cannot be produced, the run summary must say exactly which upstream artifact is missing and whether the absence affects correctness or only convenience.
 
 ## Execution Rule
 

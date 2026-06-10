@@ -55,7 +55,8 @@ Use these defaults unless calibration or the user indicates otherwise:
 - `artifact_download.paper_artifacts`: `NONE`, but ask the user if they want PDFs or TeX before artifact download stages.
 - `code.record_code_availability`: true.
 - `code.clone_repositories`: false.
-- Standard output package: enabled.
+- Primary final table and compact execution ledgers: enabled.
+- Verbose debug artifacts: disabled.
 - Inclusion policy: system-managed.
 
 ## TODO Mode
@@ -111,23 +112,26 @@ PDF and TeX download should be explicitly controlled by the user because it affe
 
 The workflow must not bypass access controls.
 
-## Output Format Policy
+## Output and Ledger Policy
 
-The user does not need to choose output formats for normal runs. The default output package is:
+The user does not need to choose output formats for normal runs. The default primary output is:
 
-- `corpus.csv`
-- `corpus.bib`
-- `corpus.json`
-- `versions.json`
-- `excluded.csv`
-- `near_miss.csv`
-- `search_protocol.md`
-- `coverage_report.md`
-- `evidence_graph.json`
-- `gap_report.md`
-- `monitoring_config.yaml`
+- `workspace/work/deep-paper-search/final/final_papers.csv`
+- `workspace/work/deep-paper-search/final/final_papers.xlsx` when spreadsheet export is enabled
 
-Users can disable outputs in config if they want a smaller run, but the default should be comprehensive.
+The final table should consolidate the useful paper information into one row per paper. Required columns include title, authors, year, venue, DOI/arXiv identifiers, paper URL, abstract, abstract source, citation count, citation source, code availability, code URL, code evidence, relevance label, relevance score, value score, idea relation, quality notes, limitations, motivation, source query, discovery path, and `summary_zh` as the final column. The `summary_zh` cell must be written in Chinese and should summarize what the paper does, how closely it matches the user's direction or idea, the paper motivation, limitations, possible collision or relationship with the user's idea, and useful inspiration.
+
+Compact execution ledgers are required even when verbose artifacts are disabled:
+
+- `workspace/work/deep-paper-search/ledgers/run_ledger.jsonl`
+- `workspace/work/deep-paper-search/ledgers/stage_ledger.csv`
+- `workspace/work/deep-paper-search/ledgers/stage_ledger.jsonl`
+- `workspace/work/deep-paper-search/ledgers/agent_ledger.jsonl`
+- `workspace/work/deep-paper-search/ledgers/query_ledger.jsonl`
+- `workspace/work/deep-paper-search/ledgers/artifact_index.json`
+- `workspace/work/deep-paper-search/ledgers/failure_ledger.jsonl`
+
+These files are not optional noise. They are the minimum observability layer for subagent mode. They let the user locate which stage ran, which agent produced which artifact, where a query came from, why a loopback happened, and where a failure occurred. Verbose debug artifacts, raw dumps, large graphs, BibTeX, JSON corpus mirrors, and extra narrative reports should be enabled only when the config or user asks for them.
 
 ## Minimal Clarification Set
 
